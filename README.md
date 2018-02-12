@@ -18,7 +18,7 @@ Estimated time to complete: 1 hr
 General requirements:
 
 * Control node where the Kubespray commands are run (i.e. laptop or jump host).
-* Virtual macXines running Ubuntu 16.04 (Minimum of one, but at least three are recommended).
+* Virtual machines running Ubuntu 16.04 (Minimum of one, but at least three are recommended).
 
 Kubespray requirements:  
 https://github.com/kubernetes-incubator/kubespray
