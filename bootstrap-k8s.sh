@@ -141,22 +141,14 @@ $(for i in ${!_K8S_NODE[*]}; do printf "%s         ansible_ssh_host=%s\n" "${nod
 $(for i in ${!_K8S_ETCD[*]}; do printf "%s         ansible_ssh_host=%s\n" "${etcd_hostn[i]}" "${_K8S_ETCD[i]}"; done)
 EOF
 
-ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local bootstrap.yml
-ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local user-solidfire.yml
-ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-pre.yml
-
-
-ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" bootstrap.yml
-ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" user-solidfire.yml
-ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-pre.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local bootstrap.yml user-solidfire.yml ubuntu-pre.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" bootstrap.yml user-solidfire.yml ubuntu-pre.yml
 
 
 kubespray prepare --nodes   $(for i in ${!_K8S_NODE[*]}; do printf "%s[ansible_ssh_host=%s] " "${node_hostn[i]}" "${_K8S_NODE[i]}"; done) \
                   --etcds   $(for i in ${!_K8S_ETCD[*]}; do printf "%s[ansible_ssh_host=%s] " "${etcd_hostn[i]}" "${_K8S_ETCD[i]}"; done) \
                   --masters $(for i in ${!_K8S_MASTER[*]}; do printf "%s[ansible_ssh_host=%s] " "${master_hostn[i]}" "${_K8S_MASTER[i]}"; done)
-
 kubespray deploy -y
 
 ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-post.yml || true
-
 ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-post.yml || true
