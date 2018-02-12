@@ -1,0 +1,1 @@
+# kubespray prepare --nodes node1[ansible_ssh_host=10.99.21.1] node2[ansible_ssh_host=10.99.21.2] node3[ansible_ssh_host=10.99.21.3] [--etcds N+] [--masters N+]

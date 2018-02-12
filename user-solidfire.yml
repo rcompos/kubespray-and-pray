@@ -1,0 +1,31 @@
+---
+
+- hosts: '*'
+  vars:
+  #remote_user: root
+
+  tasks:
+
+  - name: Create User Solidfire
+    user:
+      name: solidfire
+      comment: "Solid Fire"
+      shell: /bin/bash
+      groups: adm 
+    become: true
+
+  - name: Allow Passwordless Sudo for solidfire
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^solidfire'
+      line: 'solidfire ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+    become: true
+ 
+  - name: Set authorized key took from file
+    authorized_key:
+      user: solidfire
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    become: true
