@@ -105,16 +105,9 @@ Define hosts in base configuration ansible file.
 $ vi ~/k8s-kubespray/kubespray-pre.yml
 ```
 
-Identify the line:  
-`- hosts: '*'`  
-Change line to:  
-`- hosts: 'ai-k8s-*'`
-
 ```
 $ ansible-playbook kubespray-pre.yml
 ```
-
-Reboot the nodes to disable Apparmor.
 
 Prepare the Kubespray config.
 
@@ -142,11 +135,6 @@ Define hosts in post configuration ansible file.
 ```
 $ vi ~/k8s-kubespray/kubespray-post.yml
 ```
-
-Identify the line:  
-`- hosts: '*'`  
-Change line to:  
-`- hosts: 'ai-k8s-*'`
 
 On the control node, run post-install steps.  This includes configuring Docker LVM thin pool storage provisioning.
 
