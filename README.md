@@ -144,9 +144,9 @@ $ ansible-playbook kubespray-post.yml
 
 ### Authorization ###
 
-***WARNING\: Insecure permissions for development only!***
+***WARNING... Insecure permissions for development only!***
 
-Run the following on the master node.
+Run the following on the master node.  
 `$ kubectl -n kube-system edit service kubernetes-dashboard`
 
 Identify the line:  
