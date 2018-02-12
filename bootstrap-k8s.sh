@@ -55,15 +55,15 @@ __usage() {
   Usage :  ${__ScriptName} [args]
 
   Examples:
-    - ${__ScriptName} -n node1.one.den.solidfire.net -n node2.one.den.solidfire.net -e node1.one.den.solidfire.net -e node2.one.den.solidfire.net -m node3.one.den.solidfire.net
+    - ${__ScriptName} -n node1.example.com -n node2.your.domain.com -e node1.your.domain.com -e node2.your.domain.com -m node3.your.domain.com
     - bash ${__ScriptName} -u solidfire -p solidfire \\
-                            -n testkubenode1.one.den.solidfire.net \\
-                            -n testkubenode2.one.den.solidfire.net \\
-                            -n testkubenode3.one.den.solidfire.net \\
-                            -e testkubenode1.one.den.solidfire.net \\
-                            -e testkubenode2.one.den.solidfire.net \\
-                            -e testkubenode3.one.den.solidfire.net \\
-                            -m testkubenode1.one.den.solidfire.net
+                            -n kubenode1.your.domain.com \\
+                            -n kubenode2.your.domain.com \\
+                            -n kubenode3.your.domain.com \\
+                            -e kubenode1.your.domain.com \\
+                            -e kubenode2.your.domain.com \\
+                            -e kubenode3.your.domain.com \\
+                            -m kubenode1.your.domain.com
 
   Options:
     -h  Display this message
