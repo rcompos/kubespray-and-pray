@@ -1,0 +1,15 @@
+---
+
+- hosts: all
+  gather_facts: false
+
+  vars:
+    ansible_user: "solidfire"
+    ansible_ssh_pass: "solidfire"
+    ansible_become_pass: "solidfire"
+  become: true
+
+  tasks:
+    - name: install python
+      raw: "apt -y install python || apt update;apt -y install python"
+      become: true
