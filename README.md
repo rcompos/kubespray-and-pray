@@ -46,7 +46,7 @@ $ pip2 install kubespray
 2. Clone repo with ansibles
 
 ```
-$ cd; git clone https://bitbucket.org/solidfire/k8s-kubespray.git
+$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray
 ```
 
 ### Prepare Cluster Virtual Machines ###
