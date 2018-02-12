@@ -103,8 +103,8 @@ shift $((OPTIND-1))
 # preflight checks
 __check_required_opts
 
-cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray.git
-ansible_playbook_cmd_opts="ansible_user=${_USERNAME},ansible_ssh_pass=${_PASSWORD}"
+cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray.git || cd kubespray-and-pray
+ansible_playbook_cmd_opts="-e ansible_user=${_USERNAME} -e ansible_ssh_pass=${_PASSWORD}"
 
 
 node_hostn=($(printf "%s\n" "${_K8S_NODE[@]/.*/}"))
@@ -141,13 +141,15 @@ $(for i in ${!_K8S_NODE[*]}; do printf "%s         ansible_ssh_host=%s\n" "${nod
 $(for i in ${!_K8S_ETCD[*]}; do printf "%s         ansible_ssh_host=%s\n" "${etcd_hostn[i]}" "${_K8S_ETCD[i]}"; done)
 EOF
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local bootstrap.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-pre.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local user-solidfire.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local bootstrap.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local user-solidfire.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-pre.yml
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" bootstrap.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-pre.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" user-solidfire.yml
+
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" bootstrap.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" user-solidfire.yml
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-pre.yml
+
 
 kubespray prepare --nodes   $(for i in ${!_K8S_NODE[*]}; do printf "%s[ansible_ssh_host=%s] " "${node_hostn[i]}" "${_K8S_NODE[i]}"; done) \
                   --etcds   $(for i in ${!_K8S_ETCD[*]}; do printf "%s[ansible_ssh_host=%s] " "${etcd_hostn[i]}" "${_K8S_ETCD[i]}"; done) \
@@ -155,6 +157,6 @@ kubespray prepare --nodes   $(for i in ${!_K8S_NODE[*]}; do printf "%s[ansible_s
 
 kubespray deploy -y
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-post.yml || true
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-post.yml || true
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-post.yml || true
+ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-post.yml || true
