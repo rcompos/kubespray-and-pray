@@ -2,9 +2,9 @@
 
 - hosts: '*'
   vars:
-    nfs_server: 10.117.31.165
-    nfs_export_dir: '/export'
-    nfs_client_dir: '/local'
+    #nfs_server: 10.117.31.165
+    #nfs_export_dir: '/export'
+    #nfs_client_dir: '/local'
   #remote_user: root
   become: true
 
@@ -46,7 +46,7 @@
       - fortune-mod
       - cowsay
       - tree
-      - nfs-common
+      #- nfs-common
       #- container-storage-setup
 
   - name: Configure Login Banner
@@ -60,16 +60,16 @@
       group: root
       mode: 0644
 
-  - name: Create dir local
-    file:
-      path: "{{ nfs_client_dir }}"
-      state: directory
-      mode: 0777
+  #- name: Create dir local
+  #  file:
+  #    path: "{{ nfs_client_dir }}"
+  #    state: directory
+  #    mode: 0777
 
-  - name: Mount NFS dir
-    mount:
-      path: "{{ nfs_client_dir }}"
-      state: mounted
-      src: "{{ nfs_server }}:{{ nfs_export_dir }}"
-      fstype: nfs
-      opts: 'auto,nofail,noatime,nolock,intr,tcp,actimeo=1800'
+  #- name: Mount NFS dir
+  #  mount:
+  #    path: "{{ nfs_client_dir }}"
+  #    state: mounted
+  #    src: "{{ nfs_server }}:{{ nfs_export_dir }}"
+  #    fstype: nfs
+  #    opts: 'auto,nofail,noatime,nolock,intr,tcp,actimeo=1800'
