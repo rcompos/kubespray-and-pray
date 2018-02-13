@@ -3,8 +3,13 @@
 - hosts: '*'
   vars:
   #remote_user: root
+  gather_facts: False
 
   tasks:
+
+  - name: Install Python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    become: true
 
   - name: Create User Solidfire
     user:
@@ -28,4 +33,3 @@
       user: solidfire
       state: present
       key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    become: true
