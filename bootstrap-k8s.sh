@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # bootstrap a kubernetes cluster using kubespray
 
+# there is a lot of output. capture it to a log file
+exec > >(tee -i >/tmp/bootstrap-k8s.log)
+exec 2>&1
+
 set -e
 
 __ScriptVersion="2018.02.12"
 __ScriptName="bootstrap-k8s.sh"
+
 
 export ANSIBLE_HOST_KEY_CHECKING=False
 
@@ -55,15 +60,15 @@ __usage() {
   Usage :  ${__ScriptName} [args]
 
   Examples:
-    - ${__ScriptName} -n node1.one.den.solidfire.net -n node2.one.den.solidfire.net -e node1.one.den.solidfire.net -e node2.one.den.solidfire.net -m node3.one.den.solidfire.net
+    - ${__ScriptName} -n node1.example.com -n node2.your.domain.com -e node1.your.domain.com -e node2.your.domain.com -m node3.your.domain.com
     - bash ${__ScriptName} -u solidfire -p solidfire \\
-                            -n testkubenode1.one.den.solidfire.net \\
-                            -n testkubenode2.one.den.solidfire.net \\
-                            -n testkubenode3.one.den.solidfire.net \\
-                            -e testkubenode1.one.den.solidfire.net \\
-                            -e testkubenode2.one.den.solidfire.net \\
-                            -e testkubenode3.one.den.solidfire.net \\
-                            -m testkubenode1.one.den.solidfire.net
+                            -n kubenode1.your.domain.com \\
+                            -n kubenode2.your.domain.com \\
+                            -n kubenode3.your.domain.com \\
+                            -e kubenode1.your.domain.com \\
+                            -e kubenode2.your.domain.com \\
+                            -e kubenode3.your.domain.com \\
+                            -m kubenode1.your.domain.com
 
   Options:
     -h  Display this message
@@ -103,8 +108,10 @@ shift $((OPTIND-1))
 # preflight checks
 __check_required_opts
 
-cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray.git
-ansible_playbook_cmd_opts="ansible_user=${_USERNAME},ansible_ssh_pass=${_PASSWORD}"
+__RUNAS="sudo -u ${_USERNAME}"
+
+cd; ${__RUNAS} git clone https://bitbucket.org/solidfire/kubespray-and-pray.git || cd kubespray-and-pray
+ansible_playbook_cmd_opts="-e ansible_user=${_USERNAME} -e ansible_ssh_pass=${_PASSWORD} -e ansible_become_pass=${_PASSWORD}"
 
 
 node_hostn=($(printf "%s\n" "${_K8S_NODE[@]/.*/}"))
@@ -123,7 +130,7 @@ sudo -H pip install ansible
 sudo -H pip install kubespray
 cp $(find / -name .kubespray.yml 2>/dev/null|head -n1) ~
 cd ~/kubespray-and-pray
-cat <<EOF > inventory/inventory.cfg
+${__RUNAS} cat <<EOF > inventory/inventory.cfg
 [kube-master]
 $(for i in ${!_K8S_MASTER[*]}; do printf "%s         ansible_ssh_host=%s\n" "${master_hostn[i]}" "${_K8S_MASTER[i]}"; done)
 
@@ -141,20 +148,15 @@ $(for i in ${!_K8S_NODE[*]}; do printf "%s         ansible_ssh_host=%s\n" "${nod
 $(for i in ${!_K8S_ETCD[*]}; do printf "%s         ansible_ssh_host=%s\n" "${etcd_hostn[i]}" "${_K8S_ETCD[i]}"; done)
 EOF
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local bootstrap.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-pre.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local user-solidfire.yml
+${__RUNAS} ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local bootstrap.yml user-solidfire.yml ubuntu-pre.yml
+${__RUNAS} ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" bootstrap.yml user-solidfire.yml ubuntu-pre.yml
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" bootstrap.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-pre.yml
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" user-solidfire.yml
 
-kubespray prepare --nodes   $(for i in ${!_K8S_NODE[*]}; do printf "%s[ansible_ssh_host=%s] " "${node_hostn[i]}" "${_K8S_NODE[i]}"; done) \
+${__RUNAS} kubespray prepare --nodes   $(for i in ${!_K8S_NODE[*]}; do printf "%s[ansible_ssh_host=%s] " "${node_hostn[i]}" "${_K8S_NODE[i]}"; done) \
                   --etcds   $(for i in ${!_K8S_ETCD[*]}; do printf "%s[ansible_ssh_host=%s] " "${etcd_hostn[i]}" "${_K8S_ETCD[i]}"; done) \
                   --masters $(for i in ${!_K8S_MASTER[*]}; do printf "%s[ansible_ssh_host=%s] " "${master_hostn[i]}" "${_K8S_MASTER[i]}"; done)
+${__RUNAS} kubespray deploy -y
 
-kubespray deploy -y
+${__RUNAS} ansible-playbook "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-post.yml || true
+${__RUNAS} ansible-playbook "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-post.yml || true
 
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "localhost," -c local ubuntu-post.yml || true
-
-ansible-playbook -e "${ansible_playbook_cmd_opts}" -i "${all_k8s_pre_post}" ubuntu-post.yml || true

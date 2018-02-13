@@ -16,7 +16,8 @@
       name: solidfire
       comment: "Solid Fire"
       shell: /bin/bash
-      groups: adm 
+      groups: adm
+      generate_ssh_key: yes
     become: true
 
   - name: Allow Passwordless Sudo for solidfire
@@ -27,7 +28,7 @@
       line: 'solidfire ALL=(ALL) NOPASSWD: ALL'
       validate: 'visudo -cf %s'
     become: true
- 
+
   - name: Set authorized key took from file
     authorized_key:
       user: solidfire
