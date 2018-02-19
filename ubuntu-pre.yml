@@ -1,26 +1,12 @@
 ---
 
 - hosts: '*'
-  vars:
-    #nfs_server: 10.117.31.165
-    #nfs_export_dir: '/export'
-    #nfs_client_dir: '/local'
+  #vars:
+  #  key: value
   #remote_user: root
   become: true
 
   tasks:
-
-  #- name: Disable Service Apparmor
-  #  service:
-  #    name: apparmor
-  #    enabled: no
-  #    state: stopped
-  #  ignore_errors: true
-
-  #- name: Remove apparmor package
-  #  apt:
-  #    name: apparmor
-  #    state: absent
 
   - name: Allow IPv4 Forwarding
     shell: sysctl -w net.ipv4.ip_forward=1
@@ -49,17 +35,3 @@
       owner: root
       group: root
       mode: 0644
-
-  #- name: Create dir local
-  #  file:
-  #    path: "{{ nfs_client_dir }}"
-  #    state: directory
-  #    mode: 0777
-
-  #- name: Mount NFS dir
-  #  mount:
-  #    path: "{{ nfs_client_dir }}"
-  #    state: mounted
-  #    src: "{{ nfs_server }}:{{ nfs_export_dir }}"
-  #    fstype: nfs
-  #    opts: 'auto,nofail,noatime,nolock,intr,tcp,actimeo=1800'
