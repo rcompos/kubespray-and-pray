@@ -1,0 +1,43 @@
+---
+# Run on K8s master
+
+- hosts: '*'
+  vars:
+    dir_src: heketi-kubernetes
+    dir_dest: "{{ ansible_env.HOME }}/{{ dir_src }}"
+  remote_user: solidfire
+  become: true
+
+  tasks:
+
+  - name: Copy Heketi Yamls
+    copy:
+      src: "{{ dir_src }}"
+      dest: "{{ ansible_env.HOME }}"
+      owner: "{{ ansible_env.USER }}"
+      group: "{{ ansible_env.USER }}"
+      mode: 0775
+
+  - name: Create K8s Daemonset for GlusterFS
+    shell: kubectl create -f "{{ dir_dest }}/glusterfs-daemonset.json"
+    ignore_errors: true
+
+  #- name: Get Kubernetes Cluster Nodes
+  #  shell: kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp
+  #  register: kube_nodes
+
+  - name: Label K8s Nodes
+    shell: kubectl label `kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp` storagenode=glusterfs
+    ignore_errors: true
+
+#  - name: Create K8s Service Account
+#    shell: kubectl create -f "{{ dir_dest }}/heketi-service-account.json"
+#    ignore_errors: true
+#
+#  - name: Create K8s Cluster Role Binding
+#    shell: kubectl create clusterrolebinding heketi-gluster-admin --clusterrole=edit --serviceaccount=default:heketi-service-account
+#    ignore_errors: true
+#
+#  - name: Create K8s Secret
+#    shell: kubectl create secret generic heketi-config-secret --from-file="{{ dir_dest }}/heketi.json"
+#    ignore_errors: true

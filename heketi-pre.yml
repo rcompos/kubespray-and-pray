@@ -1,15 +1,17 @@
 ---
+# Run this on all K8s cluster nodes
 
 - hosts: '*'
   vars:
+    gluster_repo: 'ppa:gluster/glusterfs-3.12'
   remote_user: solidfire
   become: true
 
   tasks:
 
-  - name: Role Facts
-    set_fact:
-      block_device: '/dev/sdb'
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
 
   - name: Run iptables for Heketi
     script: gluster-iptables.sh
@@ -23,14 +25,13 @@
       - dm_mirror
       - dm_thin_pool
 
+  - name: Add Apt Repo
+    shell: |
+      add-apt-repository "{{ gluster_repo }}"
+      apt-get update
+
   - name: Install Packages
     apt:
       name: "{{ item }}"
     with_items:
       - glusterfs-client
-
-  - name: Add Apt Repo
-    shell: |
-      add-apt-repository ppa:gluster/glusterfs-3.12
-      apt-get update
-      apt-get install -y glusterfs-client
