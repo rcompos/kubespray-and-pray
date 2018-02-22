@@ -1,10 +1,10 @@
-# SolidFire Kubernetes Kubespray #
+# SolidFire Kubernetes Baremetal #
 
-Deploy Kubernetes clusters with Kubespray on virtual machines or bare metal.  
+Deploy Kubernetes clusters with Kubespray on bare metal (physical servers) including virtual machines.
 
 ### Description ###
 
-Automated install Kubernetes clusters using KubeSpray.  The clusters are designed to be built on virtual machines or bare metal.
+Automated install Kubernetes clusters using Kubespray.  The clusters are designed to be built on virtual machines or bare metal.
 
 The cluster will use the following components:  
 Control plane container engine: *docker*  
@@ -21,7 +21,7 @@ General requirements:
 
 * Control node: Where the Kubespray commands are run (i.e. laptop or jump host).
 * Cluster machines: Minimum of one, but at least three are recommended
-* Operating system: Ubuntu 16.04   (CentOS 7 support upcoming)
+* Operating system: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
 
 ### Prepare Control Node ###
 
