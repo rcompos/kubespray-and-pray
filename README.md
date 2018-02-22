@@ -57,7 +57,7 @@ Perform the following steps on the control node where ansible command will be ru
 
 3. Run pre-install step.
 
-    `$ ansible-playbook ubuntu-pre.yml`
+    `$ ansible-playbook kubespray-pre.yml`
 
 4. Optional.  Edit cluster parameters if needed.
 
