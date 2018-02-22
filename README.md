@@ -24,123 +24,77 @@ Kubespray requirements:
 https://github.com/kubernetes-incubator/kubespray
 
 * Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands
-* Jinja 2.9 (or newer) is required to run the Ansible Playbooks
-* The target servers must have access to the Internet in order to pull docker images.
-* The target servers are configured to allow IPv4 forwarding.
-* Your ssh key must be copied to all the servers part of your inventory.
-* The firewalls are not managed, you'll need to implement your own rules the way you used to. in order to avoid any issue during deployment you should disable your firewall.
-
 
 ### Prepare Control Node ###
 
 Prepare control node where management tools are installed.  A laptop computer will be sufficient.
 
-MacOS:
+MacOS or Linux:
 
 1. Install required packages
 
-```
-$ pip2 install ansible
-$ pip2 install kubespray
-```
+    `$ pip2 install ansible kubespray`  
+
 2. Clone repo with ansibles
 
-```
-$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray
-```
+    `$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray`
 
-### Prepare Cluster Virtual Machines ###
-
-Prepare virtual machines that will be part of the Kuberntes cluster.
-
-Ubuntu 16.04:
-
-Install required packages
-
-```
-$ apt-get install python
-```
-
-Copy SSH public key from control node to all cluster vm's.  On each cluster vm, append the public key to the user solidfire's authorized keys file.
-
-```
-$ cat id_pub.rsa >> ~solidfire/.ssh/authorized_keys
-```
-
-Todo:
-
+To-do  
 * Known hosts??  Make connection first?
   Might need to log in and make a ssh connection which will create .ssh dir.
 
 ### Install Components ###
 
-Perform the following steps on the control node.
+Perform the following steps on the control node where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then edit the resulting inventory.cfg file.
 
-Prepare ansible local config.
+1. Run command to generate inventory file (~/.kubespray/inventory/inventory.cfg) which defines the target nodes.
 
-```
-$ vi ~/.ansible/hosts
-```
+    `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`
 
-Edit the file.  The first line should be square bracketed arbitrary group name.  Each cluster member's hostname or IP address should be listed, one per line.  Ensure that the names are resolvable in DNS or are listed in local hosts file.  An example inventory file follows.
+    ___Ensure that the names are resolvable in DNS or are listed in local hosts file.___
 
-```
-[autoinfra]
-10.117.106.46
-10.117.106.47
-10.117.106.48
-ai-k8s-01
-ai-k8s-02
-ai-k8s-03
-k8s0
-k8s1
-k8s2
-```
+2. Create default user and bootstrap ansible.  Note that the ansible.cfg file defines the inventory file as follows.  This will be used as the default inventory file when ansible is run.  
 
+    `inventory = ~/.kubespray/inventory/inventory.cfg`
 
-Perform pre-configuration.
+    `$ ansible-playbook user-solidfire.yml`
 
-Define hosts in base configuration ansible file.
-```
-$ vi ~/k8s-kubespray/kubespray-pre.yml
-```
+3. Run pre-install step.
 
-```
-$ ansible-playbook kubespray-pre.yml
-```
+    `$ ansible-playbook ubuntu-pre.yml`
 
-Prepare the Kubespray config.
+4. Optional.  Edit cluster parameters if needed.
 
-```
-$ kubespray prepare --nodes node1 node2 node3 --etcds node1 node2 node3 --masters node1
-```
+    `$ vi ~/.kubespray/inventory/group_vars/all.yml`
 
-Edit variables. 
-
-```
-$ vi ~/.kubespray/inventory/group_vars/all.yml
-```
- Uncomment the following line:
- `docker_storage_options: -s overlay2`
+     Uncomment the following line:
+     `docker_storage_options: -s overlay2`  
+     Other common options will be listed...
  
- Run Kubespray.
+5. Deploy Kubespray.  Ansible is run on all nodes to install and configure Kubernetes cluster.
  
- ```
- $ kubespray deploy
- ```
+    `$ kubespray deploy`
 
-### Post-Install ###
+### Docker Thin Pool ###
 
-Define hosts in post configuration ansible file.
-```
-$ vi ~/k8s-kubespray/kubespray-post.yml
-```
+From the control node, run post-install steps.  This includes configuring Docker LVM thin pool storage provisioning.  Raw storage volume (defaults to /dev/sdb) will be used for Docker storage.
 
-On the control node, run post-install steps.  This includes configuring Docker LVM thin pool storage provisioning.
+1. Run ansible post-install tasks.
 
-```
-$ ansible-playbook kubespray-post.yml
-```
+    `$ ansible-playbook kubespray-post.yml`
+
+### Gluster Filesystem ###
+
+
+Configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
+
+1. Run ansible to install kernel modules and glusterfs client.
+
+    `$ ansible-playbook heketi-gluster/gluster-pre.yml`
+
+2. Create GlusterFS daemonset.
+
+3. Heteki ...
 
 ### Authorization ###
 
