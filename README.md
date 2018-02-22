@@ -1,26 +1,27 @@
 # SolidFire Kubernetes Kubespray #
 
-Deploy Kubernetes clusters with Kubespray.
+Deploy Kubernetes clusters with Kubespray on virtual machines or bare metal.  
 
 ### Description ###
 
-Automated install Kubernetes clusters using KubeSpray.  The clusters are  designed to be built on virtual machines.
+Automated install Kubernetes clusters using KubeSpray.  The clusters are designed to be built on virtual machines or bare metal.
 
 The cluster will use the following components:  
-Control plane container engine: docker  
-Container network interface: calico  
-Storage driver: overlay2  
+Control plane container engine: *docker*  
+Container network interface: *calico*  
+Storage driver: *overlay2*  
 
 Estimated time to complete: 1 hr
 
-Kubespray:  `https://github.com/kubernetes-incubator/kubespray`
+Kubespray git repo:  `https://github.com/kubernetes-incubator/kubespray`
 
 ### Requirements ###
 
 General requirements:
 
-* A control node where the Kubespray commands are run (i.e. laptop or jump host).
-* Virtual machines running Ubuntu 16.04 (Minimum of one, but at least three are recommended).
+* Control node: Where the Kubespray commands are run (i.e. laptop or jump host).
+* Cluster machines: Minimum of one, but at least three are recommended
+* Operating system: Ubuntu 16.04   (CentOS 7 support upcoming)
 
 ### Prepare Control Node ###
 
@@ -44,15 +45,13 @@ MacOS or Linux:
 
 Perform the following steps on the control node where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.
 
-1. Run command to generate inventory file (~/.kubespray/inventory/inventory.cfg) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
+1. Run command to generate inventory file (*~/.kubespray/inventory/inventory.cfg*) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
 
     `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`
 
     ___Ensure that the names are resolvable in DNS or are listed in local hosts file.___
 
-2. Create default user and bootstrap ansible.  Note that the ansible.cfg file defines the inventory file as follows.  This will be used as the default inventory file when ansible is run.  
-
-    `inventory = ~/.kubespray/inventory/inventory.cfg`
+2. Create default user and bootstrap ansible.  Note that ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.  
 
     `$ ansible-playbook user-solidfire.yml`
 
@@ -85,7 +84,9 @@ From the control node, run post-install steps.  This includes configuring Docker
 ### Gluster Filesystem ###
 
 
-Configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
+Configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
+
+Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
 1. Run ansible to install kernel modules and glusterfs client.
 
@@ -99,24 +100,26 @@ Configure hyper-converged storage solution consisting of a Gluster distributed f
 
 ***WARNING... Insecure permissions for development only!***
 
-1. Run the following on the master node.  
+1. Log onto a Kubernetes master node.
+
+2. Run the following on the master node.  
     `$ kubectl -n kube-system edit service kubernetes-dashboard`
 
-2. Identify the line:  
+3. Identify the line:  
     `type: CluserIP`  
     Change to:  
     `type: NodePort`  
 
-3. Permissive admin role.  
+4. Permissive admin role.  
     `$ kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts`
 
-4. Get Kubernetes master IP address.  
+5. Get Kubernetes master IP address.  
     `kubectl cluster-info`
 
-5. Get dashboard port.  
+6. Get dashboard port.  
     `kubectl -n kube-system get service kubernetes-dashboard`
 
-6. Access dashboard with url.  
+7. Access dashboard with url.  
     `https://<master_ip>:<dashboard_port>/`
 
 ### Contact ###
