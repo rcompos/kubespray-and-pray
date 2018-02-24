@@ -7,25 +7,13 @@
 
   tasks:
 
-  - name: Install Python 2
-    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
-    become: true
-
-  - name: Create User Solidfire
-    user:
-      name: solidfire
-      comment: "Solid Fire"
-      shell: /bin/bash
-      groups: adm
-      generate_ssh_key: yes
-    become: true
-
   - name: Allow Passwordless Sudo for solidfire
     lineinfile:
       dest: /etc/sudoers
       state: present
       regexp: '^solidfire'
       line: 'solidfire ALL=(ALL) NOPASSWD: ALL'
+      insertafter: '^%sudo	ALL=(ALL:ALL) ALL'
       validate: 'visudo -cf %s'
     become: true
 

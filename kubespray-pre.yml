@@ -11,19 +11,26 @@
   - name: Allow IPv4 Forwarding
     shell: sysctl -w net.ipv4.ip_forward=1
 
+  - name: Disable Swap
+    shell: /sbin/swapoff -a
+    register: result
+
+  - name: Edit Fstab
+    lineinfile:
+      path: /etc/fstab
+      state: absent
+      regexp: '^/dev/mapper/main-swap '
+
   - name: Install Packages
     apt:
       name: "{{ item }}"
     with_items:
-      - thin-provisioning-tools
       - lvm2
       - dnsutils
       - net-tools
       - fortune-mod
       - cowsay
       - tree
-      #- nfs-common
-      #- container-storage-setup
 
   - name: Configure Login Banner
     script: fortune_cowsy.sh

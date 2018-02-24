@@ -1,0 +1,51 @@
+---
+
+- hosts: '*'
+  vars:
+    block_device: /dev/sdb
+    vg_name:      vg_docker
+    lv_name:      lv_docker
+    mount_path:   /var/lib/docker
+    fs_type:      ext4
+  #remote_user: root
+  become: true
+
+  tasks:
+
+  # Create and mount storage volume
+
+  - name: Check for LVM Physical Volume "{{ block_device }}"
+    shell: pvs | grep "{{ block_device }}"
+    register: result
+    ignore_errors: true
+
+  - name: Create Volume Group
+    lvg:
+      vg: "{{ vg_name }}" 
+      pvs: "{{ block_device }}"
+
+  - name: Create Logical Volume
+    lvol:
+      vg: "{{ vg_name }}" 
+      lv: "{{ lv_name }}"
+      size: 100%FREE
+      pvs: "{{ block_device }}"
+    ignore_errors: true
+
+  - name: Create ext4 Filesystem
+    filesystem:
+      fstype: "{{ fs_type }}"
+      dev: "/dev/{{ vg_name }}/{{ lv_name }}"
+
+  - name: Create LVM Dir
+    file:
+      path: "{{ mount_path }}"
+      state: directory
+      mode: 0755
+
+  - name: Mount Logical Volume
+    mount:
+      path: "{{ mount_path }}"
+      src: "/dev/{{ vg_name }}/{{ lv_name }}"
+      fstype: "{{ fs_type }}"
+      state: mounted
