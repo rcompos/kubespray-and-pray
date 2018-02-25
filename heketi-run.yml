@@ -22,13 +22,19 @@
     shell: kubectl create -f "{{ dir_dest }}/glusterfs-daemonset.json"
     ignore_errors: true
 
+
+  # ?? Specify explicitly ??
   #- name: Get Kubernetes Cluster Nodes
   #  shell: kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp
   #  register: kube_nodes
 
+  # ?? Specify explicitly ??
+  #- name: Get Kubernetes Cluster Nodes
   - name: Label K8s Nodes
     shell: kubectl label `kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp` storagenode=glusterfs
     ignore_errors: true
+
+# Wait for pods to create ...
 
 #  - name: Create K8s Service Account
 #    shell: kubectl create -f "{{ dir_dest }}/heketi-service-account.json"
@@ -40,4 +46,8 @@
 #
 #  - name: Create K8s Secret
 #    shell: kubectl create secret generic heketi-config-secret --from-file="{{ dir_dest }}/heketi.json"
+#    ignore_errors: true
+
+#  - name: Creaet Heketi Bootstrap
+#    shell: kubectl create -f heketi-bootstrap.json
 #    ignore_errors: true

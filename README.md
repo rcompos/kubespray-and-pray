@@ -2,6 +2,19 @@
 
 Deploy Kubernetes clusters with Kubespray on bare metal (physical servers) including virtual machines.
 
+```
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  (   clustered hexagon                   )
+ (       worker bees collect pollen        )
+  (                 honey and new bees    )
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          \   ^__^
+           \  (oo)\_______
+              (__)\       )\/\
+                  ||----w |
+                  ||     ||
+```
+
 ### Description ###
 
 Automated install Kubernetes clusters using Kubespray.  The clusters are designed to be built on virtual machines or bare metal.
@@ -25,7 +38,7 @@ General requirements:
 
 ### Prepare Control Node ###
 
-Prepare control node where management tools are installed.  A laptop computer will be sufficient.
+Prepare **control node** where management tools are installed.  A laptop computer will be sufficient.
 
 MacOS or Linux:
 
@@ -43,7 +56,7 @@ MacOS or Linux:
 
 ### Install Components ###
 
-Perform the following steps on the control node where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.
+Perform the following steps on the **control node** where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.
 
 1. Hostname resolution.
 
@@ -51,18 +64,16 @@ Perform the following steps on the control node where ansible command will be ru
 
     The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used if you must.
 
-2. Run command to generate inventory file (*~/.kubespray/inventory/inventory.cfg*) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
+2. From **control node**, run command to generate inventory file (*~/.kubespray/inventory/inventory.cfg*) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
 
     `$ cd ~/kubespray-and-pray`
     `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`
 
-    The file ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run. 
-    If multiple network adapters are present, then define the one to use by adding lines defining ansible_ssh_host to top of file.
-    '''
-    k8s0 ansible_ssh_host=10.117.31.20
-    k8s1 ansible_ssh_host=10.117.31.21
-    k8s2 ansible_ssh_host=10.117.31.22
-    '''
+    The file ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.
+    
+    If multiple network adapters are present, then define the one to use by adding lines defining ansible\_ssh\_host to top of file for each node, as follows:
+    
+    `k8s0 ansible_ssh_host=10.117.31.20`   
 
 3. Bootstrap ansible by installing Python.  Note that ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.  Supply SSH password. 
 
@@ -102,21 +113,21 @@ Congratulations!  You're cluster is running.  On a master node, run `kubectl get
 
 ### Docker Volume ###
 
-From the control node, run post-install steps.  This includes configuring Docker logical volume.  Raw storage volume (defaults to /dev/sdb) will be used for container storage.
+From the **control node**, create Docker logical volume.  Raw storage volume (defaults to /dev/sdb) will be used for container storage.
 
-1. Run ansible post-install tasks.
+1. Create logical volume for container storage.  Supply -e argument for arbitrary raw volume.  For example `-e block_device=/dev/sdc`.
 
-    `$ ansible-playbook kubespray-post.yml`
+    `$ ansible-playbook create-volume.yml`
 
 ### Gluster Filesystem ###
 
-Configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
+From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
 
 Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
 1. Run ansible to install kernel modules and glusterfs client.
 
-    `$ ansible-playbook heketi-gluster/gluster-pre.yml`
+    `$ ansible-playbook heketi-pre.yml`
 
 2. Create GlusterFS daemonset.
 
@@ -140,7 +151,7 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
 4. Permissive admin role.  
     Kubernetes RBAC: `https://kubernetes.io/docs/admin/authorization/rbac/`
 
-    WARNING: The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On the other hand it works like charm for dev!
+    MORE WARNING: The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
     `$ kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts`
 

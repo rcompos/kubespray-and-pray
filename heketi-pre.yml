@@ -1,5 +1,5 @@
 ---
-# Run this on all K8s cluster nodes
+# Ansible for installing GlusterFS requirements on K8s cluster machines.
 
 - hosts: '*'
   vars:
@@ -31,7 +31,5 @@
       apt-get update
 
   - name: Install Packages
-    apt:
-      name: "{{ item }}"
-    with_items:
-      - glusterfs-client
+    apt: 
+      name: glusterfs-client
