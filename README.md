@@ -1,6 +1,6 @@
-# SolidFire Kubernetes Baremetal #
+# Kubernetes Baremetal Cluster #
 
-Deploy Kubernetes clusters with Kubespray on bare metal (physical servers) including virtual machines.
+Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or virtual machines).
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +17,7 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers) inclu
 
 ### Description ###
 
-Automated install Kubernetes clusters using Kubespray.  The clusters are designed to be built on virtual machines or bare metal.
+Automated install for Kubernetes clusters using Kubespray.  The clusters are designed for baremetal (i.e. physical servers or virtual machines).
 
 The cluster will use the following components:  
 Control plane container engine: *docker*  
@@ -32,9 +32,9 @@ Kubespray git repo:  `https://github.com/kubernetes-incubator/kubespray`
 
 General requirements:
 
-* Control node: Where the Kubespray commands are run (i.e. laptop or jump host).
-* Cluster machines: Minimum of one, but at least three are recommended
-* Operating system: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
+* Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).
+* Cluster Machines: Minimum of one, but at least three are recommended
+* Operating System: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
 
 ### Prepare Control Node ###
 
@@ -56,7 +56,7 @@ MacOS or Linux:
 
 ### Install Components ###
 
-Perform the following steps on the **control node** where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.
+Perform the following steps on the **control node** where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.  The cluster machines must already exist and be responsive to SSH.
 
 1. Hostname resolution.
 
@@ -113,6 +113,8 @@ Congratulations!  You're cluster is running.  On a master node, run `kubectl get
 
 ### Docker Volume ###
 
+Requirement:  Additional physical or virtual disk.  By default, /dev/sdb is used.
+
 From the **control node**, create Docker logical volume.  Raw storage volume (defaults to /dev/sdb) will be used for container storage.
 
 1. Create logical volume for container storage.  Supply -e argument for arbitrary raw volume.  For example `-e block_device=/dev/sdc`.
@@ -120,6 +122,8 @@ From the **control node**, create Docker logical volume.  Raw storage volume (de
     `$ ansible-playbook create-volume.yml`
 
 ### Gluster Filesystem ###
+
+Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
 
 From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
 
