@@ -50,10 +50,6 @@ MacOS or Linux:
 
     `$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray`
 
-3.  To-do  
-    Known hosts??  Make connection first?
-    Might need to log in and make a ssh connection which will create .ssh dir.
-
 ### Install Components ###
 
 Perform the following steps on the **control node** where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.  The cluster machines must already exist and be responsive to SSH.
@@ -66,8 +62,9 @@ Perform the following steps on the **control node** where ansible command will b
 
 2. From **control node**, run command to generate inventory file (*~/.kubespray/inventory/inventory.cfg*) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
 
-    `$ cd ~/kubespray-and-pray`
-    `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`
+    `$ cd ~/kubespray-and-pray`  
+
+    `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`  
 
     The file ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.
     
