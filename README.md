@@ -110,21 +110,6 @@ Perform the following steps on the **control node** where ansible command will b
     
 Congratulations!  You're cluster is running.  On a master node, run `kubectl get nodes` to validate.
 
-### Gluster Filesystem ###
-
-Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
-
-From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
-
-Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
-
-1. Run ansible to install kernel modules and glusterfs client.
-
-    `$ ansible-playbook heketi-pre.yml`
-
-2. Create GlusterFS daemonset.
-
-3. Heteki ...
 
 ### Kubernetes Permissions ###
 
@@ -156,6 +141,24 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
 
 7. Access dashboard with url.  
     `https://<master_ip>:<dashboard_port>/`
+
+### Gluster Filesystem ###
+
+This optional step creates a k8s default storage class using the distributed filesystem GlusterFS.
+
+Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
+
+From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
+
+Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
+
+1. Run ansible to install kernel modules and glusterfs client.
+
+    `$ ansible-playbook heketi-pre.yml`
+
+2. Create GlusterFS daemonset.
+
+3. Heteki ...
 
 ### Contact ###
 
