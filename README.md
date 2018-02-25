@@ -70,9 +70,9 @@ Perform the following steps on the **control node** where ansible command will b
 
     The file ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.
     
-    If multiple network adapters are present, then define the one to use by adding lines defining ansible\_ssh\_host to top of file for each node, as follows:
-    
-    `k8s0 ansible_ssh_host=10.117.31.20`   
+    If multiple network adapters are present, then define the IP address to use by adding lines defining ansible\_ssh\_host to top of file for each node.  For example: *k8s0 ansible\_ssh\_host=10.117.31.20*
+
+    Nodes may be added later by running the Kubespray _scale.yml_.
 
 3. Bootstrap ansible by installing Python.  Note that ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.  Supply SSH password. 
 
