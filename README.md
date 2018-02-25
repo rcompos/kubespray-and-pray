@@ -35,6 +35,8 @@ General requirements:
 * Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).
 * Cluster Machines: Minimum of one, but at least three are recommended
 * Operating System: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
+* Container Storage Requirement:  Additional physical or virtual disk.  By default, /dev/sdb is used.
+* Persistent Storage Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
 
 ### Prepare Control Node ###
 
@@ -84,7 +86,7 @@ Perform the following steps on the **control node** where ansible command will b
 
     `$ ansible-playbook kubespray-pre.yml`
 
-6. Create container storage volume.
+6. Create logical volume for container storage.  Supply -e argument for arbitrary raw volume.  For example `-e block_device=/dev/sdc`.
 
     `$ ansible-playbook create-volume.yml`
 
@@ -107,16 +109,6 @@ Perform the following steps on the **control node** where ansible command will b
     `$ kubespray deploy -u solidfire`
     
 Congratulations!  You're cluster is running.  On a master node, run `kubectl get nodes` to validate.
-
-### Docker Volume ###
-
-Requirement:  Additional physical or virtual disk.  By default, /dev/sdb is used.
-
-From the **control node**, create Docker logical volume.  Raw storage volume (defaults to /dev/sdb) will be used for container storage.
-
-1. Create logical volume for container storage.  Supply -e argument for arbitrary raw volume.  For example `-e block_device=/dev/sdc`.
-
-    `$ ansible-playbook create-volume.yml`
 
 ### Gluster Filesystem ###
 
