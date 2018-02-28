@@ -22,3 +22,10 @@
       user: solidfire
       state: present
       key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+  - name: Turn off pager for systemctl
+    lineinfile:
+      dest: ~/.bashrc
+      state: present
+      regexp: '^export SYSTEMD_PAGER='
+      line: 'export SYSTEMD_PAGER=""'
