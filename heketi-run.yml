@@ -5,10 +5,14 @@
   vars:
     dir_src: heketi-kubernetes
     dir_dest: "{{ ansible_env.HOME }}/{{ dir_src }}"
+    heketi_server: 'http://localhost:'
+    storage_nodes: 'k8s0 k8s1 k8s2'
   remote_user: solidfire
   become: true
 
   tasks:
+
+  # Check for existenz of raw storage devices
 
   - name: Copy Heketi Yamls
     copy:
@@ -20,34 +24,41 @@
 
   - name: Create K8s Daemonset for GlusterFS
     shell: kubectl create -f "{{ dir_dest }}/glusterfs-daemonset.json"
-    ignore_errors: true
 
-
-  # ?? Specify explicitly ??
-  #- name: Get Kubernetes Cluster Nodes
-  #  shell: kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp
-  #  register: kube_nodes
-
-  # ?? Specify explicitly ??
-  #- name: Get Kubernetes Cluster Nodes
   - name: Label K8s Nodes
-    shell: kubectl label `kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp` storagenode=glusterfs
-    ignore_errors: true
+    #shell: kubectl label `kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp` storagenode=glusterfs
+    shell: "kubectl label {{ storage_nodes }} storagenode=glusterfs"
 
-# Wait for pods to create ...
+  #- name: Wait for pods to create
 
-#  - name: Create K8s Service Account
-#    shell: kubectl create -f "{{ dir_dest }}/heketi-service-account.json"
-#    ignore_errors: true
-#
-#  - name: Create K8s Cluster Role Binding
-#    shell: kubectl create clusterrolebinding heketi-gluster-admin --clusterrole=edit --serviceaccount=default:heketi-service-account
-#    ignore_errors: true
-#
-#  - name: Create K8s Secret
-#    shell: kubectl create secret generic heketi-config-secret --from-file="{{ dir_dest }}/heketi.json"
-#    ignore_errors: true
 
-#  - name: Creaet Heketi Bootstrap
-#    shell: kubectl create -f heketi-bootstrap.json
-#    ignore_errors: true
+  - name: Create K8s Service Account
+    shell: kubectl create -f "{{ dir_dest }}/heketi-service-account.json"
+
+  - name: Create K8s Cluster Role Binding
+    shell: kubectl create clusterrolebinding heketi-gluster-admin --clusterrole=edit --serviceaccount=default:heketi-service-account
+
+  - name: Create K8s Secret
+    shell: kubectl create secret generic heketi-config-secret --from-file="{{ dir_dest }}/heketi.json"
+
+  - name: Create Heketi Bootstrap
+    shell: kubectl create -f heketi-bootstrap.json
+
+  #- name: Load Heketi topology
+  #  Get svc deploy-heketi-xx
+  #  shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://`kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'` topology load --json={{ dir_dest }}/topology-sample.json"
+     #shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketic-cli -s {{ heketi_server }}:{{ heketi_port }} topology load --json={{ dir_dest }}/topology-sample.json"
+
+  #- name: Setup Openshift Heketi storage
+  #  shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://`kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'` topology load --json={{ dir_dest }}/topology-sample.json"
+
+  #- name: Create Heketi storage
+  #  shell: kubectl create -f heketi-storage.json
+
+  #- name: Wait for pods
+
+  #- name: Delete Bootstrap Heketi
+  #  shell: kubectl delete all,service,jobs,deployment,secret --selector="deploy-heketi"
+
+  #- name: Create Permanent Heketi
+  #  shell: kubectl create -f heketi-deployment.json
