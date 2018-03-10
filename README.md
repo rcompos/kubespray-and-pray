@@ -163,10 +163,12 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
     `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook heketi-pre.yml`  
     
-3. Edit heketi-run.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  List all GlusterFS cluster nodes as storage_nodes.  List the total number of nodes as num_nodes.
+3. Edit heketi-run.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  List all GlusterFS cluster nodes as storage\_nodes.  List the total number of nodes as num\_nodes.
 
-    storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'
-    num_nodes: 5
+    ```
+    storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'  
+    num_nodes: 5  
+    ```
 
     `$ vi heketi-run.yml`
     
