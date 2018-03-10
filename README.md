@@ -144,7 +144,7 @@ Congratulations!  You're cluster is running.  On a master node, run `kubectl get
 
 ### Gluster Filesystem ###
 
-This optional step creates a k8s default storage class using the distributed filesystem GlusterFS.
+This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.
 
 Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
 
@@ -152,20 +152,30 @@ From the **control node**, configure hyper-converged storage solution consisting
 
 Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
-1. From the control node, run ansible on all GlusterFS members to install kernel modules and glusterfs client.  ?? Where define ??
+1. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
+
+    `$ cd ~/kubespray-and-pray/files`   
+    `$ cp topology-sample.json topology.json`  
+    `$ vi topology.json`  
+
+2. From the control node, run ansible on all GlusterFS members to install kernel modules and glusterfs client.  Use to `-l host1,host2` option to limit the playbook to a subset of the entire cluster.
 
     `$ cd ~/kubespray-and-pray`   
-    `$ ansible-playbook heketi-pre.yml`
+    `$ ansible-playbook heketi-pre.yml`  
+    
+3. Edit heketi-run.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  List all GlusterFS cluster nodes as storage_nodes.  List the total number of nodes as num_nodes.
 
-2. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
-    `$ cd ~/kubespray-and-pray/files`   
-    `$ cp topology-sample.json topology.json`
-    `$ vi topology.json`
+    storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'
+    num_nodes: 5
 
-3. Execute heketi-run
+    `$ vi heketi-run.yml`
+    
+3. Execute heketi-run.
+
     `$ ansible-playbook -l <master_node> heketi-run.yml`
     
-4. Create default storage class.
+4. Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address).
+
     `$ ansible-playbook -l <master_node> heketi-sc.yml`
 
 
