@@ -1,13 +1,14 @@
 ---
 # Run on K8s master
 
-- hosts: '*'
+- hosts: 'k8s0'
   vars:
     heketi_server: 'http://localhost:'
-    heketi_client_version: 'v6.0.0'
+    heketi_version: 'v6.0.0'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    storage_nodes: 'k8s0 k8s1 k8s2'
+    storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'
+    num_nodes: 5
   remote_user: solidfire
   become: true
 
@@ -19,11 +20,12 @@
     git:
       repo: 'https://github.com/heketi/heketi.git'
       dest: "{{ dir_target }}"
-      version: v6.0.0
+      #version: v6.0.0
+      version: "{{ heketi_version }}"
 
-  - name: Get and extract 
+  - name: Get and extract Heketi Client
     unarchive:
-      src: https://github.com/heketi/heketi/releases/download/{{ heketi_client_version }}/heketi-client-{{ heketi_client_version }}.linux.amd64.tar.gz
+      src: https://github.com/heketi/heketi/releases/download/{{ heketi_version }}/heketi-client-{{ heketi_version }}.linux.amd64.tar.gz
       dest: "{{ ansible_env.HOME }}"
       remote_src: yes
       creates: "{{ ansible_env.HOME }}/heketi-client"
@@ -31,6 +33,7 @@
   - name: Check for GlusterFS DaemonSets
     shell: 'kubectl get ds glusterfs --no-headers=1'
     register: check_glusterfs_ds
+    ignore_errors: true
 
   - name: Create K8s Daemonset for GlusterFS
     shell: kubectl create -f "{{ dir_heketi }}/glusterfs-daemonset.json"
@@ -44,9 +47,9 @@
   - name: Pods wait for
     shell: "kubectl get po -n default | grep glusterfs- |grep Running |wc -l"
     register: glusterfs_daemonset_ready
-    retries: 2
+    retries: 12
     delay: 5 
-    until: glusterfs_daemonset_ready.stdout == "3"
+    until: glusterfs_daemonset_ready.stdout == "{{ num_nodes }}"
 
   #- debug: msg="{{ glusterfs_daemonset_ready.stdout }}"
 
@@ -64,43 +67,46 @@
 
   - name: Check for Heketi Bootstrap
     shell: kubectl get deployment deploy-heketi --no-headers=1
-    register:  check_heketi_bootstrap
+    register: check_heketi_bootstrap
+    ignore_errors: true
 
   - name: Create Heketi Bootstrap
     shell: kubectl create -f "{{ dir_heketi }}/heketi-bootstrap.json"
     when: check_heketi_bootstrap.rc != 0
 
   - name: Wait for Heketi Bootstrap
-    #shell: "kubectl get po | grep '^deploy-heketi-' | grep ' Running '"
-    shell: "kubectl get po | grep '^deploy-heketi-'"
+    shell: "kubectl get po | grep '^deploy-heketi-' | grep ' Running '"
     register: wait_for_heketi_bootstrap
-    retries: 2
+    retries: 12
     delay: 5
     until: wait_for_heketi_bootstrap.rc== 0
 
   - name: Copy custom topology
     copy:
-      src: topology-sample.k8s0.json
+      src: "topology.json"
       dest: "{{ dir_heketi }}"
       mode: 0644
 
-  - meta: end_play   #########################################################
+  - name: Get Heketi server ip and port
+    shell: |
+      kubectl get svc deploy-heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'
+    register: heketi_ip_port
 
-  #- name: Load Heketi topology
-  #  Get svc deploy-heketi-xx
-  #  shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://`kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'` topology load --json={{ dir_heketi }}/topology-sample.json"
-     #shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s {{ heketi_server }}:{{ heketi_port }} topology load --json={{ dir_heketi }}/topology-sample.json"
+  - debug: msg="{{ heketi_ip_port.stdout }}"
 
-  #- name: Setup Openshift Heketi storage
-  #  shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://`kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'` topology load --json={{ dir_heketi }}/topology-sample.json"
+  - name: Load Heketi topology
+    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip_port.stdout }} topology load --json={{ dir_heketi }}/topology.json"
 
-  #- name: Create Heketi storage
-  #  shell: kubectl create -f heketi-storage.json
+  - name: Setup Openshift Heketi storage
+    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip_port.stdout }} setup-openshift-heketi-storage"
+    ignore_errors: true
 
-  #- name: Wait for pods
+  - name: Create Heketi storage
+    shell: kubectl create -f heketi-storage.json
+    ignore_errors: true
 
-  #- name: Delete Bootstrap Heketi
-  #  shell: kubectl delete all,service,jobs,deployment,secret --selector="deploy-heketi"
+  - name: Delete Bootstrap Heketi
+    shell: kubectl delete all,service,jobs,deployment,secret --selector="deploy-heketi"
 
-  #- name: Create Permanent Heketi
-  #  shell: kubectl create -f heketi-deployment.json
+  - name: Create Permanent Heketi
+    shell: kubectl create -f "{{ dir_heketi }}/heketi-deployment.json"

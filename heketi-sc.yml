@@ -1,0 +1,44 @@
+---
+# Ansible for installing GlusterFS requirements on K8s cluster machines.
+
+- hosts: 'k8s0'
+  vars:
+    sc_yml: 'sc-gluster.yml'
+    sc_name: 'slow'
+    dir_target: "{{ ansible_env.HOME }}/heketi"
+    dir_heketi: "{{ dir_target }}/extras/kubernetes"
+  remote_user: solidfire
+  become: true
+
+  tasks:
+
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
+
+  - name: Get Heketi server ip and port
+    shell: |
+      kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'
+    register: heketi_ip_port
+
+  - debug: msg="{{ heketi_ip_port.stdout }}"
+
+  - name: Copy storage class yaml
+    copy:
+      src: "{{ sc_yml }}"
+      dest: "{{ dir_heketi }}"
+      mode: 0644
+
+  - name: Update storage class yaml with heketi server rest url
+    lineinfile:
+      dest: "{{ dir_heketi }}/{{ sc_yml }}"
+      state: present
+      regexp: '^  resturl:'
+      line: '  resturl: "http://{{ heketi_ip_port.stdout }}"'
+
+  - name: Create storage class
+    shell: kubectl create -f "{{ dir_heketi }}/{{ sc_yml }}"
+
+  - name: Make default storage class
+    shell: |
+      kubectl patch storageclass "{{ sc_name }}" -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
