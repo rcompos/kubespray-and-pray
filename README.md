@@ -157,7 +157,7 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
     `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook heketi-pre.yml`
 
-2. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node_ IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
+2. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
     `$ cd ~/kubespray-and-pray/files`   
     `$ cp topology-sample.json topology.json`
     `$ vi topology.json`
