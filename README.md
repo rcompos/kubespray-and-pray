@@ -5,8 +5,8 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or vir
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   (   clustered hexagon                   )
- (       worker bees collect pollen        )
-  (                 honey and new bees    )
+ (       worker bees collect pollen,       )
+  (                  and produce honey    )
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
@@ -86,9 +86,9 @@ Perform the following steps on the **control node** where ansible command will b
 
     `$ ansible-playbook kubespray-pre.yml`
 
-6. Create logical volume for container storage.  Supply -e argument for arbitrary raw volume.  For example `-e block_device=/dev/sdc`.
+6. Create logical volume for container storage.  Supply -e block\_device with an raw volume where container storage is to reside.  For example `-e block_device=/dev/sdc`.
 
-    `$ ansible-playbook create-volume.yml`
+    `$ ansible-playbook create-volume.yml -e block_device=/dev/sdc`
 
 7. Edit cluster parameters.
 
@@ -103,9 +103,9 @@ Perform the following steps on the **control node** where ansible command will b
 
     Modified helm_enabled:
     `helm_enabled: true`
- 
+
 8. Deploy Kubespray.  Ansible is run on all nodes to install and configure Kubernetes cluster.
- 
+
     `$ kubespray deploy -u solidfire`
     
 Congratulations!  You're cluster is running.  On a master node, run `kubectl get nodes` to validate.
@@ -152,13 +152,22 @@ From the **control node**, configure hyper-converged storage solution consisting
 
 Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
-1. Run ansible to install kernel modules and glusterfs client.
+1. From the control node, run ansible on all GlusterFS members to install kernel modules and glusterfs client.  ?? Where define ??
 
+    `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook heketi-pre.yml`
 
-2. Create GlusterFS daemonset.
+2. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node_ IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
+    `$ cd ~/kubespray-and-pray/files`   
+    `$ cp topology-sample.json topology.json`
+    `$ vi topology.json`
 
-3. Heteki ...
+3. Execute heketi-run
+    `$ ansible-playbook -l <master_node> heketi-run.yml`
+    
+4. Create default storage class.
+    `$ ansible-playbook -l <master_node> heketi-sc.yml`
+
 
 ### Contact ###
 
