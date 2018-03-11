@@ -94,17 +94,23 @@ Perform the following steps on the **control node** where ansible command will b
 
     `$ cp -a ~/.kubespray/inventory/sample/group_vars ~/.kubespray/inventory`
 
+    Define container storage driver.  Edit file.
+    
     `$ vi ~/.kubespray/inventory/group_vars/all.yml`
 
     Uncomment the following line:
+    
     `docker_storage_options: -s overlay2`  
 
+    Optional: Enable Helm package manager.  Edit file.
+    
     `$ vi ~/.kubespray/inventory/group_vars/k8s-cluster.yml`
 
-    Modified helm_enabled:
+    Change line:
+    
     `helm_enabled: true`
 
-8. Deploy Kubespray.  Ansible is run on all nodes to install and configure Kubernetes cluster.
+8. Deploy Kubespray.  Ansible playbook is run on all nodes to install and configure Kubernetes cluster.
 
     `$ kubespray deploy -u solidfire`
     
