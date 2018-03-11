@@ -172,11 +172,11 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
 
     `$ vi heketi-run.yml`
     
-3. Execute heketi-run.
+3. Execute heketi-run on a single Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
 
     `$ ansible-playbook -l <master_node> heketi-run.yml`
     
-4. Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address).
+4. Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address). Substitute actual hostname of ip address for <master_node>.
 
     `$ ansible-playbook -l <master_node> heketi-sc.yml`
 
