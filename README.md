@@ -4,7 +4,7 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or vir
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  (   clustered hexagon                   )
+  (   clusters of hexagon                 )
  (       worker bees collect pollen,       )
   (                  and produce honey    )
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
