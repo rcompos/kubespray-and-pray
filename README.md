@@ -26,7 +26,8 @@ Storage driver: *overlay2*
 
 Estimated time to complete: 1 hr
 
-Kubespray git repo:  `https://github.com/kubernetes-incubator/kubespray`
+Kubernetes repo:  `https://github.com/kubernetes/kubernetes`
+Kubespray repo:  `https://github.com/kubernetes-incubator/kubespray`
 
 ### Requirements ###
 
@@ -52,7 +53,7 @@ MacOS or Linux:
 
     `$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray`
 
-### Install Components ###
+### Install Kubernetes ###
 
 Perform the following steps on the **control node** where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.  The cluster machines must already exist and be responsive to SSH.
 
