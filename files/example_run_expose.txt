@@ -1,0 +1,13 @@
+# Create sample Nginx deployment and service
+
+# kubectl run nginxy --image=nginx
+# kubectl get rs -lrun=nginxy
+# kubectl expose rs nginxy-5f64cbdff --port 80 --type=NodePort
+# kubectl get svc -lrun=nginxy
+# Get the port from PORT(S)
+
+# View at http://<node_ip>:<port>
+
+# Clean up
+# kubectl delete svc -lrun=nginxy
+# kubectl delete deploy nginxy

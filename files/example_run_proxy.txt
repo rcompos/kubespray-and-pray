@@ -1,0 +1,23 @@
+# Create sample Nginx deployment and proxy
+# This allows service visibility throught the k8s api
+# Run this from workstation where kubectl is installed
+
+# kubectl run nginxy --image=nginx
+
+# On your workstation where kubectl is setup for the cluster:
+# kubectl proxy
+
+# Make note of the proxy port
+
+# Open another terminal on your workstation.
+
+# Get pod where nginxy is running
+# kubectl get po -lrun=nginxy
+
+# View proxied service.  Subsitute your pod name for <pod_name>.
+# curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/<pod_name>/
+
+# Can also view with web browser.
+
+# Clean up
+# kubectl delete deploy nginxy
