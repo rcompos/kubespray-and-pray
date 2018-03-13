@@ -19,15 +19,15 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or vir
 
 Automated install for Kubernetes clusters using Kubespray.  The clusters are designed for baremetal (i.e. physical servers or virtual machines).
 
-The cluster will use the following components:  
-Control plane container engine: *docker*  
+The default Kubernetes cluster includes the following components:  
+Container engine: *docker*  
 Container network interface: *calico*  
 Storage driver: *overlay2*  
 
 Estimated time to complete: 1 hr
 
-Kubernetes repo:  `https://github.com/kubernetes/kubernetes`
-Kubespray repo:  `https://github.com/kubernetes-incubator/kubespray`
+Kubernetes repo:  `https://github.com/kubernetes/kubernetes`  
+Kubespray repo:  `https://github.com/kubernetes-incubator/kubespray`  
 
 ### Requirements ###
 
@@ -87,7 +87,7 @@ Perform the following steps on the **control node** where ansible command will b
 
     `$ ansible-playbook kubespray-pre.yml`
 
-6. Create logical volume for container storage.  Supply -e block\_device with an raw volume where container storage is to reside.  For example `-e block_device=/dev/sdc`.
+6. Create logical volume for container storage.  Supply -e block\_device with an raw volume where container storage logical volume is to be created.  For example `-e block_device=/dev/sdc`.  Skip this step if no additional disk are available, in which case the container storage is located on the local filesystem.
 
     `$ ansible-playbook create-volume.yml -e block_device=/dev/sdc`
 
@@ -136,7 +136,7 @@ Congratulations!  You're cluster is running.  On a master node, run `kubectl get
 4. Permissive admin role.  
     Kubernetes RBAC: `https://kubernetes.io/docs/admin/authorization/rbac/`
 
-    MORE WARNING: The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
+    **MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
     `$ kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts`
 
@@ -149,13 +149,13 @@ Congratulations!  You're cluster is running.  On a master node, run `kubectl get
 7. Access dashboard with url.  
     `https://<master_ip>:<dashboard_port>/`
 
-### Gluster Filesystem ###
+### GlusterFS Storage ###
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.
 
-Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
+Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. /dev/sdc).
 
-From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running as pods in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volume (defaults to /dev/sdc) will be used for GlusterFS.
+From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
 Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
