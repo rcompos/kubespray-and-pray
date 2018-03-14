@@ -1,0 +1,22 @@
+# Example: Run container to perform dns lookups
+#
+
+root@k8s0:~# kubectl run dnsutils --image=tutum/dnsutils --generator=run-pod/v1 --command -- sleep infinity
+pod "dnsutils" created
+root@k8s0:~#
+root@k8s0:~# kubectl get svc
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+heketi                     ClusterIP   10.233.19.101   <none>        8080/TCP   3d
+heketi-storage-endpoints   ClusterIP   10.233.27.239   <none>        1/TCP      3d
+kubernetes                 ClusterIP   10.233.0.1      <none>        443/TCP    3d
+root@k8s0:~#
+root@k8s0:~# kubectl exec dnsutils nslookup heketi
+Server:         10.233.0.3
+Address:        10.233.0.3#53
+
+Name:   heketi.default.svc.cluster.local
+Address: 10.233.19.101
+
+root@k8s0:~# kubectl delete po dnsutils
+pod "dnsutils" deleted
+

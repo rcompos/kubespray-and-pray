@@ -1,0 +1,8 @@
+# Create alias for kubectl command
+# Put the following in .bashrc
+
+# Alias for kubectl and command line completion
+# Requires: bash-completion
+alias k=kubectl
+source <(kubectl completion bash  | sed s/kubectl/k/g)
+
