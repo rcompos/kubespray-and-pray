@@ -47,11 +47,17 @@ MacOS or Linux:
 
 1. Install required packages.  Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands.
 
-    `$ pip2 install ansible kubespray`  
+    `$ sudo -H pip2 install ansible kubespray`  
+
+    `$ sudo apt-get install sshpass`
 
 2. Clone repo with ansibles
 
-    `$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray`
+    `$ cd`
+
+    `$ git clone https://bitbucket.org/solidfire/kubespray-and-pray`
+
+    `$ git clone https://github.com/kubespray/kubespray-cli`
 
 ### Install Kubernetes ###
 
@@ -64,6 +70,8 @@ Perform the following steps on the **control node** where ansible command will b
     The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used if you must.
 
 2. From **control node**, run command to generate inventory file (*~/.kubespray/inventory/inventory.cfg*) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
+
+    `$ cp ~/kubespray-cli/src/kubespray/files/.kubespray.yml ~`  
 
     `$ cd ~/kubespray-and-pray`  
 
@@ -81,7 +89,7 @@ Perform the following steps on the **control node** where ansible command will b
 
 4. Allow user solidfire to sudo without password.
 
-    `$ ansible-playbook solidfire-sudo.yml -k -K`
+    `$ ansible-playbook user-sudo.yml -k -K`
 
 5. Run pre-install step.
 
