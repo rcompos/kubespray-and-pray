@@ -1,8 +1,0 @@
-{
-    "storage-driver": "overlay2",
-    "storage-opts": [
-    "dm.thinpooldev=/dev/mapper/VolGroup00-thinpool",
-    "dm.use_deferred_removal=true",
-    "dm.use_deferred_deletion=true"
-    ]
-}
