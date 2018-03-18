@@ -43,12 +43,12 @@ General requirements:
 
 Prepare **control node** where management tools are installed.  A laptop computer will be sufficient.
 
-MacOS or Linux:
 
 1. Install required packages.  Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands.
 
     `$ sudo -H pip2 install ansible kubespray`  
 
+    Debian or Ubuntu also need:  
     `$ sudo apt-get install sshpass`
 
 2. Clone repo with ansibles
