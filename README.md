@@ -55,7 +55,7 @@ MacOS or Linux:
 
     `$ cd`
 
-    `$ git clone https://bitbucket.org/solidfire/kubespray-and-pray`
+    `$ git clone https://github.com/rcompos/kubespray-and-pray`
 
     `$ git clone https://github.com/kubespray/kubespray-cli`
 
