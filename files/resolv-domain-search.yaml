@@ -1,0 +1,29 @@
+---
+
+- hosts: '*'
+  vars:
+    user: solidfire
+    dhclient_file: /etc/dhcp/dhclient.conf
+    domains: 'solidfire.net'
+  #remote_user: root
+
+  tasks:
+
+  - name: DHCP Override
+    lineinfile:
+      dest: "{{ dhclient_file }}"
+      state: present
+      regexp: "^supersede domain-search"
+      line: "supersede domain-search \"{{ domains }}\";"
+      insertafter: '^#supersede domain-name'
+    become: true
+
+  - name: Restart Networking
+    shell: systemctl restart networking
+    become: true
+
+  - name: Show resolv.conf
+    shell: cat /etc/resolv.conf
+    register: resolv_out
+
+  - debug: msg="{{ resolv_out.stdout }}"
