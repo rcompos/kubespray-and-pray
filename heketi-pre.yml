@@ -16,14 +16,14 @@
   - name: Run iptables for Heketi
     script: gluster-iptables.sh
 
-  #- name: Install Kernel Modules
-  #  modprobe:
-  #    name: "{{ item }}"
-  #    state: present
-  #  with_items:
-  #    - dm_snapshot
-  #    - dm_mirror
-  #    - dm_thin_pool
+  - name: Install Kernel Modules
+    modprobe:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - dm_snapshot
+      - dm_mirror
+      - dm_thin_pool
 
   - name: Install Kernel Modules dm_snapshot
     lineinfile:
@@ -45,7 +45,6 @@
       state: present
       regexp: '^dm_thin_pool '
       line: 'dm_thin_pool'
-
 
   - name: Add Apt Repo
     shell: |
