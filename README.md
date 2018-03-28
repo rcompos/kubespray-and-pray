@@ -4,9 +4,9 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or vir
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  (   clusters of hexagon                 )
- (       worker bees collect pollen,       )
-  (                  and produce honey    )
+  (  scattered rays of light,             )
+ (         honey bee communities,          )
+  (             stir the winds of change  )
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
@@ -17,9 +17,11 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or vir
 
 ### Description ###
 
-Automated install for Kubernetes clusters using Kubespray.  The clusters are designed for baremetal (i.e. physical servers or virtual machines).
+Deploy Kubernetes clusters on baremetal (i.e. physical servers) or virtual machines using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-The default Kubernetes cluster includes the following components:  
+The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
+
+The Kubernetes cluster configs include the following component defaults:  
 Container engine: *docker*  
 Container network interface: *calico*  
 Storage driver: *overlay2*  
