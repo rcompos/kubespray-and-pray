@@ -1,0 +1,14 @@
+#
+# Etcd example commands on Kubernetes node
+#
+
+root@ai-k8s0-01:~# etcdctl --endpoints=https://10.117.31.22:2379,https://10.117.31.20:2379,https://10.117.31.2:2379 --cert-file=/etc/ssl/etcd/ssl/member-ai-k8s0-01.pem --key-file=/etc/ssl/etcd/ssl/member-ai-k8s0-01-key.pem cluster-health
+member 12730e30ef00786f is healthy: got healthy result from https://10.117.31.20:2379
+member 63bb54316982ab6e is healthy: got healthy result from https://10.117.31.22:2379
+member a3dbf1cac482ea54 is healthy: got healthy result from https://10.117.31.2:2379
+cluster is healthy
+
+root@ai-k8s0-01:~# etcdctl --endpoints=https://10.117.31.22:2379,https://10.117.31.20:2379,https://10.117.31.2:2379 --cert-file=/etc/ssl/etcd/ssl/member-ai-k8s0-01.pem --key-file=/etc/ssl/etcd/ssl/member-ai-k8s0-01-key.pem member list
+12730e30ef00786f: name=etcd2 peerURLs=https://10.117.31.20:2380 clientURLs=https://10.117.31.20:2379 isLeader=true
+63bb54316982ab6e: name=etcd1 peerURLs=https://10.117.31.22:2380 clientURLs=https://10.117.31.22:2379 isLeader=false
+a3dbf1cac482ea54: name=etcd3 peerURLs=https://10.117.31.2:2380 clientURLs=https://10.117.31.2:2379 isLeader=false
