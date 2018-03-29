@@ -1,0 +1,44 @@
+---
+# Ansible for taking Etcd database snapshot on each etcd node
+
+- hosts: '*'
+  vars:
+    #etcd_endpoints: 'https://10.117.31.22:2379,https://10.117.31.20:2379,https://10.117.31.2:2379'
+    etcd_endpoints: "https://{{ inventory_hostname }}:2379"
+    etcd_cert: "/etc/ssl/etcd/ssl/member-{{ inventory_hostname }}.pem"
+    etcd_key: "/etc/ssl/etcd/ssl/member-{{ inventory_hostname }}-key.pem"
+    etcd_snapshot_dir: '/var/lib/docker/etcd_snapshots'
+    etcd_snapshot_dir_mode: '0755'
+    etcd_snapshot_dir_owner: 'solidfire'
+    etcd_snapshot_dir_group: 'solidfire'
+  remote_user: solidfire
+  become: true
+
+  tasks:
+
+    - name: Create snapshot dir
+      file:
+        path: "{{ etcd_snapshot_dir }}"
+        owner: "{{ etcd_snapshot_dir_owner }}"
+        group: "{{ etcd_snapshot_dir_group }}"
+        mode: "{{ etcd_snapshot_dir_mode }}"
+        state: directory
+
+        #etcdctl --endpoints=https://10.117.31.22:2379,https://10.117.31.20:2379,https://10.117.31.2:2379 --cert=/etc/ssl/etcd/ssl/member-ai-k8s0-01.pem --key=/etc/ssl/etcd/ssl/member-ai-k8s0-01-key.pem snapshot save snapshotdb
+        #etcdctl --endpoints="{{ etcd_endpoints }}" --cert="{{ etcd_cert }}" --key="{{ etcd_key }}" endpoint status -w table
+
+    - name: Take snapshot of etcd db
+      shell: |
+        etcdctl --endpoints="{{ etcd_endpoints }}" --cert="{{ etcd_cert }}" --key="{{ etcd_key }}" snapshot save snapshotdb."{{ ansible_date_time.iso8601_basic_short }}"
+      args:
+        chdir: "{{ etcd_snapshot_dir }}"
+      environment:
+        ETCDCTL_API: 3
+      register: etcd_snap
+
+    - debug: msg="{{ etcd_snap.stdout }}"
+
+    #- name: Touch test file
+    #  shell: touch testholio
+    #  args:
+    #    chdir: "{{ etcd_snapshot_dir }}"

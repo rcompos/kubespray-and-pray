@@ -35,11 +35,11 @@ Kubespray repo:  `https://github.com/kubernetes-incubator/kubespray`
 
 General requirements:
 
-* Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).
-* Cluster Machines: Minimum of one, but at least three are recommended
+* Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested.
+* Cluster Machines: Minimum of one, but at least three are recommended.  Physical or virtual. Minimum 2gb ram per node for evaluation clusters.
 * Operating System: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
-* Container Storage Requirement:  Additional physical or virtual disk.  By default, /dev/sdb is used.
-* Persistent Storage Requirement:  Additional physical or virtual disk.  By default, /dev/sdc is used.
+* Container Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdc
+* Persistent Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdd
 
 ### Prepare Control Node ###
 
