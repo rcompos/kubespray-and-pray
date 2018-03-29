@@ -22,9 +22,9 @@ Deploy Kubernetes clusters on baremetal (i.e. physical servers) or virtual machi
 The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
 
 The Kubernetes cluster configs include the following component defaults:  
-Container engine: *docker*  
-Container network interface: *calico*  
-Storage driver: *overlay2*  
+Container engine: _docker_  
+Container network interface: _calico_  
+Storage driver: _overlay2_  
 
 Estimated time to complete: 1 hr
 
@@ -43,14 +43,14 @@ General requirements:
 
 ### Prepare Control Node ###
 
-Prepare **control node** where management tools are installed.  A laptop computer will be sufficient.
+Prepare __control node__ where management tools are installed.  A laptop computer will be sufficient.
 
 
 1. Install required packages.  Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands.
 
     `$ sudo -H pip2 install ansible kubespray`  
 
-    Debian or Ubuntu also need:  
+    Debian or Ubuntu control node also need:  
     `$ sudo apt-get install sshpass`
 
 2. Clone repo with ansibles
@@ -63,7 +63,7 @@ Prepare **control node** where management tools are installed.  A laptop compute
 
 ### Install Kubernetes ###
 
-Perform the following steps on the **control node** where ansible command will be run from.  Define the nodes, etcds and masters as appropriate.  The cluster machines must already exist and be responsive to SSH.
+Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
 1. Hostname resolution.
 
@@ -71,7 +71,7 @@ Perform the following steps on the **control node** where ansible command will b
 
     The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used if you must.
 
-2. From **control node**, run command to generate inventory file (*~/.kubespray/inventory/inventory.cfg*) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.
+2. From __control node__, run command to generate inventory file _~/.kubespray/inventory/inventory.cfg_) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.  Running the prepare command will clone the kubespray repo to `~/.kubespray`.
 
     `$ cp ~/kubespray-cli/src/kubespray/files/.kubespray.yml ~`  
 
@@ -79,13 +79,13 @@ Perform the following steps on the **control node** where ansible command will b
 
     `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`  
 
-    The file ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.
+    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.
     
-    If multiple network adapters are present on the nodes, then define the IP address to use by adding lines defining ansible\_ssh\_host and ip to top of file for each node.  For example: *k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20*
+    If multiple network adapters are present on any node(s), then define the IP address to use by defining ansible\_ssh\_host and ip in the `all` group for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.  See the inventory templates in `~/kubespray-and-pray/inventory`.  
 
     Nodes may be added later by running the Kubespray _scale.yml_.
 
-3. Bootstrap ansible by installing Python.  Note that ansible.cfg defines the inventory file as *~/.kubespray/inventory/inventory.cfg*.  This will be the default inventory file when ansible is run.  Supply SSH password. 
+3. Bootstrap ansible by installing Python.  Note that ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.  Supply SSH password. 
 
     `$ ansible-playbook bootstrap-ansible.yml -k -K`
 
@@ -165,7 +165,7 @@ This optional step creates a Kubernetes default storage class using the distribu
 
 Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. /dev/sdc).
 
-From the **control node**, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
+From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
 Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
