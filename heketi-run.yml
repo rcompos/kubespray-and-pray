@@ -7,8 +7,8 @@
     heketi_version: 'v6.0.0'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'
-    num_nodes: 5
+    storage_nodes: 'k8s0 k8s1 k8s2'
+    num_nodes: 3
   remote_user: solidfire
   become: true
 
@@ -47,7 +47,7 @@
   - name: Pods wait for
     shell: "kubectl get po -n default | grep glusterfs- |grep Running |wc -l"
     register: glusterfs_daemonset_ready
-    retries: 12
+    retries: 24 
     delay: 5 
     until: glusterfs_daemonset_ready.stdout == "{{ num_nodes }}"
 
@@ -77,7 +77,7 @@
   - name: Wait for Heketi Bootstrap
     shell: "kubectl get po | grep '^deploy-heketi-' | grep ' Running '"
     register: wait_for_heketi_bootstrap
-    retries: 12
+    retries: 24 
     delay: 5
     until: wait_for_heketi_bootstrap.rc== 0
 
@@ -87,18 +87,34 @@
       dest: "{{ dir_heketi }}"
       mode: 0644
 
+  #- name: Get Heketi server ip and port
+  #  shell: |
+  #    kubectl get svc deploy-heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'
+  #  register: heketi_ip_port
+
+  - name: Get Heketi server ip
+    shell: |
+      kubectl get svc deploy-heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+\S+/$1/'
+    register: heketi_ip
+
   - name: Get Heketi server ip and port
     shell: |
-      kubectl get svc deploy-heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'
-    register: heketi_ip_port
+      kubectl get svc deploy-heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/\S+\s+(\S+)/$1/'
+    register: heketi_port
 
-  - debug: msg="{{ heketi_ip_port.stdout }}"
+  - debug: msg="{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
+
+  - name: Wait 300 seconds for port 8080 of any IP to become open on the host, don't start checking for 10 seconds
+    wait_for:
+      host: "{{ heketi_ip.stdout }}"
+      port: "{{ heketi_port.stdout }}"
+      delay: 10
 
   - name: Load Heketi topology
-    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip_port.stdout }} topology load --json={{ dir_heketi }}/topology.json"
+    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology load --json={{ dir_heketi }}/topology.json"
 
   - name: Setup Openshift Heketi storage
-    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip_port.stdout }} setup-openshift-heketi-storage"
+    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} setup-openshift-heketi-storage"
     ignore_errors: true
 
   - name: Create Heketi storage

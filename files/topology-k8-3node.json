@@ -49,6 +49,38 @@
           "devices": [
             "/dev/sdd"
           ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "k8s3"
+              ],
+              "storage": [
+                "192.168.1.63"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdd"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "k8s4"
+              ],
+              "storage": [
+                "192.168.1.64"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdd"
+          ]
         }
       ]
     }
