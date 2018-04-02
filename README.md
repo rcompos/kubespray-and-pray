@@ -77,7 +77,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
     `$ cd ~/kubespray-and-pray`  
 
-    `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0`  
+    `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0 k8s1`  
 
     The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.
     
