@@ -4,6 +4,7 @@
 - hosts: '*'
   vars:
     gluster_repo: 'ppa:gluster/glusterfs-3.12'
+    glusterfs_client_vers: '3.12.8-ubuntu1~xenial1'
   remote_user: solidfire
   become: true
 
@@ -53,4 +54,4 @@
 
   - name: Install Packages
     apt: 
-      name: glusterfs-client
+      name: "glusterfs-client={{ glusterfs_client_vers }}"

@@ -1,13 +1,14 @@
 ---
 # Run on K8s master
 
-- hosts: 'k8s0'
+- hosts: 'ai-k8-01'
   vars:
     heketi_server: 'http://localhost:'
-    heketi_version: 'v6.0.0'
+    heketi_github_version: 'v6.0.0'
+    heketi_docker_version: '6'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    storage_nodes: 'k8s0 k8s1 k8s2'
+    storage_nodes: 'ai-k8-01 ai-k8-02 ai-k8-03'
     num_nodes: 3
   remote_user: solidfire
   become: true
@@ -21,11 +22,25 @@
       repo: 'https://github.com/heketi/heketi.git'
       dest: "{{ dir_target }}"
       #version: v6.0.0
-      version: "{{ heketi_version }}"
+      version: "{{ heketi_github_version }}"
+
+  - name: Modify heketi-bootstrap image
+    lineinfile:
+      dest: "{{ ansible_env.HOME }}/heketi/extras/kubernetes/heketi-bootstrap.json"
+      state: present
+      regexp: '^                "image": "heketi/heketi:dev",'
+      line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
+
+  - name: Modify heketi-deployment image
+    lineinfile:
+      dest: "{{ ansible_env.HOME }}/heketi/extras/kubernetes/heketi-deployment.json"
+      state: present
+      regexp: '^                "image": "heketi/heketi:dev",'
+      line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
 
   - name: Get and extract Heketi Client
     unarchive:
-      src: https://github.com/heketi/heketi/releases/download/{{ heketi_version }}/heketi-client-{{ heketi_version }}.linux.amd64.tar.gz
+      src: https://github.com/heketi/heketi/releases/download/{{ heketi_github_version }}/heketi-client-{{ heketi_github_version }}.linux.amd64.tar.gz
       dest: "{{ ansible_env.HOME }}"
       remote_src: yes
       creates: "{{ ansible_env.HOME }}/heketi-client"
