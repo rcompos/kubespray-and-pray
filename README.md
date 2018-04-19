@@ -53,7 +53,7 @@ Prepare __control node__ where management tools are installed.  A laptop compute
     Debian or Ubuntu control node also need:  
     `$ sudo apt-get install sshpass`
 
-2. Clone repo with ansibles
+2. Clone repo with ansibles.
 
     `$ cd`
 
@@ -81,7 +81,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
     The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.
     
-    If multiple network adapters are present on any node(s), then define the IP address to use by defining ansible\_ssh\_host and ip in the `all` group for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.  See the inventory templates in `~/kubespray-and-pray/inventory`.  
+    If multiple network adapters are present on any node(s), then define the IP address for Ansible to use by defining ansible\_ssh\_host and ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.  See the inventory templates in `~/kubespray-and-pray/inventory`.  
 
     Nodes may be added later by running the Kubespray _scale.yml_.
 
@@ -161,7 +161,7 @@ Congratulations!  You're cluster is running.  On a master node, run `kubectl get
 
 ### GlusterFS Storage ###
 
-This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.
+This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
 
 Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. /dev/sdc).
 
@@ -180,14 +180,14 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
     `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook heketi-pre.yml`  
     
-3. Edit heketi-run.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  List all GlusterFS cluster nodes as storage\_nodes.  List the total number of nodes as num\_nodes.
+3. Edit heketi-run.  Edit `- hosts:` line to include the hostname or ip addres of a single cluster master.  The GlusterFS cluster members are specified as storage\_nodes.  List the total number of nodes as num\_nodes.
 
     `storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'`  
     `num_nodes: 5`  
 
     `$ vi heketi-run.yml`
     
-3. Execute heketi-run on a single Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
+3. Execute heketi-run on a _single_ Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
 
     `$ ansible-playbook -l <master_node> heketi-run.yml`
     
@@ -195,8 +195,3 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
 
     `$ ansible-playbook -l <master_node> heketi-sc.yml`
 
-
-### Contact ###
-
-* NetApp SolidFire Central Engineering
-* Maintainer:  ronald.compos@netapp.com

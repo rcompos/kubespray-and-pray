@@ -3,8 +3,8 @@
 
 - hosts: '*'
   vars:
-    gluster_repo: 'ppa:gluster/glusterfs-3.12'
-    glusterfs_client_vers: '3.12.8-ubuntu1~xenial1'
+    gluster_repo: 'ppa:gluster/glusterfs-3.13'
+    glusterfs_client_vers: '3.13.2-ubuntu1~xenial2'
   remote_user: solidfire
   become: true
 
