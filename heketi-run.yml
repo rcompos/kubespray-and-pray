@@ -5,7 +5,7 @@
   vars:
     heketi_server: 'http://localhost:'
     heketi_github_version: 'v6.0.0'
-    heketi_docker_version: '6'
+    heketi_docker_version: '5'
     gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
