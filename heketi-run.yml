@@ -24,21 +24,21 @@
       dest: "{{ dir_target }}"
       version: "{{ heketi_github_version }}"
 
-  - name: Modify heketi-bootstrap image
+  - name: Modify heketi-bootstrap image value
     lineinfile:
       dest: "{{ ansible_env.HOME }}/heketi/extras/kubernetes/heketi-bootstrap.json"
       state: present
       regexp: '^                "image": "heketi/heketi:dev",'
       line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
 
-  - name: Modify heketi-deployment image
+  - name: Modify heketi-deployment image value
     lineinfile:
       dest: "{{ ansible_env.HOME }}/heketi/extras/kubernetes/heketi-deployment.json"
       state: present
       regexp: '^                "image": "heketi/heketi:dev",'
       line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
 
-  - name: Modify glusterfs-daemonset.json image
+  - name: Modify glusterfs-daemonset image value
     lineinfile:
       dest: "{{ ansible_env.HOME }}/heketi/extras/kubernetes/glusterfs-daemonset.json"
       state: present
