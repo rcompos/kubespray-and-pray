@@ -1,14 +1,15 @@
 ---
 # Run on K8s master
 
-- hosts: 'ai-k8-01'
+- hosts: 'k8s0'
   vars:
     heketi_server: 'http://localhost:'
     heketi_github_version: 'v6.0.0'
     heketi_docker_version: '6'
+    gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    storage_nodes: 'ai-k8-01 ai-k8-02 ai-k8-03'
+    storage_nodes: 'k8s0 k8s1 k8s2'
     num_nodes: 3
   remote_user: solidfire
   become: true
@@ -21,7 +22,6 @@
     git:
       repo: 'https://github.com/heketi/heketi.git'
       dest: "{{ dir_target }}"
-      #version: v6.0.0
       version: "{{ heketi_github_version }}"
 
   - name: Modify heketi-bootstrap image
@@ -37,6 +37,13 @@
       state: present
       regexp: '^                "image": "heketi/heketi:dev",'
       line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
+
+  - name: Modify glusterfs-daemonset.json image
+    lineinfile:
+      dest: "{{ ansible_env.HOME }}/heketi/extras/kubernetes/glusterfs-daemonset.json"
+      state: present
+      regexp: '^                        "image": "gluster/gluster-centos:latest",'
+      line:    "                        \"image\": \"gluster/gluster-centos:{{ gluster_version }}\","
 
   - name: Get and extract Heketi Client
     unarchive:
