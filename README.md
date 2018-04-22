@@ -40,6 +40,7 @@ General requirements:
 * Operating System: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
 * Container Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdc
 * Persistent Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdd
+* Hostname resolution:  Ensure that the names are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
 
 ### Prepare Control Node ###
 
@@ -55,107 +56,50 @@ Prepare __control node__ where management tools are installed.  A laptop compute
 
 2. Clone repo with ansibles into home directory.
 
-    `$ cd`
-
-    `$ git clone https://github.com/rcompos/kubespray-and-pray`
+    `$ cd; git clone https://github.com/rcompos/kubespray-and-pray`
 
 
-### Install Kubernetes ###
+### Create Kubernetes Cluster ###
 
 Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
-1. Hostname resolution.
 
-    Ensure that the names are resolvable in DNS or are listed in local hosts file.
+1. From __control node__, edit inventory file.  Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
-    The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
-
-2. From __control node__, run command to generate inventory file _~/.kubespray/inventory/inventory.cfg_) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.  Running the prepare command will clone the kubespray repo to `~/.kubespray`. 
-
-    `$ cd ~/kubespray-and-pray`
+    `$ vi ~/kubespray-and-pray/files/inventory.cfg`
     
-    `$ ansible-playbook kubespray-pre-local.yml -e nodes='k8s0 k8s1 k8s2',etcds='k8s0 k8s1 k8s2',masters='k8s0 k8s1'`
+    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited inventory.cfg to ~/.kubespray/inventory. This will be the default inventory file when Kubespray is run.
     
-
-    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.
-    
-    If multiple network adapters are present on any node(s), then define the IP address for Ansible to use by defining ansible\_ssh\_host and ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.  See the inventory templates in `~/kubespray-and-pray/inventory`.  
+    If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
 
     Nodes may be added later by running the Kubespray _scale.yml_.
 
-3. Bootstrap ansible by installing Python.  Note that ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.  Supply SSH password. 
+2. Optional: From __control node__, edit all.yml and k8s-cluster.yml.  Config cluster to your needs.
 
-    `$ ansible-playbook bootstrap-ansible.yml -k -K`
+    `$ vi ~/kubespray-and-pray/files/all.yml`
+    `$ vi ~/kubespray-and-pray/files/k8s-cluster.yml`
 
-4. Allow user solidfire to sudo without password.
+3. From __control node__, run script to install Kubernetes cluster on machines specified in inventory.cfg.
 
-    `$ ansible-playbook user-sudo.yml -k -K`
+    `$ pray-for-cluster.sh`
 
-5. Run pre-install step.
-
-    `$ ansible-playbook kubespray-pre.yml`
-
-6. Create logical volume for container storage.  Supply -e block\_device with an raw volume where container storage logical volume is to be created.  For example `-e block_device=/dev/sdc`.  Skip this step if no additional disk are available, in which case the container storage is located on the local filesystem.
-
-    `$ ansible-playbook create-volume.yml -e block_device=/dev/sdc`
-
-7. Edit cluster parameters.
-
-    `$ cp -a ~/.kubespray/inventory/sample/group_vars ~/.kubespray/inventory`
-
-    Define container storage driver.  Edit file.
-    
-    `$ vi ~/.kubespray/inventory/group_vars/all.yml`
-
-    Uncomment the following line:
-    
-    `docker_storage_options: -s overlay2`  
-
-    Optional: Enable Helm package manager.  Edit file.
-    
-    `$ vi ~/.kubespray/inventory/group_vars/k8s-cluster.yml`
-
-    Change line:
-    
-    `helm_enabled: true`
-
-8. Deploy Kubespray.  Ansible playbook is run on all nodes to install and configure Kubernetes cluster.
-
-    `$ kubespray deploy -u solidfire`
-    
-Congratulations!  You're cluster is running.  On a master node, run `kubectl get nodes` to validate.
+Congratulations!  You're cluster is running.  Log onto a master node and run `kubectl get nodes` to validate.
 
 
 ### Kubernetes Permissions ###
 
 ***WARNING... Insecure permissions for development only!***
+Kubernetes RBAC: `https://kubernetes.io/docs/admin/authorization/rbac/`
+**MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
-1. Log onto a Kubernetes master node.
+1. From __control node__, run script to configure open permissions.  Make note dashboard port.
 
-2. Run the following on the master node.  
+    `$ cd ~/kubespray-and-pray`  
+    `$ ansible-playbook dashboard-permissive.yml`  
 
-    `$ kubectl -n kube-system edit service kubernetes-dashboard`
+2. Access dashboard with url. Use dashboard_port from previous command.  
 
-3. Identify the line:  
-    `type: CluserIP`  
-    Change to:  
-    `type: NodePort`  
-
-4. Permissive admin role.  
-    Kubernetes RBAC: `https://kubernetes.io/docs/admin/authorization/rbac/`
-
-    **MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
-
-    `$ kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts`
-
-5. Get Kubernetes master IP address.  
-    `kubectl cluster-info`
-
-6. Get dashboard port.  
-    `kubectl -n kube-system get service kubernetes-dashboard`
-
-7. Access dashboard with url.  
-    `https://<master_ip>:<dashboard_port>/`
+    `# https://<master_ip>:<dashboard_port>/`  
 
 ### GlusterFS Storage ###
 

@@ -7,7 +7,7 @@
 
   tasks:
 
-  - name: Get kubernetes-dashboard yaml
+  - name: Export kubernetes-dashboard yaml
     shell: kubectl -n kube-system get svc kubernetes-dashboard -o yaml > "{{ kdb_file }}"
 
   - name: Modify kubernetes-dashboard yaml service type
@@ -22,3 +22,11 @@
   - name: Permissive cluster role binding
     command: kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts
     ignore_errors: true
+
+  - name: Get Kubernetes dashboard port
+    shell: kubectl -n kube-system get svc kubernetes-dashboard -o yaml | grep '\- nodePort:' | cut -d' ' -f5
+    register: result
+
+  - name: Display Kubernetes dashboard port
+    debug: msg="Kubernetes Dashboard Port {{ result.stdout }}"
+
