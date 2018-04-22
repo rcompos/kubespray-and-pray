@@ -28,26 +28,27 @@ Storage driver: _overlay2_
 
 Estimated time to complete: 1 hr
 
-Kubernetes repo:  `https://github.com/kubernetes/kubernetes`  
-Kubespray repo:  `https://github.com/kubernetes-incubator/kubespray`  
+References:  
+`https://github.com/kubernetes/kubernetes`  
+`https://github.com/kubernetes-incubator/kubespray`  
 
 ### Requirements ###
 
 General requirements:
 
 * Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested.
-* Cluster Machines: Minimum of one, but at least three are recommended.  Physical or virtual. Minimum 2gb ram per node for evaluation clusters.
-* Operating System: Ubuntu 16.04   (CentOS 7 support upcoming under consideration)
+* Cluster Machines: Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone `https://github.com/rcompos/vagrant-zero` and run `vagrant up k8s0 k8s1 k8s2`.
+* Operating System: Ubuntu 16.04   (CentOS 7 is an open issue)
 * Container Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdc
 * Persistent Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdd
-* Hostname resolution:  Ensure that the names are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
+* Hostname resolution:  Ensure that cluster machine hostnames are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
 
 ### Prepare Control Node ###
 
-Prepare __control node__ where management tools are installed.  A laptop computer will be sufficient.
+Prepare __control node__ where management tools are installed.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
 
 
-1. Install required packages.  Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands.
+1. Install required packages on control node.  Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands.
 
     `$ sudo -H pip2 install ansible kubespray`  
 
@@ -89,7 +90,7 @@ Congratulations!  You're cluster is running.  Log onto a master node and run `ku
 ### Kubernetes Permissions ###
 
 ***WARNING... Insecure permissions for development only!***
-Kubernetes RBAC: `https://kubernetes.io/docs/admin/authorization/rbac/`
+
 **MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
 1. From __control node__, run script to configure open permissions.  Make note dashboard port.
@@ -101,6 +102,9 @@ Kubernetes RBAC: `https://kubernetes.io/docs/admin/authorization/rbac/`
 
     `# https://<master_ip>:<dashboard_port>/`  
 
+References:  
+`https://kubernetes.io/docs/admin/authorization/rbac/`
+
 ### GlusterFS Storage ###
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
@@ -109,7 +113,6 @@ Requirement:  Additional raw physical or virtual disk.  The disk will be referen
 
 From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
-Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
 1. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
 
@@ -137,3 +140,5 @@ Heketi install procedure: `https://github.com/heketi/heketi/blob/master/docs/adm
 
     `$ ansible-playbook -l <master_node> heketi-sc.yml`
 
+References:  
+`https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
