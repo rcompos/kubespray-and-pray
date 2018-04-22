@@ -118,7 +118,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
     Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt supply sudo password or press enter to use SSH password.
 
-    `$ pray-for-cluster.sh solidfire`
+    `$ ./pray-for-cluster.sh solidfire`
 
 Congratulations!  You're cluster is running.  Log onto a master node and run `kubectl get nodes` to validate.
 
