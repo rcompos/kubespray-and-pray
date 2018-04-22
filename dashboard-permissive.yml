@@ -1,0 +1,24 @@
+---
+
+- hosts: 'kube-master'
+  vars:
+    kdb_file: kubernetes-dashboard-nodeport.yaml
+  run_once: true
+
+  tasks:
+
+  - name: Get kubernetes-dashboard yaml
+    shell: kubectl -n kube-system get svc kubernetes-dashboard -o yaml > "{{ kdb_file }}"
+
+  - name: Modify kubernetes-dashboard yaml service type
+    lineinfile:
+      dest: "{{ kdb_file }}"
+      regexp: '^  type: '
+      line:    '  type: NodePort'
+
+  - name: Change dashboard service to NodePort
+    command: kubectl apply -f "{{ kdb_file }}" --validate
+
+  - name: Permissive cluster role binding
+    command: kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts
+    ignore_errors: true

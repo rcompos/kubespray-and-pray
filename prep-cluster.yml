@@ -1,0 +1,15 @@
+---
+
+- hosts: '*'
+  vars:
+    user: solidfire
+    block_device: /dev/sdc
+  gather_facts: false
+  become: true
+
+- import_playbook: kubespray-pre-local.yml
+- import_playbook: bootstrap-ansible.yml
+- import_playbook: user-sudo.yml
+- import_playbook: create-container-volume.yml
+- import_playbook: kubespray-pre.yml
+

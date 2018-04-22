@@ -53,13 +53,12 @@ Prepare __control node__ where management tools are installed.  A laptop compute
     Debian or Ubuntu control node also need:  
     `$ sudo apt-get install sshpass`
 
-2. Clone repo with ansibles.
+2. Clone repo with ansibles into home directory.
 
     `$ cd`
 
     `$ git clone https://github.com/rcompos/kubespray-and-pray`
 
-    `$ git clone https://github.com/kubespray/kubespray-cli`
 
 ### Install Kubernetes ###
 
@@ -69,15 +68,14 @@ Perform the following steps on the __control node__ where ansible command will b
 
     Ensure that the names are resolvable in DNS or are listed in local hosts file.
 
-    The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used if you must.
+    The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
 
-2. From __control node__, run command to generate inventory file _~/.kubespray/inventory/inventory.cfg_) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.  Running the prepare command will clone the kubespray repo to `~/.kubespray`.
+2. From __control node__, run command to generate inventory file _~/.kubespray/inventory/inventory.cfg_) which defines the target nodes.  If there are too many hosts for command-line, run the kubespray prepare command with a minimal set of hosts then add to the resulting inventory.cfg file.  Running the prepare command will clone the kubespray repo to `~/.kubespray`. 
 
-    `$ cp ~/kubespray-cli/src/kubespray/files/.kubespray.yml ~`  
-
-    `$ cd ~/kubespray-and-pray`  
-
-    `$ kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0 k8s1`  
+    `$ cd ~/kubespray-and-pray`
+    
+    `$ ansible-playbook kubespray-pre-local.yml -e nodes='k8s0 k8s1 k8s2',etcds='k8s0 k8s1 k8s2',masters='k8s0 k8s1'`
+    
 
     The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  This will be the default inventory file when ansible is run.
     

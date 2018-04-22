@@ -1,26 +1,33 @@
 ---
 
 - hosts: '*'
-  #vars:
-  #  key: value
+  vars:
+    user: solidfire
   #remote_user: root
   become: true
 
   tasks:
 
+  - name: Turn off pager for systemctl
+    lineinfile:
+      dest: ~/.bashrc
+      state: present
+      regexp: '^export SYSTEMD_PAGER='
+      line: 'export SYSTEMD_PAGER=""'
+  
   - name: Allow IPv4 Forwarding
     shell: sysctl -w net.ipv4.ip_forward=1
-
+  
   - name: Disable Swap
     shell: /sbin/swapoff -a
     register: result
-
+  
   - name: Edit Fstab
     lineinfile:
       path: /etc/fstab
       state: absent
       regexp: '^/dev/mapper/main-swap '
-
+  
   - name: Install Packages
     apt:
       name: "{{ item }}"
@@ -31,10 +38,10 @@
       - fortune-mod
       - cowsay
       - tree
-
+  
   - name: Configure Login Banner
     script: fortune_cowsy.sh
-
+  
   - name: Copy MOTD
     copy:
       src: motd-solidfire.txt
