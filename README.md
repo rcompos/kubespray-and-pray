@@ -1,5 +1,4 @@
-# Kubernetes Baremetal Cluster #
-
+# Kubernetes Baremetal Cluster # 
 Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or virtual machines).
 
 ```
@@ -69,9 +68,40 @@ Perform the following steps on the __control node__ where ansible command will b
 
     `$ vi ~/kubespray-and-pray/files/inventory.cfg`
     
-    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited inventory.cfg to ~/.kubespray/inventory. This will be the default inventory file when Kubespray is run.
+    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
     
     If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
+    
+    Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.
+
+    ```
+    k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
+    k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
+    k8s2    ansible_ssh_host=192.168.1.62  ip=192.168.1.62
+    
+    [all]
+    k8s0
+    k8s1
+    k8s2
+    
+    [kube-master]
+    k8s0
+    k8s1
+
+    [kube-node]
+    k8s0
+    k8s1
+    k8s2
+    
+    [etcd]
+    k8s0
+    k8s1
+    k8s2
+    
+    [k8s-cluster:children]
+    kube-node
+    kube-master
+    ```
 
     Nodes may be added later by running the Kubespray _scale.yml_.
 
