@@ -66,15 +66,19 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. From __control node__, edit inventory file.  Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
+    Modify file with editor such as vi or nano.
+
     `$ vi ~/kubespray-and-pray/files/inventory.cfg`
     
     The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
     
     If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
     
-    Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.
+    Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be comment out with the pound sign (#).
 
     ```
+    # Kubespray inventory file
+    
     k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
     k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
     k8s2    ansible_ssh_host=192.168.1.62  ip=192.168.1.62
@@ -105,14 +109,16 @@ Perform the following steps on the __control node__ where ansible command will b
 
     Nodes may be added later by running the Kubespray _scale.yml_.
 
-2. Optional: From __control node__, edit all.yml and k8s-cluster.yml.  Config cluster to your needs.
+    _Optional:_ From __control node__, edit _all.yml_ and _k8s-cluster.yml_.  Config cluster to your needs.
 
-    `$ vi ~/kubespray-and-pray/files/all.yml`
-    `$ vi ~/kubespray-and-pray/files/k8s-cluster.yml`
+    _~/kubespray-and-pray/files/all.yml_  
+    _~/kubespray-and-pray/files/k8s-cluster.yml_  
 
-3. From __control node__, run script to install Kubernetes cluster on machines specified in inventory.cfg.
+2. From __control node__, run script to install Kubernetes cluster on machines specified in inventory.cfg.
 
-    `$ pray-for-cluster.sh`
+    Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt supply sudo password or press enter to use SSH password.
+
+    `$ pray-for-cluster.sh solidfire`
 
 Congratulations!  You're cluster is running.  Log onto a master node and run `kubectl get nodes` to validate.
 
@@ -130,7 +136,7 @@ Congratulations!  You're cluster is running.  Log onto a master node and run `ku
 
 2. Access dashboard with url. Use dashboard_port from previous command.  
 
-    `# https://<master_ip>:<dashboard_port>/`  
+    _https://master\_ip:dashboard\_port_  
 
 References:  
 `https://kubernetes.io/docs/admin/authorization/rbac/`
