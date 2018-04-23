@@ -64,7 +64,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
     `$ cd; git clone https://github.com/rcompos/kubespray-and-pray`
 
 
-### Deploy Kubernetes Cluster ###
+### Deploy Kubernetes ###
 
 Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
@@ -134,7 +134,7 @@ Perform the following steps on the __control node__ where ansible command will b
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
 
-### Kubernetes Permissions ###
+### Kubernetes Dashboard ###
 
 ***WARNING... Insecure permissions for development only!***
 
@@ -156,7 +156,7 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 References:  
 `https://kubernetes.io/docs/admin/authorization/rbac/`
 
-### GlusterFS Storage ###
+### GlusterFS Distributed Storage ###
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
 
