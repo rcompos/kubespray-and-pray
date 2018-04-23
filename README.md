@@ -66,14 +66,6 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. From __control node__, edit inventory file.  Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
-    Modify file with editor such as vi or nano.
-
-    `$ vi ~/kubespray-and-pray/files/inventory.cfg`
-    
-    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
-    
-    If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
-    
     Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be comment out with the pound sign (#).
 
     ```
@@ -107,6 +99,14 @@ Perform the following steps on the __control node__ where ansible command will b
     kube-master
     ```
 
+    Modify file with editor such as vi or nano.  
+
+    `$ vi ~/kubespray-and-pray/files/inventory.cfg`
+    
+    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
+    
+    If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
+    
     Nodes may be added later by running the Kubespray _scale.yml_.
 
     _Optional:_ From __control node__, edit _all.yml_ and _k8s-cluster.yml_.  Config cluster to your needs.
