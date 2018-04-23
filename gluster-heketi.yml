@@ -9,7 +9,6 @@
     gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    #num_nodes: 3
   remote_user: solidfire
   become: true
   run_once: true
@@ -73,7 +72,6 @@
     register: glusterfs_daemonset_ready
     retries: 36 
     delay: 5 
-    #until: glusterfs_daemonset_ready.stdout == "{{ num_nodes }}"
     until: glusterfs_daemonset_ready.stdout == "{{ groups['gluster']|length }}"
 
   #- debug: msg="{{ glusterfs_daemonset_ready.stdout }}"

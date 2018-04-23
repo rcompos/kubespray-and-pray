@@ -166,9 +166,9 @@ From the __control node__, configure hyper-converged storage solution consisting
 References:  
 `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
-1. GlusterFS Topology 
+1. Configuration
 
-   Edit GlusterFS topology file.  Edit file to define distributed filesystem members.
+   Define GlusterFS topology.  Edit file to define distributed filesystem members.
    
    For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdd) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node. 
    
@@ -176,9 +176,7 @@ References:
 
     `$ vi ~/kubespray-and-pray/files/topology.json`   
 
-2. Inventory File
-
-    Edit `gluster` section in Kubespray inventory file.  Specify all members to be part of the GlusterFS distributed filesystem.
+   Define Kubespray inventory.  Edit `gluster` section in Kubespray inventory file.  Specify all members to be part of the GlusterFS distributed filesystem.
     
     ```
     [gluster]
@@ -192,22 +190,10 @@ References:
     `$ vi ~/kubespray-and-pray/files/inventory.cfg`  
     `$ cp ~/kubespray-and-pray/files/inventory.cfg ~/.kubespray/inventory`  
 
-3. Prepare for Heketi
+2. Deploy Heketi GlusterFS
 
    Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.
 
     `$ cd ~/kubespray-and-pray`   
-    `$ ansible-playbook gluster-heketi-pre.yml`   
+    `$ ansible-playbook pray-for-gluster.yml`   
     
-4. Deploy Heketi GlusterFS
-
-   Execute heketi-run to create Heketi and Gluster resources.    
-
-    `$ ansible-playbook gluster-heketi.yml`
-    
-5. Default Storage Class
-
-   Create default storage class.  
-
-    `$ ansible-playbook gluster-storage-class.yml`
-

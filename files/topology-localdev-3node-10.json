@@ -6,54 +6,48 @@
           "node": {
             "hostnames": {
               "manage": [
-                "node0"
+                "k8s0"
               ],
               "storage": [
-                "192.168.10.100"
+                "10.20.1.6"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/vdb",
-            "/dev/vdc",
-            "/dev/vdd"
+            "/dev/sdd"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "node1"
+                "k8s1"
               ],
               "storage": [
-                "192.168.10.101"
+                "10.20.1.7"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/vdb",
-            "/dev/vdc",
-            "/dev/vdd"
+            "/dev/sdd"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "node2"
+                "k8s2"
               ],
               "storage": [
-                "192.168.10.102"
+                "10.20.1.12"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/vdb",
-            "/dev/vdc",
-            "/dev/vdd"
+            "/dev/sdd"
           ]
         }
       ]
