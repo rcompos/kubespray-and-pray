@@ -76,8 +76,6 @@ Perform the following steps on the __control node__ where ansible command will b
     Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be comment out with the pound sign (#).
 
     ```
-    # Kubespray inventory file
-    
     k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
     k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
     k8s2    ansible_ssh_host=192.168.1.62  ip=192.168.1.62
@@ -183,7 +181,6 @@ References:
     Edit `gluster` section in Kubespray inventory file.  Specify all members to be part of the GlusterFS distributed filesystem.
     
     ```
-    # Kubespray inventory file
     [gluster]
     k8s0
     k8s1
