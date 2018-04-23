@@ -1,7 +1,7 @@
 ---
 # Ansible for installing GlusterFS requirements on K8s cluster machines.
 
-- hosts: '*'
+- hosts: 'gluster'
   vars:
     gluster_repo: 'ppa:gluster/glusterfs-3.13'
     glusterfs_client_vers: '3.13.2-ubuntu1~xenial2'

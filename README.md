@@ -127,11 +127,11 @@ Perform the following steps on the __control node__ where ansible command will b
 
     Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.
 
-    Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt supply sudo password or press enter to use SSH password.
+    Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.
 
     `$ ./pray-for-cluster.sh solidfire`
 
-Congratulations!  You're cluster is running.  Log onto a master node and run `kubectl get nodes` to validate.
+Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
 
 ### Kubernetes Permissions ###
@@ -167,33 +167,46 @@ From the __control node__, configure hyper-converged storage solution consisting
 
 1. GlusterFS Topology 
 
-   Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
+   Edit GlusterFS topology file.  Edit file to define distributed filesystem members.
+   
+   For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdd) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node. 
+   
+   Modify file with editor such as vi or nano.
 
     `$ vi ~/kubespray-and-pray/files/topology.json`   
 
-2. Prepare for Heketi
+2. Inventory File
 
-   From the control node, run ansible on all GlusterFS members to install kernel modules and glusterfs client.  Use to `-l host1,host2` option to limit the playbook to a subset of the entire cluster.
+    Edit `gluster` section in Kubespray inventory file.  Specify all members to be part of the GlusterFS distributed filesystem.
+    
+    ```
+    # Kubespray inventory file
+    [gluster]
+    k8s0
+    k8s1
+    k8s2
+    ```
+    
+    Modify file with editor such as vi or nano.  Copy to _.kubespray_ directory.
+
+    `$ vi ~/kubespray-and-pray/files/inventory.cfg`
+    `$ cp ~/kubespray-and-pray/files/inventory.cfg ~/.kubespray/inventory`
+
+3. Prepare for Heketi
+
+   Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.
 
     `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook heketi-pre.yml`  
     
-3. Edit Heketi File
-
-   Edit heketi-run.  Edit `- hosts:` line to include the hostname or ip addres of a single cluster master.  The GlusterFS cluster members are specified as storage\_nodes.  List the total number of nodes as num\_nodes.
-
-    `storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'`  
-    `num_nodes: 5`  
-
-    `$ vi heketi-run.yml`
     
-3. Deploy Heketi GlusterFS
+4. Deploy Heketi GlusterFS
 
-   Execute heketi-run on a _single_ Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
+   Execute heketi-run to create Heketi and Gluster resources.    
 
     `$ ansible-playbook heketi-run.yml`
     
-4. Default Storage Class
+5. Default Storage Class
 
    Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address). Substitute actual hostname of ip address for <master_node>.
 

@@ -9,8 +9,7 @@
     gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    storage_nodes: 'k8s0 k8s1 k8s2'
-    num_nodes: 3
+    #num_nodes: 3
   remote_user: solidfire
   become: true
   run_once: true
@@ -64,15 +63,18 @@
 
   - name: Label K8s Nodes
     #shell: kubectl label `kubectl get no -o name | cut -d/ -f2 | perl -pe 's/$/ /'| perl -pe chomp` storagenode=glusterfs
-    shell: "kubectl label node {{ storage_nodes }} storagenode=glusterfs"
+    shell: "kubectl label node {{ item }} storagenode=glusterfs"
+    #debug: msg="Host is {{ item }}"
+    with_items: "{{ groups['gluster'] }}"
     ignore_errors: true
 
   - name: Pods wait for
     shell: "kubectl get po -n default | grep glusterfs- |grep Running |wc -l"
     register: glusterfs_daemonset_ready
-    retries: 24 
+    retries: 36 
     delay: 5 
-    until: glusterfs_daemonset_ready.stdout == "{{ num_nodes }}"
+    #until: glusterfs_daemonset_ready.stdout == "{{ num_nodes }}"
+    until: glusterfs_daemonset_ready.stdout == "{{ groups['gluster']|length }}"
 
   #- debug: msg="{{ glusterfs_daemonset_ready.stdout }}"
 
@@ -100,7 +102,7 @@
   - name: Wait for Heketi Bootstrap
     shell: "kubectl get po | grep '^deploy-heketi-' | grep ' Running '"
     register: wait_for_heketi_bootstrap
-    retries: 24 
+    retries: 36 
     delay: 5
     until: wait_for_heketi_bootstrap.rc== 0
 
