@@ -136,7 +136,7 @@ Congratulations!  You're cluster is running.  Log onto a master node and run `ku
 
 2. From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
 
-    _https://master\_ip:dashboard\_port_  
+    _https://master_ip:dashboard_port_  
 
 References:  
 `https://kubernetes.io/docs/admin/authorization/rbac/`
