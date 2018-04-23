@@ -197,17 +197,17 @@ References:
    Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.
 
     `$ cd ~/kubespray-and-pray`   
-    `$ ansible-playbook heketi-pre.yml`   
+    `$ ansible-playbook gluster-heketi-pre.yml`   
     
 4. Deploy Heketi GlusterFS
 
    Execute heketi-run to create Heketi and Gluster resources.    
 
-    `$ ansible-playbook heketi-run.yml`
+    `$ ansible-playbook gluster-heketi.yml`
     
 5. Default Storage Class
 
    Create default storage class.  
 
-    `$ ansible-playbook heketi-sc.yml`
+    `$ ansible-playbook gluster-storage-class.yml`
 
