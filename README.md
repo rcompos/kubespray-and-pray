@@ -140,6 +140,9 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 
 **MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
+References:  
+`https://kubernetes.io/docs/admin/authorization/rbac/`
+
 1. Configure Cluster Permissions
 
    From __control node__, run script to configure open permissions.  Make note of dashboard port.
@@ -153,8 +156,6 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 
     `https://master-ip:dashboard-port`  
 
-References:  
-`https://kubernetes.io/docs/admin/authorization/rbac/`
 
 ### GlusterFS Distributed Storage ###
 
@@ -164,6 +165,8 @@ Requirement:  Additional raw physical or virtual disk.  The disk will be referen
 
 From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
+References:  
+`https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
 
 1. GlusterFS Topology 
 
@@ -211,5 +214,3 @@ From the __control node__, configure hyper-converged storage solution consisting
 
     `$ ansible-playbook heketi-sc.yml`
 
-References:  
-`https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
