@@ -1,5 +1,6 @@
-# Kubernetes Baremetal Cluster # 
-Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or virtual machines).
+# Kubespray-and-pray # 
+
+Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +17,7 @@ Deploy Kubernetes clusters with Kubespray on bare metal (physical servers or vir
 
 ### Description ###
 
-Deploy Kubernetes clusters on baremetal (i.e. physical servers) or virtual machines using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
+Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
 The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
 
@@ -47,24 +48,30 @@ General requirements:
 Prepare __control node__ where management tools are installed.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
 
 
-1. Install required packages on __control node__, including Ansible v2.4 (or newer) and python-netaddr.
+1. Install Packages 
+
+    Install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.
 
     `$ sudo -H pip2 install ansible kubespray`  
 
     Debian or Ubuntu control node also need:  
     `$ sudo apt-get install sshpass`
 
-2. Clone repo with ansibles into home directory.
+2. Clone Repo
+
+    Clone kubespray-and-pray repository into home directory.
 
     `$ cd; git clone https://github.com/rcompos/kubespray-and-pray`
 
 
-### Create Kubernetes Cluster ###
+### Deploy Kubernetes Cluster ###
 
 Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
 
-1. Edit inventory file.  Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
+1. Edit Inventory File
+
+      Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
     Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be comment out with the pound sign (#).
 
@@ -114,7 +121,9 @@ Perform the following steps on the __control node__ where ansible command will b
     _~/kubespray-and-pray/files/all.yml_  
     _~/kubespray-and-pray/files/k8s-cluster.yml_  
 
-2. Run script to install Kubernetes cluster on machines specified in inventory.cfg.
+2. Deploy Cluster
+
+    Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.
 
     Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt supply sudo password or press enter to use SSH password.
 
