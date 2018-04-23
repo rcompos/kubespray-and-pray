@@ -47,7 +47,7 @@ General requirements:
 Prepare __control node__ where management tools are installed.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
 
 
-1. Install required packages on control node.  Ansible v2.4 (or newer) and python-netaddr is installed on the machine that will run Ansible commands.
+1. Install required packages on __control node__, including Ansible v2.4 (or newer) and python-netaddr.
 
     `$ sudo -H pip2 install ansible kubespray`  
 
@@ -64,7 +64,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
 
-1. From __control node__, edit inventory file.  Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
+1. Edit inventory file.  Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
     Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be comment out with the pound sign (#).
 
@@ -109,12 +109,12 @@ Perform the following steps on the __control node__ where ansible command will b
     
     Nodes may be added later by running the Kubespray _scale.yml_.
 
-    _Optional:_ From __control node__, edit _all.yml_ and _k8s-cluster.yml_.  Config cluster to your needs.
+    __Optional:__ Edit _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
     _~/kubespray-and-pray/files/all.yml_  
     _~/kubespray-and-pray/files/k8s-cluster.yml_  
 
-2. From __control node__, run script to install Kubernetes cluster on machines specified in inventory.cfg.
+2. Run script to install Kubernetes cluster on machines specified in inventory.cfg.
 
     Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt supply sudo password or press enter to use SSH password.
 
@@ -134,7 +134,7 @@ Congratulations!  You're cluster is running.  Log onto a master node and run `ku
     `$ cd ~/kubespray-and-pray`  
     `$ ansible-playbook dashboard-permissive.yml`  
 
-2. Access dashboard with url. Use dashboard_port from previous command.  
+2. From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
 
     _https://master\_ip:dashboard\_port_  
 
