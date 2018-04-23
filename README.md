@@ -138,12 +138,16 @@ Congratulations!  You're cluster is running.  Log onto a master node and run `ku
 
 **MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
-1. From __control node__, run script to configure open permissions.  Make note dashboard port.
+1. Configure Cluster Permissions
+
+   From __control node__, run script to configure open permissions.  Make note of dashboard port.
 
     `$ cd ~/kubespray-and-pray`  
     `$ ansible-playbook dashboard-permissive.yml`  
 
-2. From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
+2. Access Dashboard 
+
+   From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
 
     _https://master_ip:dashboard_port_  
 
@@ -159,29 +163,39 @@ Requirement:  Additional raw physical or virtual disk.  The disk will be referen
 From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
 
-1. Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
+1. GlusterFS Topology 
+
+   Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
 
     `$ cd ~/kubespray-and-pray/files`   
     `$ cp topology-sample.json topology.json`  
     `$ vi topology.json`  
 
-2. From the control node, run ansible on all GlusterFS members to install kernel modules and glusterfs client.  Use to `-l host1,host2` option to limit the playbook to a subset of the entire cluster.
+2. Prepare for Heketi
+
+   From the control node, run ansible on all GlusterFS members to install kernel modules and glusterfs client.  Use to `-l host1,host2` option to limit the playbook to a subset of the entire cluster.
 
     `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook heketi-pre.yml`  
     
-3. Edit heketi-run.  Edit `- hosts:` line to include the hostname or ip addres of a single cluster master.  The GlusterFS cluster members are specified as storage\_nodes.  List the total number of nodes as num\_nodes.
+3. Edit Heketi File
+
+   Edit heketi-run.  Edit `- hosts:` line to include the hostname or ip addres of a single cluster master.  The GlusterFS cluster members are specified as storage\_nodes.  List the total number of nodes as num\_nodes.
 
     `storage_nodes: 'k8s0 k8s1 k8s2 k8s3 k8s4'`  
     `num_nodes: 5`  
 
     `$ vi heketi-run.yml`
     
-3. Execute heketi-run on a _single_ Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
+3. Deploy Heketi GlusterFS
+
+   Execute heketi-run on a _single_ Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
 
     `$ ansible-playbook -l <master_node> heketi-run.yml`
     
-4. Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address). Substitute actual hostname of ip address for <master_node>.
+4. Default Storage Class
+
+   Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address). Substitute actual hostname of ip address for <master_node>.
 
     `$ ansible-playbook -l <master_node> heketi-sc.yml`
 
