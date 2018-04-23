@@ -1,7 +1,7 @@
 ---
 # Ansible for installing GlusterFS requirements on K8s cluster machines.
 
-- hosts: 'k8s0'
+- hosts: 'kube-master'
   vars:
     sc_yml: 'sc-gluster.yml'
     sc_name: 'slow'
@@ -9,6 +9,7 @@
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
   remote_user: solidfire
   become: true
+  run_once: true
 
   tasks:
 

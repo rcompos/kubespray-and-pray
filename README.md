@@ -116,6 +116,8 @@ Perform the following steps on the __control node__ where ansible command will b
     
     Nodes may be added later by running the Kubespray _scale.yml_.
 
+    __Optional:__ To create a dedicated Docker container logical volume with an available disk, edit _prep-cluster.yml_ and change the value _block_device_ to desired value.  Otherwise the the _/var/lib/docker_ directory will reside under the local root filesystem.
+
     __Optional:__ Edit _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
     _~/kubespray-and-pray/files/all.yml_  
@@ -167,9 +169,7 @@ From the __control node__, configure hyper-converged storage solution consisting
 
    Create GlusterFS topology file.  Edit file to define distributed filesystem members.  The `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdc) are specified under `devices`.
 
-    `$ cd ~/kubespray-and-pray/files`   
-    `$ cp topology-sample.json topology.json`  
-    `$ vi topology.json`  
+    `$ vi ~/kubespray-and-pray/files/topology.json`   
 
 2. Prepare for Heketi
 
@@ -191,13 +191,13 @@ From the __control node__, configure hyper-converged storage solution consisting
 
    Execute heketi-run on a _single_ Kubernetes cluster master.  Edit `- hosts:` line to include a single cluster master hostname (or ip address).  Substitute actual hostname of ip address for <master_node>.
 
-    `$ ansible-playbook -l <master_node> heketi-run.yml`
+    `$ ansible-playbook heketi-run.yml`
     
 4. Default Storage Class
 
    Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address). Substitute actual hostname of ip address for <master_node>.
 
-    `$ ansible-playbook -l <master_node> heketi-sc.yml`
+    `$ ansible-playbook heketi-sc.yml`
 
 References:  
 `https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`

@@ -1,7 +1,7 @@
 ---
 # Run on K8s master
 
-- hosts: 'k8s0'
+- hosts: 'kube-master'
   vars:
     heketi_server: 'http://localhost:'
     heketi_github_version: 'v6.0.0'
@@ -13,6 +13,7 @@
     num_nodes: 3
   remote_user: solidfire
   become: true
+  run_once: true
 
   tasks:
 
