@@ -151,7 +151,7 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 
    From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
 
-    _https://master_ip:dashboard_port_  
+    _https://master-ip:dashboard-port_  
 
 References:  
 `https://kubernetes.io/docs/admin/authorization/rbac/`
