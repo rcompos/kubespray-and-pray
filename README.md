@@ -160,7 +160,7 @@ References:
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
 
-Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. /dev/sdc).
+Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. _/dev/sdc_).
 
 From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
@@ -189,16 +189,15 @@ From the __control node__, configure hyper-converged storage solution consisting
     
     Modify file with editor such as vi or nano.  Copy to _.kubespray_ directory.
 
-    `$ vi ~/kubespray-and-pray/files/inventory.cfg`
-    `$ cp ~/kubespray-and-pray/files/inventory.cfg ~/.kubespray/inventory`
+    `$ vi ~/kubespray-and-pray/files/inventory.cfg`  
+    `$ cp ~/kubespray-and-pray/files/inventory.cfg ~/.kubespray/inventory`  
 
 3. Prepare for Heketi
 
    Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.
 
     `$ cd ~/kubespray-and-pray`   
-    `$ ansible-playbook heketi-pre.yml`  
-    
+    `$ ansible-playbook heketi-pre.yml`   
     
 4. Deploy Heketi GlusterFS
 
@@ -208,7 +207,7 @@ From the __control node__, configure hyper-converged storage solution consisting
     
 5. Default Storage Class
 
-   Create default storage class. Edit `- hosts:` line to include a single cluster master hostname (or ip address). Substitute actual hostname of ip address for <master_node>.
+   Create default storage class.  
 
     `$ ansible-playbook heketi-sc.yml`
 
