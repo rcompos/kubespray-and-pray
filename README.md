@@ -19,7 +19,11 @@ Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
 
 Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
+VM Operating Systems Supported:  Ubuntu 16.04 Xenial  (CentOS 7 soon)
+
 The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
+
+This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and 
 
 The Kubernetes cluster configs include the following component defaults:  
 Container engine: _docker_  
