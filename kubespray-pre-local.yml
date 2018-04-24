@@ -35,9 +35,9 @@
       force: no
 
   - name: Prepare Kubespray
-    # Run kubespray prepare with dummy values
     ## Example: kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0 k8s1
-    command: "echo yes | kubespray prepare --nodes {{ nodes }} --etcds {{ etcds }} --masters {{ masters }}"
+    # Run kubespray prepare with dummy values
+    shell: "echo yes | kubespray prepare --nodes {{ nodes }} --etcds {{ etcds }} --masters {{ masters }}"
 
   - name: Copy group_vars
     copy:
