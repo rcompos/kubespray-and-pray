@@ -29,15 +29,15 @@ Storage driver: _overlay2_
 Estimated time to complete: 1 hr
 
 References:  
-`https://github.com/kubernetes/kubernetes`  
-`https://github.com/kubernetes-incubator/kubespray`  
+_https://github.com/kubernetes/kubernetes_  
+_https://github.com/kubernetes-incubator/kubespray_   
 
 ### Requirements ###
 
 General requirements:
 
-* Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested.
-* Cluster Machines: Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone `https://github.com/rcompos/vagrant-zero` and run `vagrant up k8s0 k8s1 k8s2`.
+* Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python 2 is a requirement.
+* Cluster Machines: Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
 * Operating System: Ubuntu 16.04   (CentOS 7 is an open issue)
 * Container Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdc
 * Persistent Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdd
@@ -50,8 +50,12 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
 1. Install Packages 
 
-    Install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.
+    Install Python 2 as requirement of Ansible.  
+    _MacOS_: `$ brew install -vd python@2`  
+    _RedHat7_: `Python 2.7.5 installed by default`  
+    _Ubuntu_: `$ apt install python2.7 python-pip`  
 
+    Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
     `$ sudo -H pip2 install ansible kubespray`  
 
     Debian or Ubuntu control node also need:  
@@ -114,7 +118,7 @@ Perform the following steps on the __control node__ where ansible command will b
     
     Nodes may be added later by running the Kubespray _scale.yml_.
 
-    __Optional:__ To create a dedicated Docker container logical volume with an available disk, edit _prep-cluster.yml_ and change the value _block_device_ to desired value.  Otherwise the the _/var/lib/docker_ directory will reside under the local root filesystem.
+    __Optional:__ To create a dedicated Docker container logical volume with an available disk, edit _prep-cluster.yml_ and change the value _block_device_ to desired value, such as _/dev/sdd_.  Otherwise the the _/var/lib/docker_ directory will reside under the local root filesystem.
 
     __Optional:__ Edit _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
@@ -139,7 +143,7 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 **MORE WARNING:** The following policy allows ALL service accounts to act as cluster administrators. Any application running in a container receives service account credentials automatically, and could perform any action against the API, including viewing secrets and modifying permissions. This is not a recommended policy... On other hand, works like charm for dev!
 
 References:  
-`https://kubernetes.io/docs/admin/authorization/rbac/`
+_https://kubernetes.io/docs/admin/authorization/rbac_
 
 1. Configure Cluster Permissions
 
@@ -164,7 +168,7 @@ Requirement:  Additional raw physical or virtual disk.  The disk will be referen
 From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
 
 References:  
-`https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md`
+_https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
 1. Configuration
 

@@ -6,54 +6,48 @@
           "node": {
             "hostnames": {
               "manage": [
-                "node0"
+                "ai-k8-01"
               ],
               "storage": [
-                "192.168.10.100"
+                "10.117.75.166"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/vdb",
-            "/dev/vdc",
-            "/dev/vdd"
+            "/dev/sdc"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "node1"
+                "ai-k8-02"
               ],
               "storage": [
-                "192.168.10.101"
+                "10.117.76.87"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/vdb",
-            "/dev/vdc",
-            "/dev/vdd"
+            "/dev/sdc"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "node2"
+                "ai-k8-03"
               ],
               "storage": [
-                "192.168.10.102"
+                "10.117.76.54"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/vdb",
-            "/dev/vdc",
-            "/dev/vdd"
+            "/dev/sdc"
           ]
         }
       ]
