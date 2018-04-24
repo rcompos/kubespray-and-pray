@@ -15,11 +15,11 @@ Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
                   ||     ||
 ```
 
-### Description ###
+## Description ##
 
 Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-VM Operating Systems Supported:  Ubuntu 16.04 Xenial  (CentOS 7 soon)
+__Kubernetes Node Operating Systems Supported:__  Ubuntu 16.04 Xenial  (CentOS 7 soon)
 
 The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
 
@@ -36,111 +36,116 @@ References:
 _https://github.com/kubernetes/kubernetes_  
 _https://github.com/kubernetes-incubator/kubespray_   
 
-### Requirements ###
+## Requirements ##
 
 General requirements:
 
-* Control Node: Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python 2 is a requirement.
-* Cluster Machines: Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
-* Operating System: Ubuntu 16.04   (CentOS 7 is an open issue)
-* Container Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdc
-* Persistent Storage Volume:  Additional physical or virtual disk volume.  i.e. /dev/sdd
-* Hostname resolution:  Ensure that cluster machine hostnames are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
+* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python 2 is a requirement.
+* __Cluster Machines:__ Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
+* __Operating System:__ Ubuntu 16.04   (CentOS 7 is an open issue)
+* __Container Storage Volume:__  Additional physical or virtual disk volume.  i.e. /dev/sdc
+* __Persistent Storage Volume:__  Additional physical or virtual disk volume.  i.e. /dev/sdd
+* __Hostname resolution:__  Ensure that cluster machine hostnames are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
 
-### Prepare Control Node ###
+## Prepare Control Node ##
 
 Prepare __control node__ where management tools are installed.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
 
 
-1. Install Packages 
+1. __Install Packages__ 
 
-    Install Python 2 as requirement of Ansible.  
+    a. Install Python 2 as requirement of Ansible.  
+
     _MacOS_: `$ brew install -vd python@2`  
-    _RedHat7_: `Python 2.7.5 installed by default`  
+    _RedHat 7_ or _CentOS 7_: `Python 2.7.5 installed by default`  
     _Ubuntu_: `$ apt install python2.7 python-pip`  
 
-    Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
+    b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
+
     `$ sudo -H pip2 install ansible kubespray`  
 
-    Debian or Ubuntu control node also need:  
+    c. _Debian_ or _Ubuntu_ control node also need:  
+
     `$ sudo apt-get install sshpass`
 
-2. Clone Repo
+2. __Clone Repo__
 
-    Clone kubespray-and-pray repository into home directory.
+    Clone kubespray-and-pray repository.  
 
-    `$ cd; git clone https://github.com/rcompos/kubespray-and-pray`
+    `$ cd; git clone https://github.com/scandalizer/kubespray-and-pray`
 
 
-### Deploy Kubernetes ###
+## Deploy Kubernetes ##
+
+The cluster topology is defined as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
+
+The following is an example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node). 
+
+The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
+
+```
+k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
+k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
+k8s2    ansible_ssh_host=192.168.1.62  ip=192.168.1.62
+    
+[all]
+k8s0
+k8s1
+k8s2
+    
+[kube-master]
+k8s0
+k8s1
+
+[kube-node]
+k8s0
+k8s1
+k8s2
+    
+[etcd]
+k8s0
+k8s1
+k8s2
+    
+[k8s-cluster:children]
+kube-node
+kube-master
+```
 
 Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
-
-1. Edit Inventory File
-
-      Specify the cluster topology as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
-
-    Example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be comment out with the pound sign (#).
-
-    ```
-    k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
-    k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
-    k8s2    ansible_ssh_host=192.168.1.62  ip=192.168.1.62
+1. __Define Cluster Topology__  
     
-    [all]
-    k8s0
-    k8s1
-    k8s2
+   Modify inventory file with editor such as vi or nano.  Define your desired cluster topology.
+
+    `$ cd ~/kubespray-and-pray`  
+    `$ vi files/inventory.cfg`  
     
-    [kube-master]
-    k8s0
-    k8s1
-
-    [kube-node]
-    k8s0
-    k8s1
-    k8s2
+    The file _ansible.cfg_ defines the ansible inventory file as _~/.kubespray/inventory/inventory.cfg_.  One of the ansible playbooks will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
     
-    [etcd]
-    k8s0
-    k8s1
-    k8s2
+    __Multiple network adapters__:  If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
     
-    [k8s-cluster:children]
-    kube-node
-    kube-master
-    ```
+    __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
-    Modify file with editor such as vi or nano.  
+    __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, edit _prep-cluster.yml_ and change the value _block_device_ to desired value, such as _/dev/sdd_.  Otherwise, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
 
-    `$ vi ~/kubespray-and-pray/files/inventory.cfg`
-    
-    The file ansible.cfg defines the inventory file as _~/.kubespray/inventory/inventory.cfg_.  The ansible playbook will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
-    
-    If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
-    
-    Nodes may be added later by running the Kubespray _scale.yml_.
+    __Optional Cluster Configuration:__  Edit Kubespray group variables in _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
-    __Optional:__ To create a dedicated Docker container logical volume with an available disk, edit _prep-cluster.yml_ and change the value _block_device_ to desired value, such as _/dev/sdd_.  Otherwise the the _/var/lib/docker_ directory will reside under the local root filesystem.
+    _kubespray-and-pray/files/all.yml_  
+    _kubespray-and-pray/files/k8s-cluster.yml_  
 
-    __Optional:__ Edit _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
-
-    _~/kubespray-and-pray/files/all.yml_  
-    _~/kubespray-and-pray/files/k8s-cluster.yml_  
-
-2. Deploy Cluster
+2. __Deploy Cluster__
 
     Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.
 
-    Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example.  This user account must exist and with sudo privileges and be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.
+    Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example, but is arbitrary.  This user account must already exist with sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.
 
     `$ ./pray-for-cluster.sh solidfire`
 
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
 
-### Kubernetes Dashboard ###
+## Kubernetes Dashboard ##
 
 ***WARNING... Insecure permissions for development only!***
 
@@ -149,21 +154,20 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 References:  
 _https://kubernetes.io/docs/admin/authorization/rbac_
 
-1. Configure Cluster Permissions
+1. __Configure Cluster Permissions__
 
-   From __control node__, run script to configure open permissions.  Make note of dashboard port.
+   From __control node__, run script to configure open permissions.  Make note of dashboard port.  Run command from _kubespray-and-pray_ directory.
 
-    `$ cd ~/kubespray-and-pray`  
     `$ ansible-playbook dashboard-permissive.yml`  
 
-2. Access Dashboard 
+2. __Access Dashboard__ 
 
    From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
 
     `https://master-ip:dashboard-port`  
 
 
-### GlusterFS Distributed Storage ###
+## GlusterFS Distributed Storage ##
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
 
@@ -174,7 +178,7 @@ From the __control node__, configure hyper-converged storage solution consisting
 References:  
 _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
-1. Configuration
+1. __Configuration__
 
    Define GlusterFS topology.  Edit file to define distributed filesystem members.
    
@@ -195,13 +199,12 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
     
     Modify file with editor such as vi or nano.  Copy to _.kubespray_ directory.
 
-    `$ vi ~/kubespray-and-pray/files/inventory.cfg`  
-    `$ cp ~/kubespray-and-pray/files/inventory.cfg ~/.kubespray/inventory`  
+    `$ vi files/inventory.cfg`  
+    `$ cp files/inventory.cfg ~/.kubespray/inventory`  
 
-2. Deploy Heketi GlusterFS
+2. __Deploy Heketi GlusterFS__
 
-   Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.
+   Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.  Run command from _kubespray-and-pray_ directory.
 
-    `$ cd ~/kubespray-and-pray`   
     `$ ansible-playbook pray-for-gluster.yml`   
     
