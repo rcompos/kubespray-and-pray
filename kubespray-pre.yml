@@ -49,3 +49,14 @@
       owner: root
       group: root
       mode: 0644
+
+  - name: Add Kubernetes shell goodness
+    blockinfile:
+      path: ~/.bashrc
+      insertafter: EOF
+      block: |
+        # Alias for kubectl and command line completion
+        # Requires: bash-completion
+        alias k=kubectl
+        source <(kubectl completion bash  | sed s/kubectl/k/g)
+
