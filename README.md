@@ -17,13 +17,13 @@ Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
 
 ## Description ##
 
-Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
+Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Default storage class provided by GlusterFS hyper-converged storage.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
 __Kubernetes Node Operating Systems Supported:__  Ubuntu 16.04 Xenial  (CentOS 7 soon)
 
 The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
 
-This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and 
+This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.
 
 The Kubernetes cluster configs include the following component defaults:  
 Container engine: _docker_  
@@ -77,7 +77,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
 ## Deploy Kubernetes ##
 
-The cluster topology is defined as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
+The Kubernetes cluster topology is defined as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
 The following is an example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  There are also three GlusterFS (gluster) members defined.
 
@@ -121,25 +121,29 @@ kube-master
 
 Perform the following steps on the __control node__ where ansible command will be run from.  This might be your laptop or a jump host.  The cluster machines must already exist and be responsive to SSH.
 
-1. __Define Cluster Topology__  
+1. __Kubernetes Cluster Topology__  
     
-    Define your desired cluster topology.  Modify inventory file with editor such as vi or nano.
+    Define your desired cluster topology in _inventory.cfg_.
+    
+    The file _ansible.cfg_ defines the ansible inventory file as _~/.kubespray/inventory/inventory.cfg_.  One of the ansible playbooks will copy the edited _files/inventory.cfg_ (or command-line specified file under _files_) to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
+    
+    __Multiple network adapters:__  If multiple network adapters are present on any node(s), Ansible will use the value provided as _ansible\_ssh\_host_ and/or _ip_ for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
+    
+    __Hyper-converged storage:__  Define Kubernetes cluster node members to be part of Heketi GlusterFS hyper-converged storage in inventory group _gluster_.
 
-    `$ cd ~/kubespray-and-pray`  
-    `$ vi files/inventory.cfg`  
-    
-    The file _ansible.cfg_ defines the ansible inventory file as _~/.kubespray/inventory/inventory.cfg_.  One of the ansible playbooks will copy the edited _inventory.cfg_ to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
-    
-    __Multiple network adapters__:  If multiple network adapters are present on any node(s), Ansible will use the value provided as ansible\_ssh\_host and/or ip for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
-    
-    __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
-
-    __Optional Cluster Configuration:__  Edit Kubespray group variables in _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
+    __Kubespray cluster configuration:__  Edit Kubespray group variables in _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
     _kubespray-and-pray/files/all.yml_  
     _kubespray-and-pray/files/k8s-cluster.yml_  
+    
+    __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
-2. __Deploy Cluster__
+    Modify inventory file with editor such as vi or nano.
+
+    `$ cd ~/kubespray-and-pray`  
+    `$ vi files/inventory.cfg`  
+
+2. __Deploy Kubernetes Cluster__
 
     Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
     
@@ -173,13 +177,13 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 References:  
 _https://kubernetes.io/docs/admin/authorization/rbac_
 
-1. __Configure Cluster Permissions__
+1. __Kubernetes Cluster Permissions__
 
    From __control node__, run script to configure open permissions.  Make note of dashboard port.  Run command from _kubespray-and-pray_ directory.
 
     `$ ansible-playbook dashboard-permissive.yml`  
 
-2. __Access Dashboard__ 
+2. __Access Kubernetes Dashboard__ 
 
    From web browser, access dashboard with following url. Use dashboard_port from previous command.  When prompted to login, choose _Skip_.
 
@@ -197,35 +201,28 @@ From the __control node__, configure hyper-converged storage solution consisting
 References:  
 _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
-1. __Configuration__
+1. __GlusterFS Cluster Topology__
 
-   a. Define GlusterFS topology.  Edit file to define distributed filesystem members.
+    a. Define Heketi GlusterFS topology.  
    
-       For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdd) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node.  See examples in the _files_ directory.
+    For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. _/dev/sdd_) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node.  Additional examples in the _files_ directory.
    
-       Modify file with editor such as vi or nano.
+    Edit file to define distributed filesystem members.  Modify file with editor such as vi or nano.
 
-      `$ vi ~/kubespray-and-pray/files/topology.json`   
+    `$ vi ~/kubespray-and-pray/files/topology.json`   
 
-   b. Define Kubespray inventory.  Skip this step if gluster group was already defined in _inventory.cfg_.
-   
-   Edit `gluster` section in Kubespray inventory file.  Specify which nodes are to become members of the GlusterFS distributed filesystem.  
+    b. Define Kubespray inventory nodes in gluster group.
     
-    ```
-    [gluster]
-    k8s0
-    k8s1
-    k8s2
-    ```
+    _It's safe to skip this step if gluster group was already defined in inventory.cfg during Kubespray deploy, as the gluster group will already be defined_.  
     
-    Modify file with editor such as vi or nano.  Copy to _.kubespray_ directory.
+     Edit `gluster` section in Kubespray inventory file.  Specify which nodes are to become members of the GlusterFS distributed filesystem.  Modify file with editor such as vi or nano.  Copy to _.kubespray_ directory.
 
     `$ vi files/inventory.cfg`  
     `$ cp files/inventory.cfg ~/.kubespray/inventory`  
 
 2. __Deploy Heketi GlusterFS__
 
-   Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.  Run command from _kubespray-and-pray_ directory.
+    Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.  Run command from _kubespray-and-pray_ directory.
 
     `$ ansible-playbook pray-for-gluster.yml`   
     
