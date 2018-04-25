@@ -83,6 +83,8 @@ The following is an example _inventory.cfg_ defining a Kubernetes cluster with t
 
 The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
 
+For more examples see the _inventory-*.cfg_ files in the directory _files_ and under _inventory_.
+
 ```
 k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
 k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
