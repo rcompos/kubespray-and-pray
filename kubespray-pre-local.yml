@@ -6,13 +6,13 @@
     dir_dest: '~'
     inv_dir:  '~/.kubespray/inventory'
     inv_src:  'inventory.cfg'
-    inv_dest: "{{ inv_dir }}/{{ inv_src }}"
+    inv_dest: "{{ inv_dir }}/inventory.cfg"
     group_dir:  "{{ inv_dir }}/group_vars"
     group_dir_sample:  "{{ inv_dir }}/sample/group_vars"
     all_src:  'all.yml'
-    all_dest: "{{ group_dir }}/{{ all_src }}"
+    all_dest: "{{ group_dir }}/all.yml"
     k8s_cluster_src:  'k8s-cluster.yml'
-    k8s_cluster_dest: "{{ group_dir }}/{{ k8s_cluster_src }}"
+    k8s_cluster_dest: "{{ group_dir }}/k8s-cluster.yml"
     nodes:   'k8s0 k8s1 k8s2'
     etcds:   'k8s0 k8s1 k8s2'
     masters: 'k8s0 k8s1'

@@ -208,3 +208,10 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     `$ ansible-playbook pray-for-gluster.yml`   
     
+## Validation ##
+
+Validate cluster functionality by deploying an application.
+
+1. __Deploy Helm Package__
+2. __Change Service Type__
+3. __View Service__

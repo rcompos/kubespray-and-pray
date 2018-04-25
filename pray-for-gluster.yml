@@ -7,6 +7,6 @@
   become: true
 
 - import_playbook: gluster-heketi-pre.yml
-- import_playbook: gluster-heketi.yml block_device='/dev/sdd'
+- import_playbook: gluster-heketi.yml
 - import_playbook: gluster-storage-class.yml
 
