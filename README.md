@@ -157,7 +157,7 @@ Perform the following steps on the __control node__ where ansible command will b
     | -b     | Block device for containers          | /dev/sdc      |
     | -i     | Inventory file in directory _files_  | inventory.cfg |
 
-    Run script to deploy Kubernetes cluster to all nodes.
+    Run script to deploy Kubernetes cluster to all nodes with default values.
 
     `$ ./pray-for-cluster.sh`
 
@@ -199,15 +199,17 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
 1. __Configuration__
 
-   Define GlusterFS topology.  Edit file to define distributed filesystem members.
+   a. Define GlusterFS topology.  Edit file to define distributed filesystem members.
    
-   For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdd) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node. 
+       For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. /dev/sdd) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node.  See examples in the _files_ directory.
    
-   Modify file with editor such as vi or nano.
+       Modify file with editor such as vi or nano.
 
-    `$ vi ~/kubespray-and-pray/files/topology.json`   
+      `$ vi ~/kubespray-and-pray/files/topology.json`   
 
-   Define Kubespray inventory.  Edit `gluster` section in Kubespray inventory file.  Specify all members to be part of the GlusterFS distributed filesystem.
+   b. Define Kubespray inventory.  Skip this step if gluster group was already defined in _inventory.cfg_.
+   
+   Edit `gluster` section in Kubespray inventory file.  Specify which nodes are to become members of the GlusterFS distributed filesystem.  
     
     ```
     [gluster]
