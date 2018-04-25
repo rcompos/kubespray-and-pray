@@ -150,6 +150,7 @@ Perform the following steps on the __control node__ where ansible command will b
     Example:  pray-for-cluster.sh -u myuser -b /dev/sdb -i inventory-20node.cfg
     
     Optional arguments for _pray-for-cluster_ are as follows.  If no option is specified the default values will be used.
+    
     | Flag   | Description                          | Default       |
     |--------|--------------------------------------|---------------|
     | -u     | SSH username                         | solidfire     |
