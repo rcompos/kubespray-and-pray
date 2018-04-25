@@ -123,7 +123,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. __Define Cluster Topology__  
     
-    Modify inventory file with editor such as vi or nano.  Define your desired cluster topology.
+    Define your desired cluster topology.  Modify inventory file with editor such as vi or nano.
 
     `$ cd ~/kubespray-and-pray`  
     `$ vi files/inventory.cfg`  
@@ -145,10 +145,11 @@ Perform the following steps on the __control node__ where ansible command will b
     
     User _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a user, then you must manually update the _ansible.cfg_ file.
      
-    __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
+    __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise default device is _/dev/sdc_.  If default device not found, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
 
-    Optional arguments for _pray-for-cluster_ are as follows.  If no option is specified the default values will be used.
+    Example:  pray-for-cluster.sh -u myuser -b /dev/sdb -i inventory-20node.cfg
     
+    Optional arguments for _pray-for-cluster_ are as follows.  If no option is specified the default values will be used.
     | Flag   | Description                          | Default       |
     |--------|--------------------------------------|---------------|
     | -u     | SSH username                         | solidfire     |
