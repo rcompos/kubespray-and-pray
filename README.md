@@ -127,8 +127,6 @@ Perform the following steps on the __control node__ where ansible command will b
     
     __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
-    __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, edit _prep-cluster.yml_ and change the value _block_device_ to desired value, such as _/dev/sdd_.  Otherwise, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
-
     __Optional Cluster Configuration:__  Edit Kubespray group variables in _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
     _kubespray-and-pray/files/all.yml_  
@@ -138,9 +136,21 @@ Perform the following steps on the __control node__ where ansible command will b
 
     Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.
 
-    Specify a user name to connect to via SSH to all cluster machines.  User _solidfire_ is used in this example, but is arbitrary.  This user account must already exist with sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.
+    If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  User _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.
+     
+    __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
 
-    `$ ./pray-for-cluster.sh solidfire`
+    Optional arguments for _pray-for-cluster_ are as follows.  If no option is specified the default values will be used.
+    
+    | Flag   | Description                          | Default       |
+    |--------|--------------------------------------|---------------|
+    | -u     | SSH username                         | solidfire     |
+    | -b     | Block device for containers          | /dev/sdc      |
+    | -i     | Inventory file in directory _files_  | inventory.cfg |
+
+    Run script to deploy Kubernetes cluster to all nodes.
+
+    `$ ./pray-for-cluster.sh`
 
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
