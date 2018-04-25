@@ -79,7 +79,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
 The cluster topology is defined as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
 
-The following is an example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node). 
+The following is an example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  There are also three GlusterFS (gluster) members defined.
 
 The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
 
@@ -107,6 +107,11 @@ k8s0
 k8s1
 k8s2
     
+[gluster]
+k8s0
+k8s1
+k8s2
+    
 [k8s-cluster:children]
 kube-node
 kube-master
@@ -116,7 +121,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. __Define Cluster Topology__  
     
-   Modify inventory file with editor such as vi or nano.  Define your desired cluster topology.
+    Modify inventory file with editor such as vi or nano.  Define your desired cluster topology.
 
     `$ cd ~/kubespray-and-pray`  
     `$ vi files/inventory.cfg`  
