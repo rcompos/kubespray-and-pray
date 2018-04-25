@@ -134,9 +134,9 @@ Perform the following steps on the __control node__ where ansible command will b
 
 2. __Deploy Cluster__
 
-    Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.
-
-    If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  User _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.
+    Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
+    
+    User _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a user, then you must manually update the 'ansible.cfg' file.
      
     __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
 

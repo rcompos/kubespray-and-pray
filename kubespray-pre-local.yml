@@ -2,7 +2,7 @@
 
 - hosts: '127.0.0.1'
   vars:
-    file_src: '.kubespray.yml'
+    kscli_src: '.kubespray.yml'
     dir_dest: '~'
     inv_dir:  '~/.kubespray/inventory'
     inv_src:  'inventory.cfg'
@@ -13,30 +13,23 @@
     all_dest: "{{ group_dir }}/all.yml"
     k8s_cluster_src:  'k8s-cluster.yml'
     k8s_cluster_dest: "{{ group_dir }}/k8s-cluster.yml"
-    nodes:   'k8s0 k8s1 k8s2'
-    etcds:   'k8s0 k8s1 k8s2'
-    masters: 'k8s0 k8s1'
-    #node_name: 'k8s777'
-    #node_ssh:  '1.2.3.4'
-    #node_ip:   '2.3.4.5'
-    #node_list:
-    #  - { node_name: 'k8s777', node_ssh: '1.2.3.4', node_ip: '1.2.4.4' }
-    #  - { node_name: 'k8s778', node_ssh: '1.2.3.5', node_ip: '1.2.4.5' }
-    #  - { node_name: 'k8s779', node_ssh: '1.2.3.6', node_ip: '1.2.4.6' }
+    nodes:   'dummy0 dummy1 dummy2'
+    etcds:   'dummy0 dummy1 dummy2'
+    masters: 'dummy0 dummy1'
   connection: local
 
   tasks:
-  
+
   - name: Copy kubespray-cli config file
     copy:
-      src:  "{{ file_src }}"
+      src:  "{{ kscli_src }}"
       dest: "{{ dir_dest }}"
       mode: 0644
       force: no
 
   - name: Prepare Kubespray
     ## Example: kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0 k8s1
-    # Run kubespray prepare with dummy values
+    # Run kubespray prepare with dummy values to generate _~/.kubespray_, then replace the _inventory.cfg_ files
     shell: "echo yes | kubespray prepare --nodes {{ nodes }} --etcds {{ etcds }} --masters {{ masters }}"
 
   - name: Copy group_vars
