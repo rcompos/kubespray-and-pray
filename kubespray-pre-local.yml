@@ -21,12 +21,12 @@
 
   tasks:
 
-#  - name: Copy kubespray-cli config file
-#    copy:
-#      src:  "{{ kscli_src }}"
-#      dest: "{{ dir_dest }}"
-#      mode: 0644
-#      force: no
+  - name: Copy kubespray-cli config file
+    copy:
+      src:  "{{ kscli_src }}"
+      dest: "{{ dir_dest }}"
+      mode: 0644
+      force: no
 
 #  - name: Prepare Kubespray
 #    ## Example: kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0 k8s1
