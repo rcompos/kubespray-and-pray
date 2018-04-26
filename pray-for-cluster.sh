@@ -1,12 +1,13 @@
 #!/bin/bash
 export PYTHONUNBUFFERED=1
 KUSER=solidfire
+KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
 
 helpme() {
     echo "Usage: `basename $0` [-u user] [-i inventory] [-b block_device] [-y]"
     echo "  -u, --user        operating system user"
     echo "  -b, --block       block device"
-    echo "  -i, --inventory   inventory file in directory files"
+    echo "  -i, --inventory   inventory directory"
     echo "  -y, --yes         continue"
     exit 1
 }
@@ -70,8 +71,19 @@ if [ "$YES" != 1 ]; then
 fi
 #echo "Here we go: $YES"
 
+mv ~/.kubespray ~/.kubespray.orig
+git clone $KUBESPRAY_REPO ~/.kubespray
+mv ~/.kubespray/inventory ~/.kubespray/inventory.orig
+# Add conditional for INVENTORY
+if [ ! -d "$INVENTORY" ]; then 
+   INVENTORY="inventory/default"
+fi
+#cp -a inventory/default ~/.kubespray/inventory
+cp -a $INVENTORY ~/.kubespray/inventory
+
 # Run top-level ansible playbook to prepare all nodes for kubespray deploy
-ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK -e inv_src=$INVENTORY
+#ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK -e inv_src=$INVENTORY
+ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK 
 
 # Deploy Kubespray
 kubespray deploy -y -u $KUSER

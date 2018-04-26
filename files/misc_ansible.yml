@@ -1,0 +1,11 @@
+---
+# Run on K8s master
+
+- hosts: '*'
+  vars:
+
+  tasks:
+
+  - name: List all members of group
+    debug: msg="{{ groups['kube-nodes'] | map('extract', hostvars, ['ansible_ssh_host']) | join(',') }}"
+

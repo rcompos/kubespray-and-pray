@@ -83,7 +83,7 @@ The following is an example _inventory.cfg_ defining a Kubernetes cluster with t
 
 The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
 
-For more examples see the _inventory-*.cfg_ files in the directory _files_ and under _inventory_.
+For more examples see _inventory_ directory.
 
 ```
 k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
@@ -123,9 +123,9 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. __Kubernetes Cluster Topology__  
     
-    Define your desired cluster topology in _inventory.cfg_.
+    Define your desired cluster topology ansible inventory and variables files.  These files are locate at _inventory/default_.  
     
-    The file _ansible.cfg_ defines the ansible inventory file as _~/.kubespray/inventory/inventory.cfg_.  One of the ansible playbooks will copy the edited _files/inventory.cfg_ (or command-line specified file under _files_) to _~/.kubespray/inventory_. This will be the default inventory file when Kubespray is run.
+    The file _ansible.cfg_ defines the ansible inventory file as _inventory/default/inventory.cfg_.
     
     __Multiple network adapters:__  If multiple network adapters are present on any node(s), Ansible will use the value provided as _ansible\_ssh\_host_ and/or _ip_ for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
     
@@ -133,33 +133,33 @@ Perform the following steps on the __control node__ where ansible command will b
 
     __Kubespray cluster configuration:__  Edit Kubespray group variables in _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
-    _kubespray-and-pray/files/all.yml_  
-    _kubespray-and-pray/files/k8s-cluster.yml_  
+    _inventory/default/all.yml_  
+    _inventory/default/k8s-cluster.yml_  
     
     __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
     Modify inventory file with editor such as vi or nano.
 
     `$ cd ~/kubespray-and-pray`  
-    `$ vi files/inventory.cfg`  
+    `$ vi inventory/default/inventory.cfg`  
 
 2. __Deploy Kubernetes Cluster__
 
-    Run script to deploy Kubernetes cluster to machines specified in inventory.cfg.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
+    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
     
     User _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a user, then you must manually update the _ansible.cfg_ file.
      
     __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise default device is _/dev/sdc_.  If default device not found, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
 
-    Example:  pray-for-cluster.sh -u myuser -b /dev/sdb -i inventory-20node.cfg
+    Example:  pray-for-cluster.sh -u myuser -b /dev/sdb -i dev20node
     
     Optional arguments for _pray-for-cluster_ are as follows.  If no option is specified the default values will be used.
     
-    | Flag   | Description                          | Default       |
-    |--------|--------------------------------------|---------------|
-    | -u     | SSH username                         | solidfire     |
-    | -b     | Block device for containers          | /dev/sdc      |
-    | -i     | Inventory file in directory _files_  | inventory.cfg |
+    | Flag   | Description                            | Default     |
+    |--------|----------------------------------------|-------------|
+    | -u     | SSH username                           | solidfire   |
+    | -b     | Block device for containers            | /dev/sdc    |
+    | -i     | Inventory directory under _inventory_  | default     | 
 
     Run script to deploy Kubernetes cluster to all nodes with default values.
 
