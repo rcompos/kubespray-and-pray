@@ -209,7 +209,7 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
    
     Edit file to define distributed filesystem members.  Modify file with editor such as vi or nano.
 
-    `$ vi ~/kubespray-and-pray/files/topology.json`   
+    `$ vi ~/kubespray-and-pray/inventory/default/topology.json`   
 
     b. Define Kubespray inventory nodes in gluster group.
     
@@ -217,8 +217,8 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
     
      Edit `gluster` section in Kubespray inventory file.  Specify which nodes are to become members of the GlusterFS distributed filesystem.  Modify file with editor such as vi or nano.  Copy to _.kubespray_ directory.
 
-    `$ vi files/inventory.cfg`  
-    `$ cp files/inventory.cfg ~/.kubespray/inventory`  
+    `$ vi inventory/default/inventory.cfg`  
+    `$ cp inventory/default/inventory.cfg ~/.kubespray/inventory`  
 
 2. __Deploy Heketi GlusterFS__
 

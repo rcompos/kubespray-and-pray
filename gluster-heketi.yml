@@ -9,6 +9,7 @@
     gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
+    gluster_topo: '../inventory/default/topology.json'
   remote_user: solidfire
   become: true
   run_once: true
@@ -106,7 +107,7 @@
 
   - name: Copy custom topology
     copy:
-      src: "topology.json"
+      src: "{{ gluster_topo }}"
       dest: "{{ dir_heketi }}"
       mode: 0644
 

@@ -2,6 +2,8 @@
 export PYTHONUNBUFFERED=1
 KUSER=solidfire
 KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
+KUBESPRAY_INV=~/.kubespray/inventory
+INVDIR_DEFAULT=inventory/default
 
 helpme() {
     echo "Usage: `basename $0` [-u user] [-i inventory] [-b block_device] [-y]"
@@ -24,7 +26,7 @@ case $key in
     shift # past value
     ;;
     -i|--inventory)
-    INVENTORY="$2"
+    INVDIR="$2"
     shift # past argument
     shift # past value
     ;;
@@ -53,10 +55,23 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-echo KUSER           = "${KUSER}"
-echo INVENTORY       = "${INVENTORY}"
-echo BLOCK           = "${BLOCK}"
+echo "Kubespray-and-Pray"
+echo
+if [ ! -z ${KUSER} ];  then  echo KUSER  = "${KUSER}"; fi
+if [ ! -z ${INVDIR} ]; then  echo INVDIR = "${INVDIR}"; fi
+if [ ! -z ${BLOCK} ];  then  echo BLOCK  = "${BLOCK}"; fi
 #echo YES             = "${YES}"
+
+# Check for passed in arg
+if [ ! -d "$INVDIR" ]; then 
+   INVDIR=$INVDIR_DEFAULT   ##echo "IF $INVDIR"; else echo "ELSE $INVDIR"
+fi
+
+echo
+echo "Contents of $INVDIR/inventory.cfg:"
+echo
+cat -n $INVDIR/inventory.cfg
+echo
 
 if [ "$YES" != 1 ]; then
   while true; do
@@ -71,18 +86,18 @@ if [ "$YES" != 1 ]; then
 fi
 #echo "Here we go: $YES"
 
-mv ~/.kubespray ~/.kubespray.orig
+# Clone Kubespray git repository
 git clone $KUBESPRAY_REPO ~/.kubespray
-mv ~/.kubespray/inventory ~/.kubespray/inventory.orig
-# Add conditional for INVENTORY
-if [ ! -d "$INVENTORY" ]; then 
-   INVENTORY="inventory/default"
+
+# Create backup of original inventory dir
+if [ ! -f "$KUBESPRAY_INV-orig" ]; then 
+   mv $KUBESPRAY_INV $KUBESPRAY_INV-orig
 fi
-#cp -a inventory/default ~/.kubespray/inventory
-cp -a $INVENTORY ~/.kubespray/inventory
+
+# Copy inventory directory to active kubespray location
+cp -a $INVDIR $KUBESPRAY_INV
 
 # Run top-level ansible playbook to prepare all nodes for kubespray deploy
-#ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK -e inv_src=$INVENTORY
 ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK 
 
 # Deploy Kubespray
