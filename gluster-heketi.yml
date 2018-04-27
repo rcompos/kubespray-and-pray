@@ -5,7 +5,9 @@
   vars:
     heketi_server: 'http://localhost:'
     heketi_github_version: 'v6.0.0'
+    heketi_client_version: 'v5.0.0'
     heketi_docker_version: '5'
+    # Gluster DockerHub Image
     gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
@@ -45,12 +47,18 @@
       regexp: '^                        "image": "gluster/gluster-centos:latest",'
       line:    "                        \"image\": \"gluster/gluster-centos:{{ gluster_version }}\","
 
-  - name: Get and extract Heketi Client
-    unarchive:
-      src: https://github.com/heketi/heketi/releases/download/{{ heketi_github_version }}/heketi-client-{{ heketi_github_version }}.linux.amd64.tar.gz
+  - name: Get Heketi Client
+    get_url:
+      url: https://github.com/heketi/heketi/releases/download/{{ heketi_client_version }}/heketi-client-{{ heketi_client_version }}.linux.amd64.tar.gz
       dest: "{{ ansible_env.HOME }}"
-      remote_src: yes
+      mode: 644
+
+  - name: Extract Heketi Client
+    unarchive:
+      src: "{{ ansible_env.HOME }}/heketi-client-{{ heketi_client_version }}.linux.amd64.tar.gz"
+      dest: "{{ ansible_env.HOME }}"
       creates: "{{ ansible_env.HOME }}/heketi-client"
+      remote_src: yes
 
   - name: Check for GlusterFS DaemonSets
     shell: 'kubectl get ds glusterfs --no-headers=1'

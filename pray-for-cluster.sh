@@ -90,8 +90,11 @@ fi
 git clone $KUBESPRAY_REPO ~/.kubespray
 
 # Create backup of original inventory dir
-if [ ! -f "$KUBESPRAY_INV-orig" ]; then 
+if [ ! -d "$KUBESPRAY_INV-orig" ]; then 
    mv $KUBESPRAY_INV $KUBESPRAY_INV-orig
+else
+   rm -fr $KUBESPRAY_INV-old
+   mv $KUBESPRAY_INV $KUBESPRAY_INV-old
 fi
 
 # Copy inventory directory to active kubespray location
