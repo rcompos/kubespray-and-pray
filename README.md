@@ -205,7 +205,7 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     a. Define Heketi GlusterFS topology.  
    
-    For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. _/dev/sdd_) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node.  Additional examples in the _files_ directory.
+    For each node block, the `hostnames.manage` value should be set to the node _FQDN_ and the `storage` value should be set to the node _IP address_.  The raw block device(s) (i.e. _/dev/sdd_) are specified under `devices`.  See _files/topology-sample.json_ for an example of multiple block devices per node.  Additional examples in the _files_ directory.  
    
     Edit file to define distributed filesystem members.  Modify file with editor such as vi or nano.
 

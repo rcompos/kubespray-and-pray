@@ -1,0 +1,17 @@
+---
+# Ansible 
+
+- hosts: '127.0.0.1'
+  vars:
+    inv_file: 'inventory/default/inventory.cfg'
+  run_once: true
+  connection: local
+
+  tasks:
+
+  - name: Read Kubespray inventory "{{ inv_file }}"
+    command: "cat {{ inv_file }}"
+    register: result
+
+  - name: List Kubespray inventory "{{ inv_file }}""
+    debug: msg="{{ result.stdout_lines }}" 

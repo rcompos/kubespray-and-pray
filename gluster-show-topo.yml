@@ -1,18 +1,17 @@
 ---
-# Ansible for installing GlusterFS requirements on K8s cluster machines.
+# Ansible 
 
 - hosts: '127.0.0.1'
   vars:
     gluster_topo: 'inventory/default/topology.json'
-  remote_user: solidfire
   run_once: true
   connection: local
 
   tasks:
 
-  - name: Get 
-    shell: cat "{{gluster_topo}}"
+  - name: Read Gluster topology "{{ gluster_topo }}"
+    shell: cat "{{ gluster_topo }}"
     register: result
 
-  - name: List
+  - name: List Gluster topology "{{ gluster_topo }}"
     debug: msg="{{ result.stdout }}" 
