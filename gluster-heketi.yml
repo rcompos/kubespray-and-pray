@@ -142,19 +142,65 @@
       port: "{{ heketi_port.stdout }}"
       delay: 10
 
+
+  - debug: msg="Heketi server url http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
+
   - name: Load Heketi topology
-    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology load --json={{ dir_heketi }}/topology.json"
+    #shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology load --json={{ dir_heketi }}/topology.json"
+    command: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology load --json=topology.json"
+    args:
+      chdir: "{{ dir_heketi }}" 
+    register: out
 
-  - name: Setup Openshift Heketi storage
-    shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} setup-openshift-heketi-storage"
+  - debug: var=out.stdout_lines
+
+  - debug: msg="{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology info"
+
+  - name: List Heketi topology
+    #shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} cluster list"
+    command: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology info"
+    register: out
+
+  - debug: var=out.stdout_lines
+
+  - name: Setup Openshift Heketi Storage
+    command: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} setup-openshift-heketi-storage"
+    args:
+      chdir: "{{ dir_heketi }}" 
+    register: out
     ignore_errors: true
 
-  - name: Create Heketi storage
-    shell: kubectl create -f heketi-storage.json
-    ignore_errors: true
+  - debug: var=out.stdout_lines
+
+  - name: Modify heketi-storage.json
+    lineinfile:
+      dest: "{{ dir_heketi }}/heketi-storage.json"
+      state: present
+      regexp: '^                "image": "heketi/heketi:dev",'
+      line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
+      backup: yes
+
+  - name: "Create Heketi storage"
+    command: "kubectl create -f heketi-storage.json"
+    args:
+      chdir: "{{ dir_heketi }}" 
+    register: out
+
+  - debug: var=out.stdout_lines
+
+#  - pause: #    prompt: "Pause-ing!" #- meta: end_play ###################
+  - debug: msg="Manual steps from here on out." 
 
   - name: Delete Bootstrap Heketi
-    shell: kubectl delete all,service,jobs,deployment,secret --selector="deploy-heketi"
+    shell: echo kubectl delete all,service,jobs,deployment,secret --selector=deploy-heketi
+    register: out
+
+  - debug: var=out.stdout_lines
 
   - name: Create Permanent Heketi
-    shell: kubectl create -f "{{ dir_heketi }}/heketi-deployment.json"
+    command: "echo kubectl create -f heketi-deployment.json"
+    args:
+      chdir: "{{ dir_heketi }}" 
+    register: out
+
+  - debug: var=out.stdout_lines

@@ -7,6 +7,7 @@
     sc_name: 'slow'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
+    heketi_cli: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli"
   remote_user: solidfire
   become: true
   run_once: true
@@ -23,6 +24,12 @@
     register: heketi_ip_port
 
   - debug: msg="{{ heketi_ip_port.stdout }}"
+
+  - name: Check Heketi server
+    shell: "{{ heketi_cli }} -s http://{{ heketi_ip_port.stdout }} cluster list"
+    register: out
+
+  - debug: var=out.stdout_lines
 
   - name: Copy storage class yaml
     copy:
@@ -43,3 +50,4 @@
   - name: Make default storage class
     shell: |
       kubectl patch storageclass "{{ sc_name }}" -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+

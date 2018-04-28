@@ -225,7 +225,21 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
     Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.  Run command from _kubespray-and-pray_ directory.
 
     `$ ansible-playbook pray-for-gluster.yml`   
+
+3. __Shameful Manual Steps Temp Fix__
+
+    For some reason, can't get the kubectl delete all and deploy permanent heketi steps to be automated.
+    __Log onto a K8s master node__ and change to root. 
+   
+     `# cd ~/heketi/extras/kubernetes`
+     `# kubectl delete all,service,jobs,deployment,secret --selector=deploy-heketi`
+     `# kubectl create -f heketi-deployment.json`
     
+    From __control node__, run the following playbook. 
+
+     `$ ansible-playbook gluster-storage-class.yml` 
+
+
 ## Validation ##
 
 Validate cluster functionality by deploying an application.
