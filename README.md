@@ -233,14 +233,16 @@ Validate cluster functionality by deploying an application. Run on master or wit
 
 1. __Deploy Helm Package__  
 
-    `$ helm install stable/minio --namespace minio`  
+    `$ helm install stable/minio -n minio --namespace minio --set service.type=NodePort`
 
-2. __Change Service Type__
+2. __Get Port__ 
   
-    Change service type from ClusterIP to NodePort.
+    Get port under PORT(S).  Make note of the second port value.
 
-    `$ kubectl edit svc minio`
+    `$ kubectl get svc minio -n minio`
 
 3. __View Service__
+
+    Use any node IP address and the node port from previous step.
 
     URL:  http://<node_ip>:<node_port>
