@@ -12,6 +12,7 @@
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
     gluster_topo: '../inventory/default/topology.json'
+    delete_bootstrap_heketi: delete-bootstrap-heketi.sh
   remote_user: solidfire
   become: true
   run_once: true
@@ -142,7 +143,6 @@
       port: "{{ heketi_port.stdout }}"
       delay: 10
 
-
   - debug: msg="Heketi server url http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
 
   - name: Load Heketi topology
@@ -180,7 +180,7 @@
       line:    "                \"image\": \"heketi/heketi:{{ heketi_docker_version }}\","
       backup: yes
 
-  - name: "Create Heketi storage"
+  - name: Create Heketi storage
     command: "kubectl create -f heketi-storage.json"
     args:
       chdir: "{{ dir_heketi }}" 
@@ -188,19 +188,39 @@
 
   - debug: var=out.stdout_lines
 
-#  - pause: #    prompt: "Pause-ing!" #- meta: end_play ###################
-  - debug: msg="Manual steps from here on out." 
+  - name: Pause for heketi storage
+    pause:
+      seconds: 60
 
   - name: Delete Bootstrap Heketi
-    shell: echo kubectl delete all,service,jobs,deployment,secret --selector=deploy-heketi
+    shell: |
+      kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi
+      echo
+      kubectl delete all,service,jobs,deployment,secret --selector=deploy-heketi
+      echo
+      kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi
     register: out
 
   - debug: var=out.stdout_lines
 
+  - name: Pause for terminating heketi
+    pause:
+      seconds: 60
+
   - name: Create Permanent Heketi
-    command: "echo kubectl create -f heketi-deployment.json"
+    command: "kubectl create -f heketi-deployment.json"
     args:
       chdir: "{{ dir_heketi }}" 
+    register: out
+
+  - debug: var=out.stdout_lines
+
+  - name: Pause for creating heketi
+    pause:
+      seconds: 60
+
+  - name: Show Permanent Heketi
+    shell: kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi
     register: out
 
   - debug: var=out.stdout_lines
