@@ -26,6 +26,7 @@
       repo: 'https://github.com/heketi/heketi.git'
       dest: "{{ dir_target }}"
       version: "{{ heketi_github_version }}"
+      force: yes
 
   - name: Modify heketi-bootstrap image value
     lineinfile:
@@ -112,7 +113,7 @@
     register: wait_for_heketi_bootstrap
     retries: 36 
     delay: 5
-    until: wait_for_heketi_bootstrap.rc== 0
+    until: wait_for_heketi_bootstrap.rc == 0
 
   - name: Copy custom topology
     copy:
@@ -185,6 +186,7 @@
     args:
       chdir: "{{ dir_heketi }}" 
     register: out
+    ignore_errors: true
 
   - debug: var=out.stdout_lines
 
@@ -203,9 +205,12 @@
 
   - debug: var=out.stdout_lines
 
-  - name: Pause for terminating heketi
-    pause:
-      seconds: 60
+  - name: Wait for Heketi Bootstrap Termination
+    shell: 'kubectl get all,service,jobs,deployment,secret --no-headers --selector=deploy-heketi 2>/dev/null | wc -l'
+    register: wait_for_heketi_bootstrap_termination
+    retries: 36 
+    delay: 5
+    until: wait_for_heketi_bootstrap_termination.stdout == "0"
 
   - name: Create Permanent Heketi
     command: "kubectl create -f heketi-deployment.json"
@@ -215,9 +220,12 @@
 
   - debug: var=out.stdout_lines
 
-  - name: Pause for creating heketi
-    pause:
-      seconds: 60
+  - name: Wait for Heketi Permanent
+    shell: 'kubectl get svc --no-headers --selector=deploy-heketi 2>/dev/null | wc -l'
+    register: wait_for_heketi_permanent
+    retries: 36 
+    delay: 5
+    until: wait_for_heketi_permanent.stdout >= 1
 
   - name: Show Permanent Heketi
     shell: kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi

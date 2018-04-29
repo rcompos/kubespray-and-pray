@@ -245,4 +245,4 @@ Validate cluster functionality by deploying an application. Run on master or wit
 
     Use any node IP address and the node port from previous step.
 
-    URL:  http://<node_ip>:<node_port>
+    `URL:  http://<node_ip>:<node_port>`

@@ -18,12 +18,23 @@
   #  set_fact:
   #    block_device: '/dev/sdb'
 
+  - name: Pods wait for
+    shell: "kubectl get svc --no-headers heketi"
+    register: heketi_ready
+    retries: 24 
+    delay: 5
+    until: heketi_ready.rc == 0
+
   - name: Get Heketi server ip and port
     shell: |
       kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'
     register: heketi_ip_port
 
   - debug: msg="{{ heketi_ip_port.stdout }}"
+
+  - name: Pause few seconds for heketi server
+    pause:
+      seconds: 15
 
   - name: Check Heketi server
     shell: "{{ heketi_cli }} -s http://{{ heketi_ip_port.stdout }} cluster list"
