@@ -4,6 +4,7 @@ KUSER=solidfire
 KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
 KUBESPRAY_INV=~/.kubespray/inventory
 INVDIR_DEFAULT=inventory/default
+BLOCK_DEFAULT=/dev/sdb
 
 helpme() {
     echo "Usage: `basename $0` [-u user] [-i inventory] [-b block_device] [-y]"
@@ -59,7 +60,11 @@ echo "Kubespray-and-Pray"
 echo
 if [ ! -z ${KUSER} ];  then  echo KUSER  = "${KUSER}"; fi
 if [ ! -z ${INVDIR} ]; then  echo INVDIR = "${INVDIR}"; fi
-if [ ! -z ${BLOCK} ];  then  echo BLOCK  = "${BLOCK}"; fi
+if [ ! -z ${BLOCK} ]; then
+  echo BLOCK  = "${BLOCK}"
+else
+   BLOCK=$BLOCK_DEFAULT
+fi
 #echo YES             = "${YES}"
 
 # Check for passed in arg

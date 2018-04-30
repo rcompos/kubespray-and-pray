@@ -29,15 +29,22 @@
       regexp: '^/dev/mapper/main-swap '
   
   - name: Install Packages
-    apt:
+    #apt:
+    package:
       name: "{{ item }}"
     with_items:
       - lvm2
-      - dnsutils
       - net-tools
       - fortune-mod
       - cowsay
       - tree
+
+  - name: Install Packages
+    package:
+      name: "{{ item }}"
+    when: ansible_os_family == 'Debian'
+    with_items:
+      - dnsutils
   
   - name: Configure Login Banner
     script: fortune_cowsy.sh

@@ -53,7 +53,15 @@
     shell: |
       add-apt-repository "{{ gluster_repo }}"
       apt-get update
+    when: ansible_os_family == 'Debian'
 
   - name: Install Packages
-    apt: 
+    #apt: 
+    package: 
       name: "glusterfs-client={{ glusterfs_client_vers }}"
+    when: ansible_os_family == 'Debian'
+
+  - name: Install Gluster
+    package:
+      name: glusterfs
+    when: ansible_os_family == 'RedHat'

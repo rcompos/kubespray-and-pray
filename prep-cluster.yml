@@ -9,6 +9,6 @@
 - import_playbook: kubespray-pre-local.yml
 - import_playbook: bootstrap-ansible.yml
 - import_playbook: user-sudo.yml
-- import_playbook: create-container-volume.yml block_device="{{ block_device }}"
+- import_playbook: create-container-volume.yml block_device='/dev/sdc'
 - import_playbook: kubespray-pre.yml
 

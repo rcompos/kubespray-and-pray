@@ -4,19 +4,6 @@
   vars:
     kscli_src: '.kubespray.yml'
     dir_dest: '~'
-    dir_kube: '~/.kubespray'
-    inv_dir:  '~/.kubespray/inventory'
-    inv_src:  'inventory.cfg'
-    inv_dest: "{{ inv_dir }}/inventory.cfg"
-    group_dir:  "{{ inv_dir }}/group_vars"
-    group_dir_sample:  "{{ inv_dir }}/sample/group_vars"
-    all_src:  'all.yml'
-    all_dest: "{{ group_dir }}/all.yml"
-    k8s_cluster_src:  'k8s-cluster.yml'
-    k8s_cluster_dest: "{{ group_dir }}/k8s-cluster.yml"
-    nodes:   '127.0.0.1'
-    etcds:   '127.0.0.1'
-    masters: '127.0.0.1'
   connection: local
 
   tasks:
@@ -28,35 +15,3 @@
       mode: 0644
       force: no
 
-#  - name: Prepare Kubespray
-#    ## Example: kubespray prepare --nodes k8s0 k8s1 k8s2 --etcds k8s0 k8s1 k8s2 --masters k8s0 k8s1
-#    # Run kubespray prepare with dummy values to generate _~/.kubespray_, then replace the _inventory.cfg_ files
-#    #shell: "echo yes | kubespray prepare --nodes {{ nodes }} --etcds {{ etcds }} --masters {{ masters }}"
-
-#  - name: Copy Inventory Dir
-#    copy:
-#      src:  "{{ group_dir_sample }}"
-#      dest: "{{ group_dir }}"
-#      mode: 0644
-#
-#  - name: Copy inventory file
-#    copy:
-#      src:  "{{ inv_src }}"
-#      dest: "{{ inv_dest }}"
-#      backup: yes
-#      mode: 0644
-#
-#  - name: Copy all.yml config file
-#    copy:
-#      src:  "{{ all_src }}"
-#      dest: "{{ all_dest }}"
-#      backup: yes
-#      mode: 0644
-#
-#  - name: Copy k8s-cluster.yml file
-#    copy:
-#      src:  "{{ k8s_cluster_src }}"
-#      dest: "{{ k8s_cluster_dest }}"
-#      backup: yes
-#      mode: 0644
-#

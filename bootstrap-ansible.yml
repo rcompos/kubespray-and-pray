@@ -6,6 +6,12 @@
 
   tasks:
 
-  - name: Install Python 2
+  - name: Install Python 2 on Ubuntu
     raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
     become: true
+    ignore_errors: yes
+
+  - name: Install Python 2 on CentOS
+    raw: test -e /usr/bin/yum && yum -y install python-simplejson python
+    become: true
+    ignore_errors: yes
