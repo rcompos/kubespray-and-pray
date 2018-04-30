@@ -34,7 +34,7 @@
 
   - name: Pause few seconds for heketi server
     pause:
-      seconds: 15
+      seconds: 30 
 
   - name: Check Heketi server
     shell: "{{ heketi_cli }} -s http://{{ heketi_ip_port.stdout }} cluster list"

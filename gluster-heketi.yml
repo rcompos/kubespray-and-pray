@@ -212,6 +212,10 @@
     delay: 5
     until: wait_for_heketi_bootstrap_termination.stdout == "0"
 
+  - name: Pause for heketi bootstrap termination
+    pause:
+      seconds: 15
+
   - name: Create Permanent Heketi
     command: "kubectl create -f heketi-deployment.json"
     args:
@@ -226,6 +230,10 @@
     retries: 36 
     delay: 5
     until: wait_for_heketi_permanent.stdout >= 1
+
+  - name: Pause for heketi Permanent
+    pause:
+      seconds: 15
 
   - name: Show Permanent Heketi
     shell: kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi
