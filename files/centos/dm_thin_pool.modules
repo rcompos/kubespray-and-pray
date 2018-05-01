@@ -1,0 +1,5 @@
+#!/bin/sh
+/sbin/lsmod | grep "^dm_thin_pool " >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+  exec /sbin/modprobe dm_thin_pool >/dev/null 2>&1
+fi

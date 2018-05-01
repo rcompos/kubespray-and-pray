@@ -17,10 +17,16 @@
   remote_user: solidfire
   become: true
   run_once: true
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
   tasks:
 
   # Check for existenz of raw storage devices
+
+  - name: Package git
+    package:
+      name: 'git'
 
   - name: Clone Heketi repo
     git:
@@ -64,7 +70,7 @@
       remote_src: yes
 
   - name: Check for GlusterFS DaemonSets
-    shell: 'kubectl get ds glusterfs --no-headers=1'
+    command: 'kubectl get ds glusterfs --no-headers=1'
     register: check_glusterfs_ds
     ignore_errors: true
 

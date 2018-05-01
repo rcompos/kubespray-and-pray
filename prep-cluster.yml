@@ -11,4 +11,5 @@
 - import_playbook: user-sudo.yml
 - import_playbook: create-container-volume.yml block_device="{{ block_device }}"
 - import_playbook: kubespray-pre.yml
+- import_playbook: kubespray-alias.yml
 

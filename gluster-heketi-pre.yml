@@ -5,8 +5,9 @@
   vars:
     #gluster_repo: 'ppa:gluster/glusterfs-3.13'
     gluster_repo: 'ppa:gluster/glusterfs-3.12'
-    #glusterfs_client_vers: '3.13.2-ubuntu1~xenial2'
-    glusterfs_client_vers: '3.12.9-ubuntu1~xenial1'
+    #glusterfs_client_ubu: '3.13.2-ubuntu1~xenial2'
+    glusterfs_client_ubu: '3.12.9-ubuntu1~xenial1'
+    glusterfs_repo_centos: 'centos-release-gluster312'
   remote_user: solidfire
   become: true
 
@@ -28,32 +29,75 @@
       - dm_mirror
       - dm_thin_pool
 
-  - name: Install Kernel Modules dm_snapshot
+  - name: Persist Kernel Module dm_snapshot
     lineinfile:
       dest: /etc/modules
       state: present
       regexp: '^dm_snapshot '
       line: 'dm_snapshot'
+    when: ansible_os_family == 'Debian'
 
-  - name: Install Kernel Modules dm_mirror
+  - name: Persist Kernel Module dm_mirror
     lineinfile:
       dest: /etc/modules
       state: present
       regexp: '^dm_mirror '
       line: 'dm_mirror'
+    when: ansible_os_family == 'Debian'
 
-  - name: Install Kernel Modules dm_thin_pool
+  - name: Persist Kernel Module dm_thin_pool
     lineinfile:
       dest: /etc/modules
       state: present
       regexp: '^dm_thin_pool '
       line: 'dm_thin_pool'
+    when: ansible_os_family == 'Debian'
+
+  - name: Copy Kernel Module dm_snapshot
+    copy:
+      src: centos/dm_snapshot.modules
+      dest: /etc/sysconfig/modules/
+      owner: root
+      group: root
+      mode: 0755
+    when: ansible_os_family == 'RedHat'
+
+  - name: Copy Kernel Module dm_mirror
+    copy:
+      src: centos/dm_mirror.modules
+      dest: /etc/sysconfig/modules/
+      owner: root
+      group: root
+      mode: 0755
+    when: ansible_os_family == 'RedHat'
+
+  - name: Copy Kernel Module dm_thin_pool
+    copy:
+      src: centos/dm_thin_pool.modules
+      dest: /etc/sysconfig/modules/
+      owner: root
+      group: root
+      mode: 0755
+    when: ansible_os_family == 'RedHat'
+
+  - name: Package centos-release-gluster312
+    package:
+      name: centos-release-gluster312
+    when: ansible_os_family == 'RedHat'
+
+  - name: Package 
+    package:
+      name: glusterfs
+    when: ansible_os_family == 'RedHat'
 
   - name: Add Apt Repo
     shell: |
       add-apt-repository "{{ gluster_repo }}"
       apt-get update
+    when: ansible_os_family == 'Debian'
 
   - name: Install Packages
     apt: 
-      name: "glusterfs-client={{ glusterfs_client_vers }}"
+      name: "glusterfs-client={{ glusterfs_ent_ubu }}"
+    when: ansible_os_family == 'Debian'
+
