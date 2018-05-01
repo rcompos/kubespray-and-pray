@@ -13,6 +13,7 @@
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
     gluster_topo: '../inventory/default/topology.json'
     delete_bootstrap_heketi: delete-bootstrap-heketi.sh
+    pause_seconds: 30
   remote_user: solidfire
   become: true
   run_once: true
@@ -138,7 +139,7 @@
 
   - debug: msg="{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
 
-  - name: Wait 300 seconds for port 8080 of any IP to become open on the host, don't start checking for 10 seconds
+  - name: Wait for "{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}", don't start checking for 10 seconds
     wait_for:
       host: "{{ heketi_ip.stdout }}"
       port: "{{ heketi_port.stdout }}"
@@ -190,9 +191,9 @@
 
   - debug: var=out.stdout_lines
 
-  - name: Pause for heketi storage
+  - name: Pause {{ pause_seconds * 2 }}s for Heketi storage
     pause:
-      seconds: 60
+      seconds: "{{ pause_seconds * 2 }}"
 
   - name: Delete Bootstrap Heketi
     shell: |
@@ -212,9 +213,9 @@
     delay: 5
     until: wait_for_heketi_bootstrap_termination.stdout == "0"
 
-  - name: Pause for heketi bootstrap termination
+  - name: Pause {{ pause_seconds }}s for Heketi bootstrap termination
     pause:
-      seconds: 15
+      seconds: "{{ pause_seconds }}"
 
   - name: Create Permanent Heketi
     command: "kubectl create -f heketi-deployment.json"
@@ -231,9 +232,9 @@
     delay: 5
     until: wait_for_heketi_permanent.stdout >= 1
 
-  - name: Pause for heketi Permanent
+  - name: Pause {{ pause_seconds }}s for Heketi Permanent
     pause:
-      seconds: 15
+      seconds: "{{ pause_seconds }}"
 
   - name: Show Permanent Heketi
     shell: kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi

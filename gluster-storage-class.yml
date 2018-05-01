@@ -32,7 +32,7 @@
 
   - debug: msg="{{ heketi_ip_port.stdout }}"
 
-  - name: Pause few seconds for heketi server
+  - name: Pause 30 seconds for heketi server
     pause:
       seconds: 30 
 
