@@ -64,8 +64,7 @@ kube_users:
 
 # Choose network plugin (cilium, calico, contiv, weave or flannel)
 # Can also be set to 'cloud', which lets the cloud provider setup appropriate routing
-#kube_network_plugin: calico
-kube_network_plugin: flannel
+kube_network_plugin: calico
 
 # weave's network password for encryption
 # if null then no network encryption
@@ -158,19 +157,16 @@ k8s_image_pull_policy: IfNotPresent
 dashboard_enabled: true
 
 # Monitoring apps for k8s
-#efk_enabled: false
-efk_enabled: true
+efk_enabled: false
 
 # Helm deployment
-#helm_enabled: false
-helm_enabled: true
+helm_enabled: false
 
 # Istio deployment
 istio_enabled: false
 
 # Registry deployment
-#registry_enabled: false
-registry_enabled: true
+registry_enabled: false
 
 # Local volume provisioner deployment
 # deprecated will be removed

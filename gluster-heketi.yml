@@ -11,7 +11,7 @@
     gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
-    gluster_topo: '../inventory/default/topology.json'
+    gluster_topo: '~/.kubespray/inventory/topology.json'
     delete_bootstrap_heketi: delete-bootstrap-heketi.sh
     pause_seconds: 30
   remote_user: solidfire

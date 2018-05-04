@@ -3,14 +3,13 @@
 
 - hosts: '127.0.0.1'
   vars:
-    gluster_topo: 'inventory/default/topology.json'
-  run_once: true
+    gluster_topo: '~/.kubespray/inventory/topology.json'
   connection: local
 
   tasks:
 
   - name: Read Gluster topology "{{ gluster_topo }}"
-    shell: cat "{{ gluster_topo }}"
+    command: cat "{{ gluster_topo }}"
     register: result
 
   - name: List Gluster topology "{{ gluster_topo }}"

@@ -6,10 +6,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-nitro-1"
+                "ai-viper-1"
               ],
               "storage": [
-                "10.117.29.175"
+                "10.117.110.138"
               ]
             },
             "zone": 1
@@ -22,10 +22,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-nitro-2"
+                "ai-viper-2"
               ],
               "storage": [
-                "10.117.29.176"
+                "10.117.110.139"
               ]
             },
             "zone": 1
@@ -38,10 +38,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-nitro-3"
+                "ai-viper-3"
               ],
               "storage": [
-                "10.117.29.177"
+                "10.117.110.140"
               ]
             },
             "zone": 1

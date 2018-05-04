@@ -140,7 +140,8 @@ docker_daemon_graph: "/var/lib/docker"
 ## An obvious use case is allowing insecure-registry access
 ## to self hosted registries like so:
 
-docker_options: "--insecure-registry={{ kube_service_addresses }} --graph={{ docker_daemon_graph }}  {{ docker_log_opts }}"
+#docker_options: "--insecure-registry={{ kube_service_addresses }} --graph={{ docker_daemon_graph }}  {{ docker_log_opts }}"
+docker_options: "--insecure-registry={{ kube_service_addresses }},10.117.77.0/24,10.116.36.0/24 --graph={{ docker_daemon_graph }}  {{ docker_log_opts }}"
 docker_bin_dir: "/usr/bin"
 
 # Settings for containerized control plane (etcd/kubelet/secrets)
@@ -157,7 +158,8 @@ k8s_image_pull_policy: IfNotPresent
 dashboard_enabled: true
 
 # Monitoring apps for k8s
-efk_enabled: false
+#efk_enabled: false
+efk_enabled: true
 
 # Helm deployment
 #helm_enabled: false
@@ -167,7 +169,8 @@ helm_enabled: true
 istio_enabled: false
 
 # Registry deployment
-registry_enabled: false
+#registry_enabled: false
+registry_enabled: true
 
 # Local volume provisioner deployment
 # deprecated will be removed

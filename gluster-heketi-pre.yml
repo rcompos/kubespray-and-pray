@@ -98,6 +98,6 @@
 
   - name: Install Packages
     apt: 
-      name: "glusterfs-client={{ glusterfs_ent_ubu }}"
+      name: "glusterfs-client={{ glusterfs_client_ubu }}"
     when: ansible_os_family == 'Debian'
 

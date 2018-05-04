@@ -6,48 +6,48 @@
           "node": {
             "hostnames": {
               "manage": [
-                "ai-k8-01"
+                "do-nitro-1"
               ],
               "storage": [
-                "10.117.75.166"
+                "10.117.29.175"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/sdc"
+            "/dev/sdd"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "ai-k8-02"
+                "do-nitro-2"
               ],
               "storage": [
-                "10.117.76.87"
+                "10.117.29.176"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/sdc"
+            "/dev/sdd"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "ai-k8-03"
+                "do-nitro-3"
               ],
               "storage": [
-                "10.117.76.54"
+                "10.117.29.177"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/sdc"
+            "/dev/sdd"
           ]
         }
       ]
