@@ -17,8 +17,13 @@
   #  set_fact:
   #    block_device: '/dev/sdb'
 
-  - name: Run iptables for Heketi
-    script: gluster-iptables.sh
+  - name: Run iptables for Heketi Debian
+    script: gluster-iptables-debian.sh
+    when: ansible_os_family == 'Debian'
+
+  - name: Run iptables for Heketi RedHat
+    script: gluster-iptables-redhat.sh
+    when: ansible_os_family == 'RedHat'
 
   - name: Install Kernel Modules
     modprobe:
@@ -87,7 +92,10 @@
 
   - name: Package 
     package:
-      name: glusterfs
+      name: "{{ item }}"
+    with_items:
+      - glusterfs
+      - glusterfs-fuse
     when: ansible_os_family == 'RedHat'
 
   - name: Add Apt Repo
@@ -101,3 +109,9 @@
       name: "glusterfs-client={{ glusterfs_client_ubu }}"
     when: ansible_os_family == 'Debian'
 
+  - name: Make sure netfilter-persistent running
+    service: 
+      name: netfilter-persistent
+      enabled: yes
+      state: started
+    when: ansible_os_family == 'Debian'

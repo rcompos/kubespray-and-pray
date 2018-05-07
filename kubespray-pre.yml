@@ -27,18 +27,56 @@
       path: /etc/fstab
       state: absent
       regexp: '^/dev/mapper/main-swap '
+    when: ansible_os_family == 'Debian'
+  
+  - name: Edit Fstab
+    lineinfile:
+      path: /etc/fstab
+      state: absent
+      regexp: '^/dev/mapper/.*swap .*swap '
+    when: ansible_os_family == 'RedHat'
+
+  - name: Disable RedHat firewalld
+    systemd:
+      name: firewalld
+      enabled: no 
+      state: stopped
+      masked: yes
+    #when: ansible_os_family == 'RedHat'
+    ignore_errors: true
   
   - name: Install Packages
-    apt:
+    package:
       name: "{{ item }}"
     with_items:
       - lvm2
-      - dnsutils
       - net-tools
       - fortune-mod
       - cowsay
       - tree
+
+  - name: Install Debian Packages
+    package:
+      name: "{{ item }}"
+    with_items:
+      - dnsutils
+      - iptables-persistent
+    when: ansible_os_family == 'Debian'
   
+  - name: Install RedHat Packages
+    package:
+      name: "{{ item }}"
+    with_items:
+      - iptables-services
+    when: ansible_os_family == 'RedHat'
+
+  - name: Enable RedHat iptables
+    systemd:
+      name: iptables
+      enabled: yes
+      state: started
+    when: ansible_os_family == 'RedHat'
+
   - name: Configure Login Banner
     script: fortune_cowsy.sh
   

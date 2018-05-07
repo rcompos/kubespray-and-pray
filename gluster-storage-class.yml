@@ -11,6 +11,8 @@
   remote_user: solidfire
   become: true
   run_once: true
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
   tasks:
 
