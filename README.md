@@ -137,20 +137,23 @@ Perform the following steps on the __control node__ where ansible command will b
     _inventory/default/all.yml_  
     _inventory/default/k8s-cluster.yml_  
     
-    __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
-
-    Modify inventory file with editor such as vi or nano.
-
+    Alternative:  Create new directory under _inventory_ based on one of the example directories.  Update _inventory.cfg_ and other files.  Then specify this directory in the deployment step.
+    
+    Modify inventory file with editor such as vi or nano.  
+    
     `$ cd ~/kubespray-and-pray`  
     `$ vi inventory/default/inventory.cfg`  
 
 2. __Deploy Kubernetes Cluster__
 
-    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
+    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_ by default and optionally and entire directory such as _inventory/mycluster_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
     
-    User _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a user, then you must manually update the _ansible.cfg_ file.
+    __Deployment User__ _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a user, then you must manually update the _ansible.cfg_ file.
      
-    __Optional Container Volume:__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise default device is _/dev/sdc_.  If default device not found, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.
+    __Optional Container Volume__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise default device is _/dev/sdc_.  If default block device not found, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.  
+    
+    __Inventory Directory__  The Ansible inventory host configuration files are located by default in the directory _inventory/default_.  However this location can be specified with option -i. 
+    
 
     Example:  pray-for-cluster.sh -u myuser -b /dev/sdb -i dev20node
     
@@ -168,6 +171,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
+__Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
 ## Kubernetes Dashboard ##
 
