@@ -5,13 +5,15 @@ KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
 KUBESPRAY_INV=~/.kubespray/inventory
 INVDIR_DEFAULT=inventory/default
 BLOCK_DEFAULT=/dev/sdb
+SILENT_RUN=false
 
 helpme() {
-    echo "Usage: `basename $0` [-u user] [-i inventory] [-b block_device] [-y]"
+    echo "Usage: `basename $0` [-u user] [-i inventory] [-b block_device] [-y] [-s]"
     echo "  -u, --user        operating system user"
     echo "  -b, --block       block device"
     echo "  -i, --inventory   inventory directory"
     echo "  -y, --yes         continue"
+    echo "  -s, --silent      do not ask for ansible passwords"
     exit 1
 }
 
@@ -42,6 +44,10 @@ case $key in
     ;;
     -y|--yes|-Y)
     YES=1
+    shift # past argument
+    ;;
+    -s|--silent|)
+    SILENT_RUN=true
     shift # past argument
     ;;
     #--default)
@@ -104,7 +110,11 @@ fi
 cp -a $INVDIR $KUBESPRAY_INV
 
 # Run top-level ansible playbook to prepare all nodes for kubespray deploy
-ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK 
+if $SILENT_RUN; then
+  ansible-playbook prep-cluster.yml -e user=$KUSER -e block_device=$BLOCK 
+else
+  ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK
+fi
 
 # Deploy Kubespray
 kubespray deploy -y -u $KUSER
