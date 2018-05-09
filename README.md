@@ -19,16 +19,17 @@ Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
 
 Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Default storage class provided by GlusterFS hyper-converged storage.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-__Kubernetes Node Operating Systems Supported:__  Ubuntu 16.04 Xenial  (CentOS 7 soon)
+__Kubernetes Node Operating Systems Supported:__
 
-The tool used to do the heavy lifting is Kubespray which is built on Ansible.  Kubespray automates the cluster deployments and provides for flexibility in configuration.
+* Ubuntu 16.04 Xenial
+* CentOS 7
 
-This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.
+This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.  Kubespray, which is built on Ansible, automates cluster deployments and provides for flexibility in configuration. 
 
 The Kubernetes cluster configs include the following component defaults:  
 Container engine: _docker_  
-Container network interface: _calico_  
-Storage driver: _overlay2_  
+Container network interface: _calico_  or _flannel_
+Storage driver: _overlay2_  or _overlay_
 
 Estimated time to complete: 1 hr
 
@@ -193,6 +194,8 @@ _https://kubernetes.io/docs/admin/authorization/rbac_
 ## GlusterFS Distributed Storage ##
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
+
+Note:  CentOS 7 not supported yet.  
 
 Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. _/dev/sdc_).
 

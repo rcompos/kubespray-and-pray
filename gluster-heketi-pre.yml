@@ -19,11 +19,23 @@
 
   - name: Run iptables for Heketi Debian
     script: gluster-iptables-debian.sh
+    ignore_errors: true
+    when: ansible_os_family == 'Debian'
+
+  - name: Persistent iptables for Heketi Debian
+    copy: 
+      src: gluster-iptables-debian.sh
+      dest: /etc/network/if-up.d/gluster-iptables-debian
+      owner: root
+      group: root
+      mode: 0755
     when: ansible_os_family == 'Debian'
 
   - name: Run iptables for Heketi RedHat
     script: gluster-iptables-redhat.sh
     when: ansible_os_family == 'RedHat'
+
+  # Need RedHat iptables startup script?
 
   - name: Install Kernel Modules
     modprobe:

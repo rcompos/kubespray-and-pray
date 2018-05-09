@@ -55,7 +55,8 @@
       dest: "{{ dir_heketi }}/{{ sc_yml }}"
       state: present
       regexp: '^  resturl:'
-      line: '  resturl: "http://{{ heketi_ip_port.stdout }}"'
+      #line: '  resturl: "http://{{ heketi_ip_port.stdout }}"'
+      line: '  resturl: "http://10.117.110.138:31429"'
 
   - name: Create storage class
     shell: kubectl create -f "{{ dir_heketi }}/{{ sc_yml }}"
