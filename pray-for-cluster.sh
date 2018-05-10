@@ -46,7 +46,7 @@ case $key in
     YES=1
     shift # past argument
     ;;
-    -s|--silent|)
+    -s|--silent)
     SILENT_RUN=true
     shift # past argument
     ;;
