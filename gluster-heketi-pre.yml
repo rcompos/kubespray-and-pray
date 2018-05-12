@@ -110,6 +110,20 @@
       - glusterfs-fuse
     when: ansible_os_family == 'RedHat'
 
+  - name: Install Kernel Module Gluster FUSE
+    modprobe:
+      name: fuse
+      state: present
+
+  - name: Copy Kernel Module fuse
+    copy:
+      src: centos/fuse.modules
+      dest: /etc/sysconfig/modules/
+      owner: root
+      group: root
+      mode: 0755
+    when: ansible_os_family == 'RedHat'
+
   - name: Add Apt Repo
     shell: |
       add-apt-repository "{{ gluster_repo }}"

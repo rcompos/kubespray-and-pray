@@ -1,0 +1,5 @@
+#!/bin/sh
+/sbin/lsmod | grep "^fuse" >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+  exec /sbin/modprobe fuse >/dev/null 2>&1
+fi

@@ -239,8 +239,10 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 Validate cluster functionality by deploying an application. Run on master or with appropriate _~/.kube/config_.
 
 1. __Deploy Helm Package__  
+     
+    Install Helm package for Minio with 20Gi volume.  Modify volume size as needed.
 
-    `$ helm install stable/minio -n minio --namespace minio --set service.type=NodePort`
+    `$ helm install stable/minio -n minio --namespace minio --set service.type=NodePort --set persistence.size=20Gi`
 
 2. __Get Port__ 
   
