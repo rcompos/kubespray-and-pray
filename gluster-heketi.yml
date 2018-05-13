@@ -5,7 +5,7 @@
   vars:
     heketi_server: 'http://localhost:'
     heketi_github_version: 'v6.0.0'
-    heketi_client_version: 'v5.0.0'
+    heketi_client_version: 'v5.0.1'
     heketi_docker_version: '5'
     # Gluster DockerHub Image
     gluster_version: 'gluster3u13_centos7'
@@ -14,6 +14,7 @@
     gluster_topo: '~/.kubespray/inventory/topology.json'
     delete_bootstrap_heketi: delete-bootstrap-heketi.sh
     pause_seconds: 30
+    heketi_file: heketi-nodeport.yaml
   remote_user: solidfire
   become: true
   run_once: true
@@ -143,15 +144,13 @@
       kubectl get svc deploy-heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/\S+\s+(\S+)/$1/'
     register: heketi_port
 
-  - debug: msg="{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
-
   - name: Wait for "{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}", don't start checking for 10 seconds
     wait_for:
       host: "{{ heketi_ip.stdout }}"
       port: "{{ heketi_port.stdout }}"
       delay: 10
 
-  - debug: msg="Heketi server url http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
+  - debug: msg="Temporary Deploy Heketi URL http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }}"
 
   - name: Load Heketi topology
     #shell: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli -s http://{{ heketi_ip.stdout }}:{{ heketi_port.stdout }} topology load --json={{ dir_heketi }}/topology.json"
@@ -241,6 +240,22 @@
   - name: Pause {{ pause_seconds }}s for Heketi Permanent
     pause:
       seconds: "{{ pause_seconds }}"
+
+  - name: Export Heketi yaml
+    shell: kubectl get svc heketi -o yaml > "{{ heketi_file }}"
+
+  - name: Modify Heketi yaml service type
+    lineinfile:
+      dest: "{{ heketi_file }}"
+      regexp: '^  type: '
+      line:    '  type: NodePort'
+
+  - name: Change heketi service to NodePort
+    command: kubectl apply -f "{{ heketi_file }}" --validate
+
+  - name: Get Heketi port
+    shell: kubectl get svc heketi -o yaml | grep '\ nodePort:' | cut -d' ' -f6
+    register: heketi_port 
 
   - name: Show Permanent Heketi
     shell: kubectl get all,service,jobs,deployment,secret --selector=deploy-heketi

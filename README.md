@@ -82,7 +82,9 @@ The Kubernetes cluster topology is defined as masters, nodes and etcds.  Masters
 
 The following is an example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  There are also three GlusterFS (gluster) members defined.
 
-The top lines with ansible\_ssh\_host and ip values are required if machines have multiple network addresses, otherwise may be omitted.  Change the ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
+The top lines with ansible\_ssh\_host and ip values are required since machines may have multiple network addresses.  Change the ansible\_ssh\_host and ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
+
+Note:  The Heketi service will be assigned to the value of _ansible_ssh_host_ from the ansible inventory file (~/.kubespray/inventory/inventory.cfg).
 
 For more examples see _inventory_ directory.
 
@@ -137,12 +139,12 @@ Perform the following steps on the __control node__ where ansible command will b
     _inventory/default/all.yml_  
     _inventory/default/k8s-cluster.yml_  
     
-    Alternative:  Create new directory under _inventory_ based on one of the example directories.  Update _inventory.cfg_ and other files.  Then specify this directory in the deployment step.
-    
     Modify inventory file with editor such as vi or nano.  
     
     `$ cd ~/kubespray-and-pray`  
     `$ vi inventory/default/inventory.cfg`  
+    
+    __Alternate Location:__  Create new directory under _inventory_ based on one of the example directories.  Update _inventory.cfg_ and other files.  Then specify this directory in the deployment step.
 
 2. __Deploy Kubernetes Cluster__
 
@@ -164,6 +166,8 @@ Perform the following steps on the __control node__ where ansible command will b
     | -u     | SSH username                           | solidfire   |
     | -b     | Block device for containers            | /dev/sdc    |
     | -i     | Inventory directory under _inventory_  | default     | 
+    | -s     | Silence prompt Ansible SSH password    |             | 
+
 
     Run script to deploy Kubernetes cluster to all nodes with default values.
 
@@ -255,3 +259,11 @@ Validate cluster functionality by deploying an application. Run on master or wit
     Use any node IP address and the node port from previous step.
 
     `URL:  http://<node_ip>:<node_port>`
+    
+## Post Install ##
+
+The Kubernetes add-on registry deployment will fail due to lack of persistent storage.  Run from master or with appropriate _~/.kube/config_, delete the failed deployment (registry-v2.x)
+
+From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.
+
+

@@ -27,19 +27,18 @@
     delay: 5
     until: heketi_ready.rc == 0
 
-  - name: Get Heketi server ip and port
-    shell: |
-      kubectl get svc heketi --no-headers -o=custom-columns=IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort| perl -pe 's/(\S+)\s+(\S+)/$1:$2/'
-    register: heketi_ip_port
+  - name: Get Heketi port
+    shell: kubectl get svc heketi -o yaml | grep '\ nodePort:' | cut -d' ' -f6
+    register: heketi_port
 
-  - debug: msg="{{ heketi_ip_port.stdout }}"
+  - debug: msg="{{ heketi_port.stdout }}"
 
   - name: Pause 30 seconds for heketi server
     pause:
       seconds: 30 
 
   - name: Check Heketi server
-    shell: "{{ heketi_cli }} -s http://{{ heketi_ip_port.stdout }} cluster list"
+    shell: "{{ heketi_cli }} -s http://{{ ansible_ssh_host }}:{{ heketi_port.stdout }} cluster list"
     register: out
 
   - debug: var=out.stdout_lines
@@ -55,8 +54,7 @@
       dest: "{{ dir_heketi }}/{{ sc_yml }}"
       state: present
       regexp: '^  resturl:'
-      line: '  resturl: "http://{{ heketi_ip_port.stdout }}"'
-      #line: '  resturl: "http://10.117.110.138:31429"'
+      line: '  resturl: "http://{{ ansible_ssh_host }}:{{ heketi_port.stdout }}"'
 
   - name: Create storage class
     shell: kubectl create -f "{{ dir_heketi }}/{{ sc_yml }}"

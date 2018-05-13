@@ -46,7 +46,7 @@
       - dm_mirror
       - dm_thin_pool
 
-  - name: Persist Kernel Module dm_snapshot
+  - name: Persist Debian Kernel Module dm_snapshot
     lineinfile:
       dest: /etc/modules
       state: present
@@ -54,7 +54,16 @@
       line: 'dm_snapshot'
     when: ansible_os_family == 'Debian'
 
-  - name: Persist Kernel Module dm_mirror
+  - name: Persist RedHat Kernel Module dm_snapshot
+    lineinfile:
+      dest: /etc/modules-load.d/dm_snapshot.conf
+      state: present
+      create: yes
+      regexp: '^dm_snapshot '
+      line: 'dm_snapshot'
+    when: ansible_os_family == 'RedHat'
+
+  - name: Persist Debian Kernel Module dm_mirror
     lineinfile:
       dest: /etc/modules
       state: present
@@ -62,7 +71,16 @@
       line: 'dm_mirror'
     when: ansible_os_family == 'Debian'
 
-  - name: Persist Kernel Module dm_thin_pool
+  - name: Persist RedHat Kernel Module dm_mirror
+    lineinfile:
+      dest: /etc/modules-load.d/dm_mirror.conf
+      state: present
+      create: yes
+      regexp: '^dm_mirror '
+      line: 'dm_mirror'
+    when: ansible_os_family == 'RedHat'
+
+  - name: Persist Debian Kernel Module dm_thin_pool
     lineinfile:
       dest: /etc/modules
       state: present
@@ -70,34 +88,16 @@
       line: 'dm_thin_pool'
     when: ansible_os_family == 'Debian'
 
-  - name: Copy Kernel Module dm_snapshot
-    copy:
-      src: centos/dm_snapshot.modules
-      dest: /etc/sysconfig/modules/
-      owner: root
-      group: root
-      mode: 0755
+  - name: Persist RedHat Kernel Module dm_thin_pool
+    lineinfile:
+      dest: /etc/modules-load.d/dm_thin_pool.conf
+      state: present
+      create: yes
+      regexp: '^dm_thin_pool '
+      line: 'dm_thin_pool'
     when: ansible_os_family == 'RedHat'
 
-  - name: Copy Kernel Module dm_mirror
-    copy:
-      src: centos/dm_mirror.modules
-      dest: /etc/sysconfig/modules/
-      owner: root
-      group: root
-      mode: 0755
-    when: ansible_os_family == 'RedHat'
-
-  - name: Copy Kernel Module dm_thin_pool
-    copy:
-      src: centos/dm_thin_pool.modules
-      dest: /etc/sysconfig/modules/
-      owner: root
-      group: root
-      mode: 0755
-    when: ansible_os_family == 'RedHat'
-
-  - name: Package centos-release-gluster312
+  - name: Package RedHat centos-release-gluster312
     package:
       name: centos-release-gluster312
     when: ansible_os_family == 'RedHat'
@@ -114,14 +114,15 @@
     modprobe:
       name: fuse
       state: present
+    when: ansible_os_family == 'RedHat'
 
-  - name: Copy Kernel Module fuse
-    copy:
-      src: centos/fuse.modules
-      dest: /etc/sysconfig/modules/
-      owner: root
-      group: root
-      mode: 0755
+  - name: Persist RedHat Kernel Module fuse
+    lineinfile:
+      dest: /etc/modules-load.d/fuse.conf
+      state: present
+      create: yes
+      regexp: '^fuse '
+      line: 'fues'
     when: ansible_os_family == 'RedHat'
 
   - name: Add Apt Repo

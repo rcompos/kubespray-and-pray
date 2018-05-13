@@ -50,10 +50,6 @@ case $key in
     SILENT_RUN=true
     shift # past argument
     ;;
-    #--default)
-    #KUSER=solidfire
-    #shift # past argument
-    #;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
     shift # past argument
@@ -69,17 +65,17 @@ if [ -z $INVDIR ]; then INVDIR="$INVDIR_DEFAULT"; fi
 echo INVDIR = "${INVDIR}"
 if [ -z $BLOCK ]; then BLOCK="$BLOCK_DEFAULT"; fi
 echo BLOCK  = "$BLOCK"
-#echo YES             = "$YES"
 
-# Check for passed in arg
-if [ ! -d "$INVDIR" ]; then 
-   INVDIR=$INVDIR_DEFAULT   ##echo "IF $INVDIR"; else echo "ELSE $INVDIR"
+# Check for passed in arg for directory under inventory dir
+if [ ! -d "inventory/$INVDIR" ]; then 
+   echo "Inventory directory not found! inventory/$INVDIR"
+   exit 2
 fi
 
 echo
-echo "Contents of $INVDIR/inventory.cfg:"
+echo "Contents of inventory/$INVDIR/inventory.cfg:"
 echo
-cat -n $INVDIR/inventory.cfg
+cat -n inventory/$INVDIR/inventory.cfg
 echo
 
 if [ "$YES" != 1 ]; then
@@ -98,16 +94,15 @@ fi
 # Clone Kubespray git repository
 git clone $KUBESPRAY_REPO ~/.kubespray
 
-# Create backup of original inventory dir
-if [ ! -d "$KUBESPRAY_INV-orig" ]; then 
-   mv $KUBESPRAY_INV $KUBESPRAY_INV-orig
-else
-   rm -fr $KUBESPRAY_INV-old
-   mv $KUBESPRAY_INV $KUBESPRAY_INV-old
+if [ ! -d "inventory" ]; then 
+   echo "ERROR: Directory inventory not found!"
+   exit 3
 fi
 
-# Copy inventory directory to active kubespray location
-cp -a $INVDIR $KUBESPRAY_INV
+rm -fr ~/.kubespray/inventory
+
+# Link inventory directory to active kubespray location
+ln -s ${PWD}/inventory/$INVDIR ~/.kubespray/inventory
 
 # Run top-level ansible playbook to prepare all nodes for kubespray deploy
 if $SILENT_RUN; then
