@@ -2,8 +2,9 @@
 export PYTHONUNBUFFERED=1
 KUSER=solidfire
 KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
+KUBESPRAY_TAG=v2.5.0
 KUBESPRAY_INV=~/.kubespray/inventory
-INVDIR_DEFAULT=inventory/default
+INVDIR_DEFAULT=default
 BLOCK_DEFAULT=/dev/sdb
 SILENT_RUN=false
 
@@ -93,6 +94,9 @@ fi
 
 # Clone Kubespray git repository
 git clone $KUBESPRAY_REPO ~/.kubespray
+cd ~/.kubespray
+git checkout tags/${KUBESPRAY_TAG}
+cd -
 
 if [ ! -d "inventory" ]; then 
    echo "ERROR: Directory inventory not found!"

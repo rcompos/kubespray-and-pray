@@ -237,6 +237,11 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     `$ ansible-playbook pray-for-gluster.yml`   
 
+## Post Install ##
+
+The Kubernetes add-on registry deployment will fail due to lack of persistent storage.  Run from master or with appropriate _~/.kube/config_, delete the failed deployment (registry-v2.x)
+
+From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.
 
 ## Validation ##
 
@@ -260,10 +265,3 @@ Validate cluster functionality by deploying an application. Run on master or wit
 
     `URL:  http://<node_ip>:<node_port>`
     
-## Post Install ##
-
-The Kubernetes add-on registry deployment will fail due to lack of persistent storage.  Run from master or with appropriate _~/.kube/config_, delete the failed deployment (registry-v2.x)
-
-From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.
-
-
