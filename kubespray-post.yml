@@ -1,0 +1,39 @@
+---
+# Ansible for installing GlusterFS requirements on K8s cluster machines.
+
+- hosts: 'kube-master'
+  vars:
+    kibana_logging_nodeport: 'kibana-logging-nodeport.yml'
+  remote_user: solidfire
+  become: true
+  run_once: true
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+
+  tasks:
+
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
+
+  - name: Export Kibana yaml
+    shell: kubectl get svc kibana-logging -n kube-system -o yaml > "{{ kibana_logging_nodeport }}"
+
+  - name: Modify Kibana yaml service type
+    lineinfile:
+      dest: "{{ kibana_logging_nodeport }}"
+      regexp: '^  type: '
+      line:    '  type: NodePort'
+
+  - name: Change Kibana service to NodePort
+    command: kubectl apply -f "{{ kibana_logging_nodeport }}" --validate
+
+  #- name: Get Kibana port
+  #  shell: kubectl get svc kibana-logging -n kube-system -o yaml | grep '\ nodePort:' | cut -d' ' -f6
+  #  register: kibana_port
+
+  - name: Show Kibana All
+    shell: kubectl get all,service,jobs,deployment,secret --all-namespaces --selector='k8s-app=kibana-logging'
+    register: out
+
+  - debug: var=out.stdout_lines

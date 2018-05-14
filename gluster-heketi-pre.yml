@@ -4,9 +4,11 @@
 - hosts: 'gluster'
   vars:
     #gluster_repo: 'ppa:gluster/glusterfs-3.13'
-    gluster_repo: 'ppa:gluster/glusterfs-3.12'
+    #gluster_repo: 'ppa:gluster/glusterfs-3.12'
+    gluster_repo: 'ppa:gluster/glusterfs-4.0'
     #glusterfs_client_ubu: '3.13.2-ubuntu1~xenial2'
-    glusterfs_client_ubu: '3.12.9-ubuntu1~xenial1'
+    #glusterfs_client_ubu: '3.12.9-ubuntu1~xenial1'
+    glusterfs_client_ubu: '4.0.2-ubuntu1~xenial1'
     glusterfs_repo_centos: 'centos-release-gluster312'
   remote_user: solidfire
   become: true
@@ -141,4 +143,19 @@
       name: netfilter-persistent
       enabled: yes
       state: started
+    when: ansible_os_family == 'Debian'
+
+  - name: Enable lvm2-lvmetad.service
+    systemd: 
+      name: lvm2-lvmetad.service
+      enabled: yes
+      state: started
+    when: ansible_os_family == 'Debian'
+
+  - name: Config LVM for lvmetad
+    lineinfile:
+      dest: /etc/lvm/lvm.conf
+      state: present
+      regexp: '^	use_lvmetad = 1'
+      line:    '	use_lvmetad = 0'
     when: ansible_os_family == 'Debian'
