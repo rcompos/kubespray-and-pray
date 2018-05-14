@@ -31,11 +31,7 @@ Container engine: _docker_
 Container network interface: _calico_  or _flannel_
 Storage driver: _overlay2_  or _overlay_
 
-Estimated time to complete: 1 hr
-
-References:  
-_https://github.com/kubernetes/kubernetes_  
-_https://github.com/kubernetes-incubator/kubespray_   
+Estimated time to complete: 1 hr  
 
 ## Requirements ##
 
@@ -75,6 +71,25 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
     `$ cd; git clone https://github.com/scandalizer/kubespray-and-pray`
 
+## TLDR Deploy Kubernetes Cluster ##
+
+A Kubernetes cluster can be deployed with the following steps.  See further sections for details of each step.  
+
+1. Deploy Kubernetes  
+   Prepare directory (inventory/default or custom) with Kubespray config files.  Update _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ and _topology.json_.  Deploy cluster.  
+   
+       `$ ./pray-for-cluster.sh`
+
+2. Kubernetes Access Controls  
+   Insecure permissions for development only!  
+   
+    `$ ansible-playbook dashboard-permissive.yml`
+
+3. GlusterFS Distributed Storage  
+   Hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Heketi provides a REST API for Gluster.  
+   
+    `$ ansible-playbook pray-for-gluster.yml`
+
 
 ## Deploy Kubernetes ##
 
@@ -84,7 +99,7 @@ The following is an example _inventory.cfg_ defining a Kubernetes cluster with t
 
 The top lines with ansible\_ssh\_host and ip values are required since machines may have multiple network addresses.  Change the ansible\_ssh\_host and ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
 
-Note:  The Heketi service will be assigned to the value of _ansible_ssh_host_ from the ansible inventory file (~/.kubespray/inventory/inventory.cfg).
+Note:  The Heketi service will be assigned to a value of _ansible\_ssh\_host_ for a master node from the ansible inventory file (_~/.kubespray/inventory/inventory.cfg_).
 
 For more examples see _inventory_ directory.
 
@@ -201,7 +216,7 @@ _https://kubernetes.io/docs/admin/authorization/rbac_
 
 ## GlusterFS Distributed Storage ##
 
-This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed with Heketi.  Providing a default storage class abstracts the application from the implementation.
+This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed through Heketi REST API.  Providing a default storage class abstracts the application from the implementation.  Kubernetes application deployments can now claim storage without specifying what kind.
 
 Note:  CentOS 7 not supported yet.  
 
@@ -239,9 +254,9 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
 ## Post Install ##
 
-The Kubernetes add-on registry deployment will fail due to lack of persistent storage.  Run from master or with appropriate _~/.kube/config_, delete the failed deployment (registry-v2.x)
+The initial deploy of Kubernetes add-on registry will fail due to lack of persistent storage.  Run from master or with appropriate _~/.kube/config_, delete the failed registry PVC and replica set (registry-v2.x).
 
-From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.
+From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.  Then re-run _dashboard_permissive.yml_ to allow permissive access.
 
 ## Validation ##
 
@@ -265,3 +280,15 @@ Validate cluster functionality by deploying an application. Run on master or wit
 
     `URL:  http://<node_ip>:<node_port>`
     
+    
+## References ##
+
+_https://github.com/kubernetes/kubernetes/_  
+_https://github.com/kubernetes-incubator/kubespray/_   
+_https://hub.docker.com/r/heketi/heketi/tags/_  
+_https://docs.gluster.org/en/v3/Install-Guide/Install/_  
+_https://github.com/gluster/gluster-containers/_  
+_https://github.com/heketi/heketi/releases/_  
+_https://download.gluster.org/pub/gluster/glusterfs/4.0/_  
+
+
