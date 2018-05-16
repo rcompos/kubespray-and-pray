@@ -4,6 +4,7 @@
 - hosts: 'kube-master'
   vars:
     kibana_logging_nodeport: 'kibana-logging-nodeport.yml'
+    registry_nodeport: 'registry-nodeport.yml'
   remote_user: solidfire
   become: true
   run_once: true
@@ -34,6 +35,29 @@
 
   - name: Show Kibana All
     shell: kubectl get all,service,jobs,deployment,secret --all-namespaces --selector='k8s-app=kibana-logging'
+    register: out
+
+  - debug: var=out.stdout_lines
+
+
+  - name: Export Registry yaml
+    shell: kubectl get svc registry -n kube-system -o yaml > "{{ registry_nodeport }}"
+
+  - name: Modify Registry yaml service type
+    lineinfile:
+      dest: "{{ registry_nodeport }}"
+      regexp: '^  type: '
+      line:    '  type: NodePort'
+
+  - name: Change Registry service to NodePort
+    command: kubectl apply -f "{{ registry_nodeport }}" --validate
+
+  #- name: Get Kibana port
+  #  shell: kubectl get svc registry -n kube-system -o yaml | grep '\ nodePort:' | cut -d' ' -f6
+  #  register: registry_port
+
+  - name: Show Kibana All
+    shell: kubectl get all,service,jobs,deployment,secret --all-namespaces --selector='k8s-app=registry'
     register: out
 
   - debug: var=out.stdout_lines

@@ -72,24 +72,26 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
     `$ cd; git clone https://github.com/scandalizer/kubespray-and-pray`
 
 ## TLDR Deploy Kubernetes Cluster ##
+---
 
-A Kubernetes cluster can be deployed with the following steps.  See further sections for details of each step.  
+A Kubernetes cluster can be rapidly deployed with the following steps.  See further sections for details of each step.  
 
 1. Deploy Kubernetes  
    Prepare directory (inventory/default or custom) with Kubespray config files.  Update _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ and _topology.json_.  Deploy cluster.  
    
-       `$ ./pray-for-cluster.sh`
+        $ ./pray-for-cluster.sh  
 
 2. Kubernetes Access Controls  
    Insecure permissions for development only!  
    
-    `$ ansible-playbook dashboard-permissive.yml`
+        $ ansible-playbook dashboard-permissive.yml  
 
 3. GlusterFS Distributed Storage  
    Hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Heketi provides a REST API for Gluster.  
    
-    `$ ansible-playbook pray-for-gluster.yml`
+        $ ansible-playbook pray-for-gluster.yml  
 
+---
 
 ## Deploy Kubernetes ##
 
@@ -104,9 +106,9 @@ Note:  The Heketi service will be assigned to a value of _ansible\_ssh\_host_ fo
 For more examples see _inventory_ directory.
 
 ```
-k8s0    ansible_ssh_host=192.168.1.60  ip=192.168.1.60
-k8s1    ansible_ssh_host=192.168.1.61  ip=192.168.1.61
-k8s2    ansible_ssh_host=192.168.1.62  ip=192.168.1.62
+k8s0    ansible_ssh_host=192.168.1.50  ip=192.168.1.50
+k8s1    ansible_ssh_host=192.168.1.51  ip=192.168.1.51
+k8s2    ansible_ssh_host=192.168.1.52  ip=192.168.1.52
     
 [all]
 k8s0
@@ -192,7 +194,7 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 
 __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
-## Kubernetes Dashboard ##
+## Kubernetes Access Controls ##
 
 ***WARNING... Insecure permissions for development only!***
 
@@ -254,9 +256,15 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
 ## Post Install ##
 
-The initial deploy of Kubernetes add-on registry will fail due to lack of persistent storage.  Run from master or with appropriate _~/.kube/config_, delete the failed registry PVC and replica set (registry-v2.x).
+The initial deploy of Kubernetes add-on registry will fail due to lack of persistent storage.
 
-From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.  Then re-run _dashboard_permissive.yml_ to allow permissive access.
+Run from **master** or with appropriate _~/.kube/config_, delete the failed registry PVC and replica set (registry-v2.x).
+
+    # kubectl delete -n kube-system replicaset registry-v2.6  
+    # kubectl delete -n kube-system pvc registry-pvc  
+
+From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.  
+Then re-run _dashboard_permissive.yml_ to allow permissive access again.  
 
 ## Validation ##
 
@@ -264,15 +272,15 @@ Validate cluster functionality by deploying an application. Run on master or wit
 
 1. __Deploy Helm Package__  
      
-    Install Helm package for Minio with 20Gi volume.  Modify volume size as needed.
+    Install Helm package for Minio with 20Gi volume.  Modify volume size as needed.  Run from **master** or with appropriate _~/.kube/config_.
 
-    `$ helm install stable/minio -n minio --namespace minio --set service.type=NodePort --set persistence.size=20Gi`
+    `# helm install stable/minio -n minio --namespace minio --set service.type=NodePort --set persistence.size=11Gi`
 
 2. __Get Port__ 
   
     Get port under PORT(S).  Make note of the second port value.
 
-    `$ kubectl get svc minio -n minio`
+    `# kubectl get svc minio -n minio`
 
 3. __View Service__
 
