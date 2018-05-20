@@ -20,6 +20,8 @@
       path: /etc/systemd/system/timers.target.wants/apt-daily.timer
       regexp: '^Persistent='
       line:    'Persistent=true'
+    ignore_errors: true
+    when: ansible_os_family == 'Debian'
   
   - name: Allow IPv4 Forwarding
     shell: sysctl -w net.ipv4.ip_forward=1
@@ -39,16 +41,29 @@
     lineinfile:
       path: /etc/fstab
       state: absent
-      regexp: '^/dev/mapper/.*swap .*swap '
+      regexp: '^\S+\s+swap\s+swap'
     when: ansible_os_family == 'RedHat'
 
+  - name: Disable RedHat selinux
+    selinux:
+      state: disabled
+
+  #- name: Disable RedHat iptables
+  #  systemd:
+  #    name: iptables
+  #    enabled: no 
+  #    state: stopped
+  #    masked: yes
+  #  when: ansible_os_family == 'RedHat'
+  #  ignore_errors: true
+  
   - name: Disable RedHat firewalld
     systemd:
       name: firewalld
       enabled: no 
       state: stopped
       masked: yes
-    #when: ansible_os_family == 'RedHat'
+    when: ansible_os_family == 'RedHat'
     ignore_errors: true
   
   - name: Install Debian Packages
@@ -73,19 +88,30 @@
       - fortune-mod
       - cowsay
       - tree
-      - iptables-services
+      #- iptables-services
     when: ansible_os_family == 'RedHat'
 
-  - name: Enable RedHat iptables
-    systemd:
-      name: iptables
-      enabled: yes
-      state: started
-    when: ansible_os_family == 'RedHat'
+  #- name: Enable RedHat iptables
+  #  systemd:
+  #    name: iptables
+  #    enabled: yes
+  #    state: started
+  #  when: ansible_os_family == 'RedHat'
 
   - name: Configure Login Banner
     script: fortune_cowsy.sh
   
+  - name: Copy sysctl file
+    copy:
+      src: centos/k8s.conf
+      dest: /etc/sysctl.d/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Apply sysctl
+    shell: /sbin/sysctl --system
+
   - name: Copy MOTD
     copy:
       src: motd-solidfire.txt

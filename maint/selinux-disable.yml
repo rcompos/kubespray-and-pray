@@ -1,0 +1,14 @@
+---
+
+- hosts: '*'
+  vars:
+    user: solidfire
+  #remote_user: root
+  become: true
+
+  tasks:
+
+  - name: Disable RedHat selinux
+    selinux:
+      state: disabled
+

@@ -93,7 +93,13 @@ fi
 #echo "Here we go: $YES"
 
 # Clone Kubespray git repository
-git clone $KUBESPRAY_REPO ~/.kubespray --branch ${KUBESPRAY_TAG} --single-branch
+if [ ! -z $KUBESPRAY_TAG ]; then
+  BRANCH_STRING="--branch $KUBESPRAY_TAG --single-branch"
+else
+  BRANCH_STRING=""
+fi
+
+git clone $KUBESPRAY_REPO ~/.kubespray $BRANCH_STRING
 
 if [ ! -d "inventory" ]; then 
    echo "ERROR: Directory inventory not found!"
