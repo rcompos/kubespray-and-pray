@@ -8,6 +8,18 @@
 
   tasks:
 
+  #- name: Upgrade Debian Packages
+  #  apt:
+  #    name: "*"
+  #    state: latest
+  #  when: ansible_os_family == 'Debian'
+
+  - name: Upgrade RedHat Packages
+    yum:
+      name: '*'
+      state: latest
+    when: ansible_os_family == 'RedHat'
+
   - name: Turn off pager for systemctl
     lineinfile:
       dest: ~/.bashrc
@@ -47,6 +59,7 @@
   - name: Disable RedHat selinux
     selinux:
       state: disabled
+    when: ansible_os_family == 'RedHat'
 
   #- name: Disable RedHat iptables
   #  systemd:
