@@ -161,15 +161,19 @@ dashboard_enabled: true
 
 # Monitoring apps for k8s
 efk_enabled: false
+#efk_enabled: true
 
 # Helm deployment
-helm_enabled: false
+#helm_enabled: false
+helm_enabled: true
 
 # Istio deployment
 istio_enabled: false
+#istio_enabled: true
 
 # Registry deployment
 registry_enabled: false
+#registry_enabled: true
 # registry_namespace: "{{ system_namespace }}"
 # registry_storage_class: ""
 # registry_disk_size: "10Gi"
@@ -195,6 +199,7 @@ cephfs_provisioner_enabled: false
 
 # Nginx ingress controller deployment
 ingress_nginx_enabled: false
+#ingress_nginx_enabled: true
 # ingress_nginx_host_network: false
 # ingress_nginx_namespace: "ingress-nginx"
 # ingress_nginx_insecure_port: 80
@@ -209,6 +214,7 @@ ingress_nginx_enabled: false
 
 # Cert manager deployment
 cert_manager_enabled: false
+#cert_manager_enabled: true
 # cert_manager_namespace: "cert-manager"
 
 # Add Persistent Volumes Storage Class for corresponding cloud provider ( OpenStack is only supported now )

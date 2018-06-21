@@ -6,48 +6,48 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-nitro-1"
+                "zeus-0"
               ],
               "storage": [
-                "10.117.29.190"
+                "10.20.1.7"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/sdc"
+            "/dev/sdd"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "do-nitro-2"
+                "zeus-1"
               ],
               "storage": [
-                "10.117.29.191"
+                "10.20.1.9"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/sdc"
+            "/dev/sdd"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "do-nitro-3"
+                "zeus-2"
               ],
               "storage": [
-                "10.117.29.192"
+                "10.20.1.12"
               ]
             },
             "zone": 1
           },
           "devices": [
-            "/dev/sdc"
+            "/dev/sdd"
           ]
         }
       ]

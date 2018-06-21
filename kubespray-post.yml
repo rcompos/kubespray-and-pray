@@ -19,6 +19,7 @@
 
   - name: Export Kibana yaml
     shell: kubectl get svc kibana-logging -n kube-system -o yaml > "{{ kibana_logging_nodeport }}"
+    ignore_errors: true
 
   - name: Modify Kibana yaml service type
     lineinfile:
@@ -28,6 +29,7 @@
 
   - name: Change Kibana service to NodePort
     command: kubectl apply -f "{{ kibana_logging_nodeport }}" --validate
+    ignore_errors: true
 
   #- name: Get Kibana port
   #  shell: kubectl get svc kibana-logging -n kube-system -o yaml | grep '\ nodePort:' | cut -d' ' -f6

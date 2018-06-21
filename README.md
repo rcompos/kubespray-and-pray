@@ -71,7 +71,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
     `$ cd; git clone https://github.com/scandalizer/kubespray-and-pray`
 
-## TLDR Deploy Kubernetes Cluster ##
+## TLDR ##
 ---
 
 A Kubernetes cluster can be rapidly deployed with the following steps.  See further sections for details of each step.  
@@ -103,36 +103,40 @@ The top lines with ansible\_ssh\_host and ip values are required since machines 
 
 Note:  The Heketi service will be assigned to a value of _ansible\_ssh\_host_ for a master node from the ansible inventory file (_~/.kubespray/inventory/inventory.cfg_).
 
-For more examples see _inventory_ directory.
+For more examples see _inventory_ directory.  Pull the latest inventory files from the upstream kubespray repo under _inventory/samples_ directory.
 
 ```
-k8s0    ansible_ssh_host=192.168.1.50  ip=192.168.1.50
-k8s1    ansible_ssh_host=192.168.1.51  ip=192.168.1.51
-k8s2    ansible_ssh_host=192.168.1.52  ip=192.168.1.52
+node1    ansible_ssh_host=192.168.1.50  ip=192.168.1.50
+node2    ansible_ssh_host=192.168.1.51  ip=192.168.1.51
+node3    ansible_ssh_host=192.168.1.52  ip=192.168.1.52
     
 [all]
-k8s0
-k8s1
-k8s2
+node1
+node2
+node3
     
 [kube-master]
-k8s0
-k8s1
+node1
+node2
 
-[kube-node]
-k8s0
-k8s1
-k8s2
-    
 [etcd]
-k8s0
-k8s1
-k8s2
+node1
+node2
+node3
     
+[kube-node]
+node1
+node2
+node3
+
+[kube-ingress]
+node1
+node2
+
 [gluster]
-k8s0
-k8s1
-k8s2
+node1
+node2
+node3
     
 [k8s-cluster:children]
 kube-node
@@ -254,17 +258,6 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     `$ ansible-playbook pray-for-gluster.yml`   
 
-## Post Install ##
-
-The initial deploy of Kubernetes add-on registry will fail due to lack of persistent storage.
-
-Run from **master** or with appropriate _~/.kube/config_, delete the failed registry PVC and replica set (registry-v2.x).
-
-    # kubectl delete -n kube-system replicaset registry-v2.6  
-    # kubectl delete -n kube-system pvc registry-pvc  
-
-From the __control node__, re-run pray-for-cluster.sh to re-deploy the docker registry.  
-Then re-run _dashboard_permissive.yml_ to allow permissive access again.  
 
 ## Validation ##
 

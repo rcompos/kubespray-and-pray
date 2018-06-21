@@ -8,10 +8,10 @@
     heketi_client_version: 'v6.0.0'
     heketi_docker_version: '6'
     # Gluster DockerHub Image
+    #gluster_version: 'gluster3u13_centos7'
     gluster_version: 'gluster4u0_centos7'
     #heketi_client_version: 'v5.0.1'
     #heketi_docker_version: '5'
-    #gluster_version: 'gluster3u13_centos7'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
     gluster_topo: '~/.kubespray/inventory/topology.json'
@@ -71,6 +71,8 @@
       src: "{{ ansible_env.HOME }}/heketi-client-{{ heketi_client_version }}.linux.amd64.tar.gz"
       dest: "{{ ansible_env.HOME }}"
       creates: "{{ ansible_env.HOME }}/heketi-client"
+      owner: root
+      group: root
       remote_src: yes
 
   - name: Check for GlusterFS DaemonSets

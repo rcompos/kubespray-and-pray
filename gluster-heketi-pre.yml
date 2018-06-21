@@ -9,7 +9,6 @@
     #glusterfs_client_ubu: '3.13.2-ubuntu1~xenial2'
     #glusterfs_client_ubu: '3.12.9-ubuntu1~xenial1'
     glusterfs_client_ubu: '4.0.2-ubuntu1~xenial1'
-    glusterfs_repo_centos: 'centos-release-gluster312'
   remote_user: solidfire
   become: true
 
@@ -136,6 +135,7 @@
   - name: Install Packages
     apt: 
       name: "glusterfs-client={{ glusterfs_client_ubu }}"
+      #name: "glusterfs-client"
     when: ansible_os_family == 'Debian'
 
   - name: Make sure netfilter-persistent running

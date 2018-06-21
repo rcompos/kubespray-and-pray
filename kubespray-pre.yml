@@ -104,26 +104,21 @@
       #- iptables-services
     when: ansible_os_family == 'RedHat'
 
-  #- name: Enable RedHat iptables
-  #  systemd:
-  #    name: iptables
-  #    enabled: yes
-  #    state: started
-  #  when: ansible_os_family == 'RedHat'
-
   - name: Configure Login Banner
     script: fortune_cowsy.sh
   
-  - name: Copy sysctl file
-    copy:
-      src: centos/k8s.conf
-      dest: /etc/sysctl.d/
-      owner: root
-      group: root
-      mode: 0644
+  #- name: Copy sysctl file
+  #  copy:
+  #    src: centos/k8s.conf
+  #    dest: /etc/sysctl.d/
+  #    owner: root
+  #    group: root
+  #    mode: 0644
+  #  when: ansible_os_family == 'RedHat'
 
-  - name: Apply sysctl
-    shell: /sbin/sysctl --system
+  #- name: Apply sysctl
+  #  shell: /sbin/sysctl --system
+  #  when: ansible_os_family == 'RedHat'
 
   - name: Copy MOTD
     copy:
