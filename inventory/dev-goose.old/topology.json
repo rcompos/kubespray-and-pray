@@ -1,0 +1,56 @@
+{
+  "clusters": [
+    {
+      "nodes": [
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "goose-0"
+              ],
+              "storage": [
+                "192.168.1.70"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdd"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "goose-1"
+              ],
+              "storage": [
+                "192.168.1.71"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdd"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "goose-2"
+              ],
+              "storage": [
+                "192.168.1.72"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdd"
+          ]
+        }
+      ]
+    }
+  ]
+}
