@@ -143,6 +143,7 @@
       name: netfilter-persistent
       enabled: yes
       state: started
+    ignore_errors: true
     when: ansible_os_family == 'Debian'
 
   - name: Enable lvm2-lvmetad.service

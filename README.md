@@ -224,8 +224,6 @@ _https://kubernetes.io/docs/admin/authorization/rbac_
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed through Heketi REST API.  Providing a default storage class abstracts the application from the implementation.  Kubernetes application deployments can now claim storage without specifying what kind.
 
-Note:  CentOS 7 not supported yet.  
-
 Requirement:  Additional raw physical or virtual disk.  The disk will be referenced by it's device name (i.e. _/dev/sdc_).
 
 From the __control node__, configure hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Gluster cluster is managed by Heketi.  Raw storage volumes are defined in a topology file.
@@ -257,7 +255,6 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
     Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.  Run command from _kubespray-and-pray_ directory.
 
     `$ ansible-playbook pray-for-gluster.yml`   
-
 
 ## Validation ##
 

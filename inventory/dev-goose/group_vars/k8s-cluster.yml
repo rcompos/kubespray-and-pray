@@ -19,7 +19,7 @@ kube_users_dir: "{{ kube_config_dir }}/users"
 kube_api_anonymous_auth: true
 
 ## Change this to use another Kubernetes version, e.g. a current beta release
-kube_version: v1.10.4
+kube_version: v1.9.5
 
 # Where the binaries will be downloaded.
 # Note: ensure that you've enough disk space (about 1G)
@@ -138,9 +138,6 @@ dns_domain: "{{ cluster_name }}"
 # Path used to store Docker data
 docker_daemon_graph: "/var/lib/docker"
 
-## Used to set docker daemon iptables options to true
-#docker_iptables_enabled: "true"
-
 ## A string of extra options to pass to the docker daemon.
 ## This string should be exactly as you wish it to appear.
 ## An obvious use case is allowing insecure-registry access
@@ -163,16 +160,20 @@ k8s_image_pull_policy: IfNotPresent
 dashboard_enabled: true
 
 # Monitoring apps for k8s
-efk_enabled: false
+#efk_enabled: false
+efk_enabled: true
 
 # Helm deployment
-helm_enabled: false
+#helm_enabled: false
+helm_enabled: true
 
 # Istio deployment
 istio_enabled: false
+#istio_enabled: true
 
 # Registry deployment
-registry_enabled: false
+#registry_enabled: false
+registry_enabled: true
 # registry_namespace: "{{ system_namespace }}"
 # registry_storage_class: ""
 # registry_disk_size: "10Gi"
@@ -186,7 +187,7 @@ local_volume_provisioner_enabled: false
 
 # CephFS provisioner deployment
 cephfs_provisioner_enabled: false
-# cephfs_provisioner_namespace: "cephfs-provisioner"
+# cephfs_provisioner_namespace: "{{ system_namespace }}"
 # cephfs_provisioner_cluster: ceph
 # cephfs_provisioner_monitors:
 #   - 172.24.0.1:6789
@@ -198,6 +199,7 @@ cephfs_provisioner_enabled: false
 
 # Nginx ingress controller deployment
 ingress_nginx_enabled: false
+#ingress_nginx_enabled: true
 # ingress_nginx_host_network: false
 # ingress_nginx_namespace: "ingress-nginx"
 # ingress_nginx_insecure_port: 80
@@ -212,6 +214,7 @@ ingress_nginx_enabled: false
 
 # Cert manager deployment
 cert_manager_enabled: false
+#cert_manager_enabled: true
 # cert_manager_namespace: "cert-manager"
 
 # Add Persistent Volumes Storage Class for corresponding cloud provider ( OpenStack is only supported now )
