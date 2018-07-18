@@ -6,7 +6,7 @@
           "node": {
             "hostnames": {
               "manage": [
-                "goose-0"
+                "maverick-1"
               ],
               "storage": [
                 "192.168.1.70"
@@ -15,14 +15,14 @@
             "zone": 1
           },
           "devices": [
-            "/dev/sdd"
+            "/dev/sdc"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "goose-1"
+                "maverick-2"
               ],
               "storage": [
                 "192.168.1.71"
@@ -31,14 +31,14 @@
             "zone": 1
           },
           "devices": [
-            "/dev/sdd"
+            "/dev/sdc"
           ]
         },
         {
           "node": {
             "hostnames": {
               "manage": [
-                "goose-2"
+                "maverick-3"
               ],
               "storage": [
                 "192.168.1.72"
@@ -47,7 +47,7 @@
             "zone": 1
           },
           "devices": [
-            "/dev/sdd"
+            "/dev/sdc"
           ]
         }
       ]
