@@ -172,7 +172,8 @@ k8s_image_pull_policy: IfNotPresent
 dashboard_enabled: true
 
 # Monitoring apps for k8s
-efk_enabled: false
+#efk_enabled: false
+efk_enabled: true
 
 # Helm deployment
 #helm_enabled: false

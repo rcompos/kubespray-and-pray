@@ -1,0 +1,117 @@
+---
+# Ansible for installing GlusterFS requirements on K8s cluster machines.
+
+- hosts: 'kube-master'
+  vars:
+      #key: 'value'
+      dir_target:            '{{ ansible_env.HOME }}/ark'
+      ark_github_version:    'v0.9.0'
+      ark_minio_pvc_path:    '~/.kubespray/inventory'
+      ark_minio_pvc_file:    '00-minio-pv-claim.yaml'
+      ark_minio_pvc_size:    20  # Gi
+      ark_prereqs:           '00-prereqs.yaml'
+      ark_minio_deployment:  '00-minio-deployment.yaml'
+      ark_config:            '10-ark-config.yaml'
+      ark_deployment:        '20-ark-deployment.yaml'
+      ark_client_tgz:        'ark-v0.8.1-linux-amd64.tar.gz'
+      #restic_deployment:     '30-restic-daemonset.yaml'
+  remote_user: solidfire
+  become: true
+  run_once: true
+  environment:
+
+  tasks:
+
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
+
+  - name: Clone Heptio Ark repository
+    git:
+      repo: 'https://github.com/heptio/ark'
+      dest: "{{ dir_target }}"
+      version: "{{ ark_github_version }}"
+      force: yes
+
+  - name: Copy pvc for ark minio
+    # Edit PVC size through spec.resources.requests.storage
+    copy:
+      src:  "{{ ark_minio_pvc_path }}/{{ ark_minio_pvc_file }}"
+      dest: "{{ dir_target }}/examples/minio"
+      mode: 0644
+
+  - name: Modify ark minio pvc file
+    lineinfile:
+      dest: "{{ dir_target }}/examples/minio/{{ ark_minio_pvc_file }}"
+      state: present
+      regexp: '^      storage: 10Gi'
+      line:   '      storage: {{ark_minio_pvc_size}}Gi'
+
+  - name: Create ark common
+    command: "kubectl create -f {{ dir_target }}/examples/common/{{ ark_prereqs }}"
+    ignore_errors: true
+
+  - name: Create ark minio deploy 
+    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_minio_deployment }}"
+    ignore_errors: true
+
+  - name: Wait for ark minio
+    shell: 'kubectl get svc --no-headers -n heptio-ark minio 2>/dev/null | wc -l'
+    register: wait_for_heketi_permanent
+    retries: 36
+    delay: 5
+    until: wait_for_heketi_permanent.stdout >= 1
+
+  - name: Create ark minio pvc
+    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_minio_pvc_file }}"
+    ignore_errors: true
+
+  - name: Create ark config
+    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_config }}"
+    ignore_errors: true
+
+  - name: Create ark deployment
+    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_deployment}}"
+    ignore_errors: true
+
+# Change heptio-ark minio to NodePort
+
+  - name: Get ark client
+    get_url:
+      url: https://github.com/heptio/ark/releases/download/v0.8.1/ark-v0.8.1-linux-amd64.tar.gz
+      dest: "{{ ansible_env.HOME }}"
+      mode: 644
+
+  - name: Extract Ark Client
+     # tar -xvf ark-v0.8.2-darwin-amd64.tar.gz -C ark-client
+    unarchive:
+      src: "{{ ansible_env.HOME }}/{{ ark_client_tgz }}"
+      dest: "/usr/local/bin"
+      creates: "/usr/local/bin/ark"
+      owner: root
+      group: root
+      remote_src: yes
+
+  - name: Show all in namespace heptio-ark
+    shell: kubectl get all,service,jobs,deployment,secret -n heptio-ark
+    register: out
+
+  - debug: var=out.stdout_lines
+
+  - name: Create ark backup schedule
+    shell: ark schedule create {{ ansible_hostname }} --schedule "0 7 * * *"
+    register: out
+    ignore_errors: true
+
+  - debug: var=out.stdout_lines
+
+  - name: Create ark initial backup
+    shell: ark backup create {{ ansible_hostname }}-intial
+    register: out
+
+  - debug: var=out.stdout_lines
+
+
+
+
+

@@ -259,7 +259,7 @@
     command: kubectl apply -f "{{ heketi_file }}" --validate
 
   - name: Get Heketi port
-    shell: kubectl get svc heketi -o yaml | grep '\ nodePort:' | cut -d' ' -f6
+    shell: kubectl get svc heketi -o yaml | grep '\ nodePort:' | cut -d ' ' -f6
     register: heketi_port 
 
   - name: Show Permanent Heketi
