@@ -14,6 +14,8 @@
       ark_config:            '10-ark-config.yaml'
       ark_deployment:        '20-ark-deployment.yaml'
       ark_client_tgz:        'ark-v0.8.1-linux-amd64.tar.gz'
+      ark_namespace:         'heptio-ark'
+      ark_file:              'ark-minio-nodeport.yaml'
       #restic_deployment:     '30-restic-daemonset.yaml'
   remote_user: solidfire
   become: true
@@ -56,11 +58,11 @@
     ignore_errors: true
 
   - name: Wait for ark minio
-    shell: 'kubectl get svc --no-headers -n heptio-ark minio 2>/dev/null | wc -l'
-    register: wait_for_heketi_permanent
+    shell: "kubectl get svc --no-headers -n {{ ark_namespace }} minio 2>/dev/null | wc -l"
+    register: wait_for_ark
     retries: 36
     delay: 5
-    until: wait_for_heketi_permanent.stdout >= 1
+    until: wait_for_ark.stdout >= 1
 
   - name: Create ark minio pvc
     command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_minio_pvc_file }}"
@@ -74,7 +76,21 @@
     command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_deployment}}"
     ignore_errors: true
 
-# Change heptio-ark minio to NodePort
+  - name: Export Ark Minio yaml
+    shell: kubectl get svc minio -n {{ ark_namespace }} -o yaml > "{{ ark_file }}"
+
+  - name: Modify Ark Minio yaml service type
+    lineinfile:
+      dest: "{{ ark_file }}"
+      regexp: '^  type: '
+      line:    '  type: NodePort'
+
+  - name: Change Ark Minio service to NodePort
+    command: kubectl apply -f "{{ ark_file }}" --validate
+
+  - name: Get Ark Minio port
+    shell: kubectl get svc minio -n {{ ark_namespace }} -o yaml | grep '\ nodePort:' | cut -d ' ' -f6
+    register: ark_port
 
   - name: Get ark client
     get_url:
@@ -83,7 +99,7 @@
       mode: 644
 
   - name: Extract Ark Client
-     # tar -xvf ark-v0.8.2-darwin-amd64.tar.gz -C ark-client
+    # tar -xvf ark-v0.8.2-darwin-amd64.tar.gz -C ark-client
     unarchive:
       src: "{{ ansible_env.HOME }}/{{ ark_client_tgz }}"
       dest: "/usr/local/bin"
@@ -92,8 +108,8 @@
       group: root
       remote_src: yes
 
-  - name: Show all in namespace heptio-ark
-    shell: kubectl get all,service,jobs,deployment,secret -n heptio-ark
+  - name: Show all in namespace {{ ark_namespace }}
+    shell: kubectl get all,service,jobs,deployment,secret -n {{ ark_namespace }}
     register: out
 
   - debug: var=out.stdout_lines

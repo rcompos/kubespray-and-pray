@@ -278,6 +278,42 @@ Validate cluster functionality by deploying an application. Run on master or wit
 
     `URL:  http://<node_ip>:<node_port>`
     
+## Disaster Recovery ##
+
+Deploy Heptio Ark for backups and restores.  This approach backs up to local Minio S3-ish storage.
+
+Run on master or with appropriate _~/.kube/config_.
+
+1. __Deploy Ark__
+
+   From __control node__, run playbook to deploy ark and create daily backup schedule.  Run command from _kubespray-and-pray_ directory.
+
+    `$ ansible-playbook maint/ark-setup.yml`  
+
+2. __Ark Client__  
+     
+    From **master** or with appropriate _~/.kube/config_ (i.e. you can run kubectl), run ark client command to validate backups.
+
+    `# ark get backups`
+
+3. __Get Port__ 
+  
+    Get port under PORT(S).  Make note of the second port value.
+
+    `# kubectl get svc minio -n heptio-ark`
+
+4. __View Ark Minio__
+
+    Use any node IP address and the node port from previous step.
+
+    `URL:  http://<node_ip>:<node_port>`
+    
+5. __Ark Restore__  
+     
+    From **master** or with appropriate _~/.kube/config_ (i.e. you can run kubectl), run ark client command to restore a backup.  Substitute actual backup name for <backup_name>.
+
+    `# ark restore create --from-backup <backup_name>`
+    `# ark restore get`
     
 ## References ##
 
@@ -288,5 +324,6 @@ _https://docs.gluster.org/en/v3/Install-Guide/Install/_
 _https://github.com/gluster/gluster-containers/_  
 _https://github.com/heketi/heketi/releases/_  
 _https://download.gluster.org/pub/gluster/glusterfs/4.0/_  
+_https://heptio.github.io/ark/_ 
 
 
