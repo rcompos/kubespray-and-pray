@@ -59,6 +59,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
     b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
 
+    `$ sudo -H pip2 install --updgrade pip`  
     `$ sudo -H pip2 install ansible kubespray`  
 
     c. _Debian_ or _Ubuntu_ control node also need:  
