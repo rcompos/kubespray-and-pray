@@ -1,7 +1,7 @@
 ---
 # Ansible for taking Etcd database snapshot on each etcd node
 
-- hosts: '*'
+- hosts: 'kube-master'
   vars:
     #etcd_endpoints: 'https://10.117.31.22:2379,https://10.117.31.20:2379,https://10.117.31.2:2379'
     etcd_endpoints: "https://{{ inventory_hostname }}:2379"
@@ -12,6 +12,7 @@
     etcd_snapshot_dir_owner: 'solidfire'
     etcd_snapshot_dir_group: 'solidfire'
   remote_user: solidfire
+  run_once: true
   become: true
 
   tasks:
@@ -37,6 +38,8 @@
       register: etcd_snap
 
     - debug: msg="{{ etcd_snap.stdout }}"
+
+    - debug: msg="Snapshot directory {{ etcd_snapshot_dir }}"
 
     #- name: Touch test file
     #  shell: touch testholio
