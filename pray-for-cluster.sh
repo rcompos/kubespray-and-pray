@@ -5,7 +5,8 @@ KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
 KUBESPRAY_TAG='v2.5.0'
 INVDIR_DEFAULT=default
 KUBEDIR="${HOME}/.kubespray"
-INVDEST="${HOME}/.kubespray/inventory"
+INVDEST="${KUBEDIR}/inventory"
+INVFILE="inventory.cfg"
 BLOCK_DEFAULT=/dev/sdb
 SILENT_RUN=false
 
@@ -15,8 +16,8 @@ helpme() {
     echo "Must be run from directory where `basename $0` resides."
     echo "  -u, --user        operating system user"
     echo "  -b, --block       block device"
-    echo "  -l, --link        create symbolic link to inventory directory (use with -i)"
     echo "  -i, --inventory   inventory directory"
+    echo "  -l, --link        create symbolic link to inventory directory (use with -i)"
     echo "  -y, --yes         continue"
     echo "  -s, --silent      do not ask for ansible passwords"
     exit 1
@@ -82,9 +83,9 @@ if [ ! -d "inventory/$INVDIR" ]; then
 fi
 
 echo
-echo "Contents of inventory/$INVDIR/inventory.cfg:"
+echo "Contents of inventory/$INVDIR/$INVFILE"
 echo
-cat -n inventory/$INVDIR/inventory.cfg
+cat -n inventory/$INVDIR/$INVFILE
 echo
 
 INVSRC="${PWD}/inventory/$INVDIR"

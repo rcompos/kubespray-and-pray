@@ -3,7 +3,7 @@
 
 - hosts: '127.0.0.1'
   vars:
-    inv_file: 'inventory/default/inventory.cfg'
+    inv_file: '~/.kubespray/inventory/inventory.cfg'
   run_once: true
   connection: local
 
