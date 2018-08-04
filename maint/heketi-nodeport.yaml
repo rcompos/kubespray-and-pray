@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    description: Exposes Heketi Service
+  creationTimestamp: 2018-07-05T18:36:28Z
+  labels:
+    deploy-heketi: support
+    glusterfs: heketi-service
+  name: heketi
+  namespace: default
+  resourceVersion: "9198"
+  selfLink: /api/v1/namespaces/default/services/heketi
+  uid: 5464b8c4-8082-11e8-a295-0050569ac6a4
+spec:
+  clusterIP: 10.233.43.158
+  ports:
+  - name: heketi
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: heketi
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

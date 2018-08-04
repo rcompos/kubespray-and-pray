@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"creationTimestamp":"2018-07-05T17:20:31Z","labels":{"k8s-app":"kibana-logging","kubernetes.io/cluster-service":"true","kubernetes.io/name":"Kibana"},"name":"kibana-logging","namespace":"kube-system","resourceVersion":"1179","selfLink":"/api/v1/namespaces/kube-system/services/kibana-logging","uid":"b83e3cee-8077-11e8-a295-0050569ac6a4"},"spec":{"clusterIP":"10.233.0.175","ports":[{"port":5601,"protocol":"TCP","targetPort":"ui"}],"selector":{"k8s-app":"kibana-logging"},"sessionAffinity":"None","type":"NodePort"},"status":{"loadBalancer":{}}}
+  creationTimestamp: 2018-07-05T17:20:31Z
+  labels:
+    k8s-app: kibana-logging
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: Kibana
+  name: kibana-logging
+  namespace: kube-system
+  resourceVersion: "1489"
+  selfLink: /api/v1/namespaces/kube-system/services/kibana-logging
+  uid: b83e3cee-8077-11e8-a295-0050569ac6a4
+spec:
+  clusterIP: 10.233.0.175
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 30241
+    port: 5601
+    protocol: TCP
+    targetPort: ui
+  selector:
+    k8s-app: kibana-logging
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

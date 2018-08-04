@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-beverage
+  namespace: minio
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: do-nitro-1.one.den.solidfire.net
+    http:
+      paths:
+      - path: /coffee
+        backend:
+          serviceName: minio-1
+          servicePort: 9000
+      - path: /tea
+        backend:
+          serviceName: minio-2
+          servicePort: 9000
