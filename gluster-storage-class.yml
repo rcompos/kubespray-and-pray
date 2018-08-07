@@ -4,7 +4,7 @@
 - hosts: 'kube-master'
   vars:
     sc_yml: 'sc-gluster.yml'
-    sc_name: 'slow'
+    sc_name: 'gluster'
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
     heketi_cli: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli"

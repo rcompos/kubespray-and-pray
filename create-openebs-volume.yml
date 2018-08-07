@@ -1,0 +1,32 @@
+---
+# Create and mount container storage volume
+
+- hosts: 'openebs'
+  vars:
+    block_device: /dev/sde
+    mount_point:   /mnt/openebs_disk
+    fs_type:      ext4
+  #remote_user: solidfire
+  become: true
+
+  tasks:
+
+  - name: Create directory for OpenEBS
+    file:
+      path: "{{ mount_point }}"
+      state: directory
+      mode: 0755
+  
+  - name: Create ext4 Filesystem
+    filesystem:
+      fstype: "{{ fs_type }}"
+      dev: "{{ block_device }}"
+  
+  - name: Mount filesystem
+    mount:
+      path: "{{ mount_point }}"
+      src: "{{ block_device }}"
+      fstype: "{{ fs_type }}"
+      state: mounted
+
+  

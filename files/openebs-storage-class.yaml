@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: openebs
+provisioner: openebs.io/provisioner-iscsi
+parameters:
+    openebs.io/jiva-replica-count: "2"
+    openebs.io/capacity: "2G"
+    openebs.io/jiva-replica-image: "openebs/jiva:0.5.0"
+    openebs.io/storage-pool: "openebs-storage-pool"  
+
+

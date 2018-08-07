@@ -1,1 +1,1 @@
-# helm install stable/docker-registry -n registry --namespace docker-registry --set persistence.enabled=true --set persistence.storageClass=slow --set persistence.size=30Gi
+# helm install stable/docker-registry -n registry --namespace docker-registry --set persistence.enabled=true --set persistence.size=30Gi
