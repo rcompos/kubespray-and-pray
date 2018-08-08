@@ -4,7 +4,7 @@
 
 - hosts: 'openebs'
   vars:
-    block_device: /dev/sde
+    block_device_openebs: /dev/sde
     mount_point:  /mnt/openebs_disk
     fs_type:      ext4
   #remote_user: solidfire
@@ -21,13 +21,12 @@
   - name: Create ext4 Filesystem
     filesystem:
       fstype: "{{ fs_type }}"
-      dev: "{{ block_device }}"
+      dev: "{{ block_device_openebs }}"
   
   - name: Mount filesystem
     mount:
       path: "{{ mount_point }}"
-      src: "{{ block_device }}"
+      src: "{{ block_device_openebs }}"
       fstype: "{{ fs_type }}"
       state: mounted
-
   

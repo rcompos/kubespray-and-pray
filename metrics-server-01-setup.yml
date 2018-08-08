@@ -1,0 +1,39 @@
+---
+# Ansible for Kubernetes metrics-server
+
+- hosts: 'kube-master'
+  vars:
+      dir_target: '{{ ansible_env.HOME }}'
+      namespace: 'metrics'
+      helm_name: 'metrics-server'
+      chart: 'stable/metrics-server'
+      deploy: 'metrics-server'
+  remote_user: solidfire
+  become: true
+  run_once: true
+  environment:
+
+  tasks:
+
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
+
+  - name: Check for deployment
+    shell: "kubectl get deployment {{ deploy }} -n {{ namespace }} --no-headers=1"
+    register: check_metrics_server
+    ignore_errors: true
+
+  - name: Install Helm chart
+    command: "helm install {{ chart }} -n {{ helm_name }} --namespace {{ namespace }}"
+    when: check_metrics_server.rc != 0
+    register: out
+
+  - debug: var=out.stdout
+
+  - name: Check for deployment
+    shell: "kubectl get deployment {{ deploy }} -n {{ namespace }} --no-headers=1"
+    register: check_metrics_deploy
+    retries: 36
+    delay: 1
+    until: check_metrics_deploy.rc == 0
