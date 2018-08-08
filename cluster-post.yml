@@ -1,0 +1,14 @@
+---
+
+- hosts: '*'
+  vars:
+    user: solidfire
+  gather_facts: false
+  become: true
+
+- import_playbook: metallb-01-setup.yml
+- import_playbook: nginx-ingress-01-setup.yml
+- import_playbook: docker-registry-01-setup.yml
+- import_playbook: prometheus-01-setup.yml
+- import_playbook: ark-01-setup.yml
+- import_playbook: ark-02-config.yml

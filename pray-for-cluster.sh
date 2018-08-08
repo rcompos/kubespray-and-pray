@@ -137,9 +137,9 @@ ln -s ${PWD}/inventory/$INVDIR ~/.kubespray/inventory
 
 # Run top-level ansible playbook to prepare all nodes for kubespray deploy
 if $SILENT_RUN; then
-  ansible-playbook prep-cluster.yml -e user=$KUSER -e block_device=$BLOCK 
+  ansible-playbook cluster-prep.yml -e user=$KUSER -e block_device=$BLOCK 
 else
-  ansible-playbook prep-cluster.yml -k -K -e user=$KUSER -e block_device=$BLOCK
+  ansible-playbook cluster-prep.yml -k -K -e user=$KUSER -e block_device=$BLOCK
 fi
 
 # Deploy Kubespray
