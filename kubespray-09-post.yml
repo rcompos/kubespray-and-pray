@@ -5,6 +5,9 @@
   vars:
     kibana_logging_nodeport: 'kibana-logging-nodeport.yml'
     registry_nodeport: 'registry-nodeport.yml'
+    namespace_kibana : 'kube-system'
+    service_kibana_logging: 'kibana-logging'
+    type_kibana_logging: 'NodePort'
   remote_user: solidfire
   become: true
   run_once: true
@@ -18,18 +21,25 @@
   #    block_device: '/dev/sdb'
 
   - name: Export Kibana yaml
-    shell: kubectl get svc kibana-logging -n kube-system -o yaml > "{{ kibana_logging_nodeport }}"
+   shell: kubectl get svc kibana-logging -n kube-system -o yaml > "{{ kibana_logging_nodeport }}"
     ignore_errors: true
-
+  
   - name: Modify Kibana yaml service type
     lineinfile:
       dest: "{{ kibana_logging_nodeport }}"
       regexp: '^  type: '
       line:    '  type: NodePort'
-
+  
   - name: Change Kibana service to NodePort
     command: kubectl apply -f "{{ kibana_logging_nodeport }}" --validate
     ignore_errors: true
+
+  #  - name: Change service type to NodePort
+  #  # k patch svc -n monitoring kube-prometheus --type='json' -p '[{"op":"replace","path":"/spec/type","value":"LoadBalancer"}]'
+  #  shell: "kubectl patch svc -n {{ namespace }} {{ service_kibana_logging }} --type='json' -p '[{\"op\":\"replace\",\"path\":\"/spec/type\",\"value\":\"LoadBalancer\"}]'"
+  #  register: result
+
+  - debug: var=result.stdout
 
   #- name: Get Kibana port
   #  shell: kubectl get svc kibana-logging -n kube-system -o yaml | grep '\ nodePort:' | cut -d' ' -f6

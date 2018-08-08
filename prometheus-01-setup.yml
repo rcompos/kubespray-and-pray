@@ -1,0 +1,74 @@
+---
+# Ansible for installing Prometheus and Grafana
+
+- hosts: 'kube-master'
+  vars:
+      dir_target: '{{ ansible_env.HOME }}'
+      namespace: 'monitoring'
+      helm_repo_name: 'coreos'
+      helm_repo_coreos: 'https://s3-eu-west-1.amazonaws.com/coreos-charts/stable'
+      helm_name_operator: 'prometheus-operator'
+      helm_name_prometheus: 'kube-prometheus'
+      chart_operator: 'coreos/prometheus-operator'
+      chart_prometheus: 'coreos/kube-prometheus'
+      deploy_prometheus: 'kube-prometheus-grafana'
+      deploy_operator: 'prometheus-operator'
+  remote_user: solidfire
+  become: true
+  run_once: true
+  environment:
+
+  tasks:
+
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
+
+  - name: Check for coreos repo
+    shell: "helm repo list | grep {{ helm_repo_name }}"
+    register: check_repo
+    ignore_errors: true
+
+  - name: Install coreos Helm repo 
+    # helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+    command: "helm repo add {{ helm_repo_name }} {{ helm_repo_coreos }}"
+    when: check_repo.rc != 0
+    register: out
+
+  - debug: var=out.stdout
+
+  - name: Check for Prometheus deployment
+    shell: "kubectl get deployment {{ deploy_prometheus }} -n {{ namespace }} --no-headers=1"
+    register: check_prometheus
+    ignore_errors: true
+
+  - name: Install Prometheus Operator
+    # helm install coreos/prometheus-operator -n prometheus-operator --namespace monitoring
+    command: "helm install {{ chart_operator }} -n {{ helm_name_operator }} --namespace {{ namespace }}"
+    when: check_prometheus.rc != 0
+    register: out
+
+  - debug: var=out.stdout
+
+  - name: Check for Prometheus Operator deployment
+    shell: "kubectl get deployment {{ deploy_operator }} -n {{ namespace }} --no-headers=1"
+    register: check_operator
+    retries: 36
+    delay: 1
+    until: check_operator.rc == 0
+
+  - name: Install kube-prometheus
+    # helm install coreos/kube-prometheus -n kube-prometheus --set global.rbacEnable=true --namespace monitoring
+    command: "helm install {{ chart_prometheus }} -n {{ helm_name_prometheus }} --namespace {{ namespace }}"
+    when: check_prometheus.rc != 0
+    register: out
+
+  - debug: var=out.stdout
+
+  #- name: Change service type to NodePort
+  #  # k patch svc -n monitoring kube-prometheus --type='json' -p '[{"op":"replace","path":"/spec/type","value":"LoadBalancer"}]'
+  #  command: "kubectl patch svc -n {{ namespace }}  {{ helm_name_prometheus }} --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]'
+  #  when: check_prometheus.rc != 0
+  #  register: result
+  #
+  #- debug: var=result.stdout

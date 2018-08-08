@@ -1,0 +1,55 @@
+---
+# Ansible for installing GlusterFS requirements on K8s cluster machines.
+
+- hosts: 'kube-master'
+  vars:
+      dir_target: '{{ ansible_env.HOME }}'
+      namespace: 'load-balance'
+      helm_name: 'metallb'
+      chart: 'stable/metallb'
+      deploy: 'metallb-controller'
+      metallb_config_path: '~/.kubespray/inventory/loadbalance'
+      metallb_config_yaml: 'metallb-config.yaml'
+  remote_user: solidfire
+  become: true
+  run_once: true
+  environment:
+
+  tasks:
+
+  #- name: Role Facts
+  #  set_fact:
+  #    block_device: '/dev/sdb'
+
+  - name: Check for MetalLB deployment
+    shell: "kubectl get deployment {{ deploy }} -n {{ namespace }} --no-headers=1"
+    register: check_metallb
+    ignore_errors: true
+
+  - name: Install MetalLB Helm chart
+    command: "helm install {{ chart }} -n {{ helm_name }} --namespace {{ namespace }}"
+    when: check_metallb.rc != 0
+    register: out
+
+  - debug: var=out.stdout
+
+  - name: Check for MetalLB deployment
+    shell: "kubectl get deployment {{ deploy }} -n {{ namespace }} --no-headers=1"
+    register: check_metallb_controller
+    retries: 36
+    delay: 1
+    until: check_metallb_controller.rc == 0
+
+  - name: Copy MetalLB config yaml
+    copy:
+      src: "{{ metallb_config_path }}/{{ metallb_config_yaml }}"
+      dest: "{{ ansible_env.HOME }}"
+      mode: 0644
+
+  - name: Create MetalLB configmap
+    command: "kubectl apply -f {{ metallb_config_yaml }}"
+    args:
+      chdir: "{{ ansible_env.HOME }}"
+    register: out
+
+  - debug: var=out.stdout

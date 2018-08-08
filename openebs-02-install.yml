@@ -1,5 +1,6 @@
 ---
 # Ansible for OpenEBS
+# Requires disk to already be formatted and mounted
 
 - hosts: 'kube-master'
   vars:

@@ -6,8 +6,8 @@
   gather_facts: false
   become: true
 
-- import_playbook: gluster-show-topo.yml
-- import_playbook: gluster-heketi-pre.yml
-- import_playbook: gluster-heketi.yml
-- import_playbook: gluster-storage-class.yml
+- import_playbook: gluster-01-show-topo.yml
+- import_playbook: gluster-02-heketi-pre.yml
+- import_playbook: gluster-03-heketi.yml
+- import_playbook: gluster-04-storage-class.yml
 

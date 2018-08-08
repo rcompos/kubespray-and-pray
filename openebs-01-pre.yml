@@ -1,10 +1,11 @@
 ---
-# Create and mount container storage volume
+# Create container storage volume for OpenEBS
+# The raw block device will be formatted and mounted
 
 - hosts: 'openebs'
   vars:
     block_device: /dev/sde
-    mount_point:   /mnt/openebs_disk
+    mount_point:  /mnt/openebs_disk
     fs_type:      ext4
   #remote_user: solidfire
   become: true
