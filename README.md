@@ -70,7 +70,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
     Clone kubespray-and-pray repository.  
 
-    `$ cd; git clone https://github.com/scandalizer/kubespray-and-pray`
+    `$ cd; git clone https://bitbucket.org/solidfire/kubespray-and-pray`
 
 ## TLDR ##
 ---

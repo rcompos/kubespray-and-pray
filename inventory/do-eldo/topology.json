@@ -6,10 +6,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-eldo-1"
+                "do-eldo-4"
               ],
               "storage": [
-                "10.117.72.40"
+                "10.117.77.79"
               ]
             },
             "zone": 1
@@ -22,10 +22,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-eldo-2"
+                "do-eldo-5"
               ],
               "storage": [
-                "10.117.69.166"
+                "10.117.69.122"
               ]
             },
             "zone": 1
@@ -38,10 +38,58 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-eldo-3"
+                "do-eldo-6"
               ],
               "storage": [
-                "10.117.77.112"
+                "10.117.72.45"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "do-eldo-7"
+              ],
+              "storage": [
+                "10.117.74.66"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "do-eldo-8"
+              ],
+              "storage": [
+                "10.117.71.209"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "do-eldo-9"
+              ],
+              "storage": [
+                "10.117.71.233"
               ]
             },
             "zone": 1
