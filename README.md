@@ -119,6 +119,7 @@ node3
 [kube-master]
 node1
 node2
+node3
 
 [etcd]
 node1
