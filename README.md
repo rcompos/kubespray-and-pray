@@ -80,7 +80,7 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 1. Deploy Kubernetes  
    Prepare directory (inventory/default or custom) with Kubespray config files.  Update _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ and _topology.json_.  Deploy cluster.  
    
-        $ ./pray-for-cluster.sh  
+        $ ./kubespray-and-pray.sh  
 
 2. Kubernetes Access Controls  
    Insecure permissions for development only!  
@@ -90,7 +90,7 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 3. GlusterFS Distributed Storage  
    Hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Heketi provides a REST API for Gluster.  
    
-        $ ansible-playbook pray-for-gluster.yml  
+        $ ansible-playbook gluster.yml  
 
 ---
 
@@ -179,9 +179,9 @@ Perform the following steps on the __control node__ where ansible command will b
     __Inventory Directory__  The Ansible inventory host configuration files are located by default in the directory _inventory/default_.  However this location can be specified with option -i. 
     
 
-    Example:  pray-for-cluster.sh -u myuser -b /dev/sdb -i dev20node
+    Example:  kubespray-and-pray.sh -u myuser -b /dev/sdb -i dev20node
     
-    Optional arguments for _pray-for-cluster_ are as follows.  If no option is specified the default values will be used.
+    Optional arguments for _kubespray-and-pray.sh_ are as follows.  If no option is specified the default values will be used.
     
     | Flag   | Description                            | Default     |
     |--------|----------------------------------------|-------------|
@@ -193,7 +193,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
     Run script to deploy Kubernetes cluster to all nodes with default values.
 
-    `$ ./pray-for-cluster.sh`
+    `$ ./kubespray-and-pray.sh`
 
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
@@ -255,7 +255,7 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     Run ansible playbook on all GlusterFS members to install kernel modules and glusterfs client.  The playbook  will be run against the `gluster` inventory group.  Run command from _kubespray-and-pray_ directory.
 
-    `$ ansible-playbook pray-for-gluster.yml`   
+    `$ ansible-playbook gluster.yml`   
 
 ## Validation ##
 
