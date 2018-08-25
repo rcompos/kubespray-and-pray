@@ -68,9 +68,9 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
 2. __Clone Repo__
 
-    Clone kubespray-and-pray repository in home directory.  
+    Clone kubespray-and-pray repository in home directory.  Substitute actual repo url for _\<RepositoryURL\>_.
 
-    `$ cd; git clone https://github.com/rcompos/kubespray-and-pray`
+    `$ cd; git clone <RepositoryURL>`
 
 ## TLDR ##
 ---
