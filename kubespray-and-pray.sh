@@ -2,7 +2,7 @@
 export PYTHONUNBUFFERED=1
 KUSER=solidfire
 KUBESPRAY_REPO=https://github.com/kubespray/kubespray.git
-KUBESPRAY_TAG='v2.5.0'
+KUBESPRAY_TAG='v2.6.0'
 INVDIR_DEFAULT=default
 KUBEDIR="${HOME}/.kubespray"
 INVDEST="${KUBEDIR}/inventory"

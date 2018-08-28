@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-my-nginx
+  namespace: nginx-example
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: nitro.solidfire.net
+    http:
+      paths:
+      - backend:
+          serviceName: my-nginx
+          servicePort: 80
+        path: /my-nginx

@@ -1,13 +1,11 @@
 # Kubespray-and-pray # 
 
-Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
+Deploy Kubernetes clusters with Kubespray.  For on-premise, non-cloud, bare metal or virtual.
 
 ```
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  (  scattered rays of light,             )
- (         honey bee communities,          )
-  (             stir the winds of change  )
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ~~~~~~~~~~~~~~~~~~~~~~~
+ (     Bare Metal K8s     )
+   ~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
               (__)\       )\/\
@@ -17,7 +15,7 @@ Deploy Kubernetes clusters with Kubespray on machines both virtual and physical.
 
 ## Description ##
 
-Deploy Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Default storage class provided by GlusterFS hyper-converged storage.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
+Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Default storage class provided by GlusterFS hyper-converged storage.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
 __Kubernetes Node Operating Systems Supported:__
 
@@ -26,10 +24,7 @@ __Kubernetes Node Operating Systems Supported:__
 
 This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.  Kubespray, which is built on Ansible, automates cluster deployments and provides for flexibility in configuration. 
 
-The Kubernetes cluster configs include the following component defaults:  
-Container engine: _docker_  
-Container network interface: _calico_  or _flannel_
-Storage driver: _overlay2_  or _overlay_
+
 
 Estimated time to complete: 1 hr  
 
@@ -44,7 +39,7 @@ General requirements:
 * __Persistent Storage Volume:__  Additional physical or virtual disk volume.  i.e. /dev/sdd
 * __Hostname resolution:__  Ensure that cluster machine hostnames are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
 
-## Prepare Control Node ##
+## Control Node ##
 
 Prepare __control node__ where management tools are installed.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
 
@@ -73,11 +68,10 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
     `$ cd; git clone <RepositoryURL>`
 
 ## TLDR ##
----
 
 A Kubernetes cluster can be rapidly deployed with the following steps.  See further sections for details of each step.  
 
-1. Deploy Kubernetes  
+1. Deploy K8s  
    Prepare directory (inventory/default or custom) with Kubespray config files.  Update _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ and _topology.json_.  Deploy cluster.  
    
         $ ./kubespray-and-pray.sh  
@@ -92,19 +86,22 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
    
         $ ansible-playbook gluster.yml  
 
----
 
-## Deploy Kubernetes ##
+## Define Cluster ##
 
-The Kubernetes cluster topology is defined as masters, nodes and etcds.  Masters are cluster masters running the Kubernetes API service.  Nodes are worker nodes where pods will run.  Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.
+The Kubernetes cluster topology is defined as masters, nodes and etcds.  
 
-The following is an example _inventory.cfg_ defining a Kubernetes cluster with three members (all).  There are two masters (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  There are also three GlusterFS (gluster) members defined.
+* Masters are cluster masters running the Kubernetes API service.  
+* Nodes are worker nodes where pods will run.  
+* Etcds are etcd cluster members, which serve as the state database for the Kubernetes cluster.  
+
+Custom ansible groups may be included, such as gluster, openebs or trident.
 
 The top lines with ansible\_ssh\_host and ip values are required since machines may have multiple network addresses.  Change the ansible\_ssh\_host and ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
 
-Note:  The Heketi service will be assigned to a value of _ansible\_ssh\_host_ for a master node from the ansible inventory file (_~/.kubespray/inventory/inventory.cfg_).
+Save your configuration under the _inventory_ directory.  Pull the latest inventory files from the upstream kubespray repo under _inventory/samples_ directory.
 
-For more examples see _inventory_ directory.  Pull the latest inventory files from the upstream kubespray repo under _inventory/samples_ directory.
+The following is an example _inventory.cfg_ defining a Kubernetes cluster.  There are three members (all) including one master (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  This file is from the upstream Kubespray repository _kubespray/inventory/sample/hosts.ini_.
 
 ```
 node1    ansible_ssh_host=192.168.1.50  ip=192.168.1.50
@@ -118,8 +115,6 @@ node3
     
 [kube-master]
 node1
-node2
-node3
 
 [etcd]
 node1
@@ -133,9 +128,8 @@ node3
 
 [kube-ingress]
 node1
-node2
 
-[gluster]
+[gluster]  # Custom group
 node1
 node2
 node3
@@ -169,11 +163,13 @@ Perform the following steps on the __control node__ where ansible command will b
     
     __Alternate Location:__  Create new directory under _inventory_ based on one of the example directories.  Update _inventory.cfg_ and other files.  Then specify this directory in the deployment step.
 
-2. __Deploy Kubernetes Cluster__
+## Deploy Kubernetes ##
 
-    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_ by default and optionally and entire directory such as _inventory/mycluster_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
+1. __Deploy Kubernetes Cluster__
+
+    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_ by default and optionally an entire directory such as _inventory/mycluster_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
     
-    __Deployment User__ _solidfire_ is used in this example.  This user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a user, then you must manually update the _ansible.cfg_ file.
+    __Deployment User__ _solidfire_ is used in this example.  A user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a different remote user, then you must manually update the _ansible.cfg_ file.
      
     __Optional Container Volume__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise default device is _/dev/sdc_.  If default block device not found, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.  
     
@@ -200,7 +196,7 @@ Congratulations!  Your cluster should be running.  Log onto a master node and ru
 
 __Scale out:__  Nodes may be added later by running the Kubespray _scale.yml_.
 
-## Kubernetes Access Controls ##
+## K8s Access Controls ##
 
 ***WARNING... Insecure permissions for development only!***
 
@@ -222,7 +218,7 @@ _https://kubernetes.io/docs/admin/authorization/rbac_
     `https://master-ip:dashboard-port`  
 
 
-## GlusterFS Distributed Storage ##
+## GlusterFS Storage ##
 
 This optional step creates a Kubernetes default storage class using the distributed filesystem GlusterFS, managed through Heketi REST API.  Providing a default storage class abstracts the application from the implementation.  Kubernetes application deployments can now claim storage without specifying what kind.
 
