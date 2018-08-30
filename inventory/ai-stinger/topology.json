@@ -6,10 +6,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-stinger-1"
+                "ai-stinger-1"
               ],
               "storage": [
-                "10.117.68.45"
+                "10.117.69.111"
               ]
             },
             "zone": 1
@@ -22,10 +22,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-stinger-2"
+                "ai-stinger-2"
               ],
               "storage": [
-                "10.117.68.242"
+                "10.117.75.185"
               ]
             },
             "zone": 1
@@ -38,10 +38,10 @@
           "node": {
             "hostnames": {
               "manage": [
-                "do-stinger-3"
+                "ai-stinger-3"
               ],
               "storage": [
-                "10.117.73.28"
+                "10.117.72.99"
               ]
             },
             "zone": 1

@@ -79,7 +79,7 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 2. Kubernetes Access Controls  
    Insecure permissions for development only!  
    
-        $ ansible-playbook dashboard-permissive.yml  
+        $ ansible-playbook kubespray-08-dashboard-permissive.yml
 
 3. GlusterFS Distributed Storage  
    Hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Heketi provides a REST API for Gluster.  
