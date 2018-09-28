@@ -254,7 +254,7 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     `$ ansible-playbook gluster.yml`   
 
-## Cluster Scale Out##
+## Cluster Scale Out ##
 
 Scale out cluster.  Run from base directory of kubespray-and-pray repository.
 
