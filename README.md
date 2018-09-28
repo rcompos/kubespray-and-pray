@@ -254,6 +254,24 @@ _https://github.com/heketi/heketi/blob/master/docs/admin/install-kubernetes.md_
 
     `$ ansible-playbook gluster.yml`   
 
+## Cluster Scale Out##
+
+Scale out cluster.  Run from base directory of kubespray-and-pray repository.
+
+1. __Adjust Inventory File__
+
+    Modify inventory file with editor such as vi or nano.  Add node(s).  
+
+    `$ cd ~/kubespray-and-pray`  
+    `$ vi inventory/default/inventory.cfg`  
+     
+2. __Run Scale Out Playbook__
+
+    Run Kubespray scale-out playbook scale.yml.
+
+    `$ cd ~/kubespray-and-pray`  
+    `$ ansible-playbook ~/.kubespray/scale.yml -b -v`  
+
 ## Validation ##
 
 Validate cluster functionality by deploying an application. Run on master or with appropriate _~/.kube/config_.
