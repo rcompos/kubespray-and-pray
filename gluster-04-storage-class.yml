@@ -8,6 +8,7 @@
     dir_target: "{{ ansible_env.HOME }}/heketi"
     dir_heketi: "{{ dir_target }}/extras/kubernetes"
     heketi_cli: "{{ ansible_env.HOME }}/heketi-client/bin/heketi-cli"
+    heketi_file: heketi-nodeport.yaml
   remote_user: solidfire
   become: true
   run_once: true
@@ -26,6 +27,18 @@
     retries: 24 
     delay: 5
     until: heketi_ready.rc == 0
+
+  - name: Export Heketi yaml
+    shell: kubectl get svc heketi -o yaml > "{{ heketi_file }}"
+
+  - name: Modify Heketi yaml service type
+    lineinfile:
+      dest: "{{ heketi_file }}"
+      regexp: '^  type: '
+      line:    '  type: NodePort'
+
+  - name: Change heketi service to NodePort
+    command: kubectl apply -f "{{ heketi_file }}" --validate
 
   - name: Get Heketi port
     shell: kubectl get svc heketi -o yaml | grep '\ nodePort:' | cut -d' ' -f6
