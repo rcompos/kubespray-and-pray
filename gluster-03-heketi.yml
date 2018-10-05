@@ -4,7 +4,7 @@
 - hosts: 'kube-master'
   vars:
     dir_target: "{{ ansible_env.HOME }}/gluster-kubernetes"
-    gk_github_version: 'v1.2.0'
+    #gk_github_version: 'v1.2.0'
     gluster_topo: '~/.kubespray/inventory/topology.json'
     dir_gk: "{{ dir_target }}/deploy"
   remote_user: solidfire
@@ -25,7 +25,7 @@
     git:
       repo: 'https://github.com/gluster/gluster-kubernetes.git'
       dest: "{{ dir_target }}"
-      version: "{{ gk_github_version }}"
+      #version: "{{ gk_github_version }}"
       force: yes
 
   - name: Copy custom topology

@@ -7,7 +7,7 @@
       namespace: 'registry'
       helm_name: 'docker-registry'
       chart: 'stable/docker-registry'
-      size: '32Gi'
+      size: '36Gi'
       service_type: 'NodePort'
       deploy: 'docker-registry'
   remote_user: solidfire
