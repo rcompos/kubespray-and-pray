@@ -15,15 +15,17 @@ Master:
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
-  AdminUser: admin
   # AdminPassword: <defaults to random>
-  Cpu: "200m"
-  Memory: "256Mi"
+  AdminUser: admin
+  #Cpu: "200m"
+  #Memory: "256Mi"
+  Cpu: "500m"
+  Memory: "512Mi"
   ServicePort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # <to set explicitly, choose port between 30000-32767>
   ServiceType: NodePort
-  NodePort: 32000
+  #NodePort: 32000
   ServiceAnnotations: {}
   ContainerPort: 8080
   # Enable Kubernetes Liveness and Readiness Probes
@@ -56,8 +58,8 @@ Agent:
   ImageTag: 3.10-1
   Component: "jenkins-slave"
   Privileged: false
-  Cpu: "200m"
-  Memory: "256Mi"
+  Cpu: "400m"
+  Memory: "512Mi"
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
   # You can define the volumes that you want to mount for this container
@@ -75,7 +77,7 @@ Persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # ExistingClaim:
   ## jenkins data Persistent Volume Storage Class
-  StorageClass: jenkins-pv
+  #StorageClass: jenkins-pv
 
   Annotations: {}
   AccessMode: ReadWriteOnce

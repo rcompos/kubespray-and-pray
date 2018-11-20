@@ -1,7 +1,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: fluentd-es-config-v0.1.5
+  name: fluentd-es-config-v0.1.6
   namespace: kube-system
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
@@ -115,7 +115,6 @@ data:
       @type tail
       path /var/log/containers/*.log
       pos_file /var/log/es-containers.log.pos
-      time_format %Y-%m-%dT%H:%M:%S.%NZ
       tag raw.kubernetes.*
       read_from_head true
       <parse>
@@ -308,7 +307,7 @@ data:
     <source>
       @id journald-docker
       @type systemd
-      filters [{ "_SYSTEMD_UNIT": "docker.service" }]
+      matches [{ "_SYSTEMD_UNIT": "docker.service" }]
       <storage>
         @type local
         persistent true
@@ -321,7 +320,7 @@ data:
     <source>
       @id journald-container-runtime
       @type systemd
-      filters [{ "_SYSTEMD_UNIT": "{{ container_runtime }}.service" }]
+      matches [{ "_SYSTEMD_UNIT": "{{ container_runtime }}.service" }]
       <storage>
         @type local
         persistent true
@@ -334,7 +333,7 @@ data:
     <source>
       @id journald-kubelet
       @type systemd
-      filters [{ "_SYSTEMD_UNIT": "kubelet.service" }]
+      matches [{ "_SYSTEMD_UNIT": "kubelet.service" }]
       <storage>
         @type local
         persistent true
@@ -347,7 +346,7 @@ data:
     <source>
       @id journald-node-problem-detector
       @type systemd
-      filters [{ "_SYSTEMD_UNIT": "node-problem-detector.service" }]
+      matches [{ "_SYSTEMD_UNIT": "node-problem-detector.service" }]
       <storage>
         @type local
         persistent true
@@ -360,7 +359,7 @@ data:
     <source>
       @id kernel
       @type systemd
-      filters [{ "_TRANSPORT": "kernel" }]
+      matches [{ "_TRANSPORT": "kernel" }]
       <storage>
         @type local
         persistent true
@@ -419,6 +418,14 @@ data:
     # Enriches records with Kubernetes metadata
     <filter kubernetes.**>
       @type kubernetes_metadata
+    </filter>
+
+    # Concatenate multi-line logs
+    <filter **>
+      @type concat
+      key message
+      multiline_end_regexp /\n$/
+      separator ""
     </filter>
 
     <match **>

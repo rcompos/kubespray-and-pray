@@ -1,0 +1,17 @@
+---
+
+- hosts: '*'
+  vars:
+    user:       solidfire
+    domain:     one.den.solidfire.net
+  #remote_user:  root
+  become: true
+
+  tasks:
+
+  - name: Add FQDN hostname
+    lineinfile:
+      dest:    /etc/hostname
+      state:   present
+      regexp: "^.*{{ inventory_hostname }}.*"
+      line:   "{{ inventory_hostname }}.{{ domain }}"

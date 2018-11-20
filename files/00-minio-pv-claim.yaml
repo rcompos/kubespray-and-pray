@@ -11,7 +11,7 @@ spec:
   # storageClassName: gluster
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
+  #persistentVolumeReclaimPolicy: Retain
   resources:
     requests:
       storage: 10Gi

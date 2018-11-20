@@ -51,7 +51,7 @@
     lineinfile:
       dest: /etc/modules
       state: present
-      regexp: '^dm_snapshot '
+      regexp: '^dm_snapshot'
       line: 'dm_snapshot'
     when: ansible_os_family == 'Debian'
 
@@ -60,7 +60,7 @@
       dest: /etc/modules-load.d/dm_snapshot.conf
       state: present
       create: yes
-      regexp: '^dm_snapshot '
+      regexp: '^dm_snapshot'
       line: 'dm_snapshot'
     when: ansible_os_family == 'RedHat'
 
@@ -68,7 +68,7 @@
     lineinfile:
       dest: /etc/modules
       state: present
-      regexp: '^dm_mirror '
+      regexp: '^dm_mirror'
       line: 'dm_mirror'
     when: ansible_os_family == 'Debian'
 
@@ -77,7 +77,7 @@
       dest: /etc/modules-load.d/dm_mirror.conf
       state: present
       create: yes
-      regexp: '^dm_mirror '
+      regexp: '^dm_mirror'
       line: 'dm_mirror'
     when: ansible_os_family == 'RedHat'
 
@@ -85,7 +85,7 @@
     lineinfile:
       dest: /etc/modules
       state: present
-      regexp: '^dm_thin_pool '
+      regexp: '^dm_thin_pool'
       line: 'dm_thin_pool'
     when: ansible_os_family == 'Debian'
 
@@ -94,7 +94,7 @@
       dest: /etc/modules-load.d/dm_thin_pool.conf
       state: present
       create: yes
-      regexp: '^dm_thin_pool '
+      regexp: '^dm_thin_pool'
       line: 'dm_thin_pool'
     when: ansible_os_family == 'RedHat'
 
@@ -122,7 +122,7 @@
       dest: /etc/modules-load.d/fuse.conf
       state: present
       create: yes
-      regexp: '^fuse '
+      regexp: '^fuse'
       line: 'fues'
     when: ansible_os_family == 'RedHat'
 

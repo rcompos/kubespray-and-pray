@@ -2,10 +2,9 @@
 # Ansible for OpenEBS
 # Requires disk to already be formatted and mounted
 
-- hosts: 'kube-node'
+- hosts: 'kube-master,kube-node'
   vars:
     trident_installer: https://github.com/NetApp/trident/releases/download/v18.07.0/trident-installer-18.07.0.tar.gz
-
     namespace: trident
     deploy:    trident
   remote_user: solidfire
@@ -23,7 +22,7 @@
   - name: Install apt package nfs-commoon
     package: 
       name:   nfs-common
-    state:    present
+      state:    present
     register: out
 
   - debug: var=out

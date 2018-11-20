@@ -78,9 +78,11 @@ spec:
         resources:
           # need more cpu upon initialization, therefore burstable class
           limits:
-            cpu: 1000m
+            #cpu: 1000m
+            cpu: 2000m
           requests:
-            cpu: 100m
+            #cpu: 100m
+            cpu: 200m
         ports:
         - containerPort: 9200
           name: db
@@ -89,7 +91,7 @@ spec:
           name: transport
           protocol: TCP
         volumeMounts:
-        - name: elastic-vol
+        - name: elasticsearch-logging
           mountPath: /data
         env:
         - name: "NAMESPACE"
@@ -97,7 +99,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
       #volumes:
-      #- name: elasticsearch-logging-vol
+      #- name: elasticsearch-logging
       #  emptyDir: {}
       # Elasticsearch requires vm.max_map_count to be at least 262144.
       # If your OS already sets up this number to a higher value, feel free
@@ -110,7 +112,7 @@ spec:
           privileged: true
   volumeClaimTemplates:
   - metadata:
-      name: elastic-vol
+      name: elasticsearch-logging
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

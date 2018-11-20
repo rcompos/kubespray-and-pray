@@ -5,18 +5,18 @@
   vars:
       #key: 'value'
       dir_target:            '{{ ansible_env.HOME }}/ark'
-      ark_github_version:    'v0.9.1'
+      ark_github_version:    'v0.9.11'
       #ark_minio_pvc_path:    '/.kubespray/inventory'
       ark_minio_pvc_file:    '00-minio-pv-claim.yaml'
-      ark_minio_pvc_size:    30  # Gi
+      ark_minio_pvc_size:    300  # Gi
       ark_prereqs:           '00-prereqs.yaml'
       ark_minio_deployment:  '00-minio-deployment.yaml'
       ark_config:            '10-ark-config.yaml'
       ark_deployment:        '20-ark-deployment.yaml'
       restic_daemonset:      '30-restic-daemonset.yaml'
       restic_location:       'restic'
-      ark_client_tgz:        'ark-v0.9.1-linux-amd64.tar.gz'
-      ark_client_url:        'https://github.com/heptio/ark/releases/download/v0.9.1/ark-v0.9.1-linux-amd64.tar.gz'
+      ark_client_tgz:        'ark-v0.9.11-linux-amd64.tar.gz'
+      ark_client_url:        'https://github.com/heptio/ark/releases/download/v0.9.11/ark-v0.9.11-linux-amd64.tar.gz'
       ark_namespace:         'heptio-ark'
       ark_file:              'ark-minio-nodeport.yaml'
   remote_user: solidfire
@@ -29,6 +29,10 @@
   #- name: Role Facts
   #  set_fact:
   #    block_device: '/dev/sdb'
+
+  - name: Copy kubeconfig
+    shell: cp -a /etc/kubernetes/admin.conf /root/.kube/config
+    ignore_errors: true
 
   - name: Clone Heptio Ark repository
     git:
@@ -77,18 +81,6 @@
     command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_minio_pvc_file }}"
     ignore_errors: true
 
-  - name: Create ark config
-    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_config }}"
-    ignore_errors: true
-
-  - name: Create ark deployment
-    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ ark_deployment}}"
-    ignore_errors: true
-
-  - name: Create restic daemonset
-    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ restic_daemonset }}"
-    ignore_errors: true
-
   - name: Export Ark Minio yaml
     shell: kubectl get svc minio -n {{ ark_namespace }} -o yaml > "{{ ark_file }}"
 
@@ -105,42 +97,8 @@
     shell: kubectl get svc minio -n {{ ark_namespace }} -o yaml | grep '\ nodePort:' | cut -d ' ' -f6
     register: ark_port
 
-  - name: Get ark client
-    # TODO Remove this step and remote extract instead
-    get_url:
-      url: "{{ ark_client_url }}"
-      dest: "{{ ansible_env.HOME }}"
-      mode: 644
-
-  - name: Extract Ark Client
-    unarchive:
-      src: "{{ ansible_env.HOME }}/{{ ark_client_tgz }}"
-      dest: "/usr/local/bin"
-      creates: "/usr/local/bin/ark"
-      owner: root
-      group: root
-      remote_src: yes
-
-  - name: Show all in namespace {{ ark_namespace }}
-    shell: kubectl get all,service,jobs,deployment,secret -n {{ ark_namespace }}
-    register: out
-
-  - debug: var=out.stdout_lines
-
-  - name: Create ark backup schedule
-    shell: ark schedule create {{ ansible_hostname }} --schedule "0 7 * * *"
-    register: out
+  - name: Create restic daemonset
+    command: "kubectl create -f {{ dir_target }}/examples/minio/{{ restic_daemonset }}"
     ignore_errors: true
 
-  - debug: var=out.stdout_lines
-
-  - name: Create ark initial backup
-    shell: ark backup create {{ ansible_hostname }}-intial
-    register: out
-
-  - debug: var=out.stdout_lines
-
-
-
-
-
+  ##### Manual step required:  Create Minio bucket for restic called restic

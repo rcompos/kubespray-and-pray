@@ -3,16 +3,18 @@
 
 - hosts: 'kube-master'
   vars:
-      dir_target: '{{ ansible_env.HOME }}'
-      namespace: 'monitoring'
-      helm_repo_name: 'coreos'
-      helm_repo_coreos: 'https://s3-eu-west-1.amazonaws.com/coreos-charts/stable'
-      helm_name_operator: 'prometheus-operator'
-      helm_name_prometheus: 'kube-prometheus'
-      chart_operator: 'coreos/prometheus-operator'
-      chart_prometheus: 'coreos/kube-prometheus'
-      deploy_prometheus: 'kube-prometheus-grafana'
-      deploy_operator: 'prometheus-operator'
+      dir_target:            '{{ ansible_env.HOME }}'
+      namespace:             'monitoring'
+      helm_repo_name:        'coreos'
+      helm_repo_coreos:      'https://s3-eu-west-1.amazonaws.com/coreos-charts/stable'
+      helm_name_operator:    'prometheus-operator'
+      helm_name_prometheus:  'kube-prometheus'
+      chart_operator:        'coreos/prometheus-operator'
+      chart_prometheus:      'coreos/kube-prometheus'
+      prometheus_operator_values: 'prometheus-operator-0.0.28-values.yaml'
+      kube_prometheus_values:     'kube-prometheus-0.0.105-values.yaml'
+      deploy_prometheus:     'kube-prometheus-grafana'
+      deploy_operator:       'prometheus-operator'
   remote_user: solidfire
   become: true
   run_once: true
@@ -42,11 +44,21 @@
     register: check_prometheus
     ignore_errors: true
 
+  - name: Copy Prometheus Operator Values
+    copy:
+      src:    "{{ prometheus_operator_values }}"
+      dest:   "{{ dir_target }}"
+      mode:   0644
+    when: ansible_os_family == 'Debian'
+
   - name: Install Prometheus Operator
     # helm install coreos/prometheus-operator -n prometheus-operator --namespace monitoring
-    command: "helm install {{ chart_operator }} -n {{ helm_name_operator }} --namespace {{ namespace }}"
+    command: "helm install {{ chart_operator }} -n {{ helm_name_operator }} --namespace {{ namespace }} -f {{ prometheus_operator_values }}"
+    args:
+      chdir: "{{ dir_target }}"
     when: check_prometheus.rc != 0
     register: out
+    ignore_errors: true
 
   - debug: var=out.stdout
 
@@ -57,11 +69,21 @@
     delay: 1
     until: check_operator.rc == 0
 
+  - name: Copy Kube Prometheus Values
+    copy:
+      src:    "{{ kube_prometheus_values }}"
+      dest:   "{{ dir_target }}"
+      mode:   0644
+    when: ansible_os_family == 'Debian'
+
   - name: Install kube-prometheus
     # helm install coreos/kube-prometheus -n kube-prometheus --set global.rbacEnable=true --namespace monitoring
-    command: "helm install {{ chart_prometheus }} -n {{ helm_name_prometheus }} --namespace {{ namespace }}"
+    command: "helm install {{ chart_prometheus }} -n {{ helm_name_prometheus }} --namespace {{ namespace }} -f {{ kube_prometheus_values }}"
+    args:
+      chdir: "{{ dir_target }}"
     when: check_prometheus.rc != 0
     register: out
+    ignore_errors: true
 
   - debug: var=out.stdout
 
