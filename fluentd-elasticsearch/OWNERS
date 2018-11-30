@@ -4,5 +4,3 @@ approvers:
 reviewers:
 - coffeepac
 - piosz
-labels:
-- sig/instrumentation

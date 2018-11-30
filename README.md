@@ -15,7 +15,9 @@ Deploy Kubernetes clusters with Kubespray.  For on-premise, non-cloud, bare meta
 
 ## Description ##
 
-Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Default storage class provided by GlusterFS hyper-converged storage.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
+Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
+
+Optional storage class with GlusterFS hyper-converged storage, OpenEBS and NetApp Trident. 
 
 __Kubernetes Node Operating Systems Supported:__
 
@@ -55,7 +57,7 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
     b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
 
     `$ sudo -H pip2 install --upgrade pip`  
-    `$ sudo -H pip2 install ansible kubespray`  
+    `$ sudo -H pip2 install ansible kubespray ansible-modules-hashivault`  
 
     c. _Debian_ or _Ubuntu_ control node also need:  
 

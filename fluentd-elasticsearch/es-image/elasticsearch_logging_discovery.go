@@ -24,11 +24,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang/glog"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	clientapi "k8s.io/client-go/tools/clientcmd/api"
-	"k8s.io/klog"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	clientset "k8s.io/kubernetes/pkg/client/clientset_generated/internalclientset"
 )
@@ -61,22 +61,22 @@ func flattenSubsets(subsets []api.EndpointSubset) []string {
 func main() {
 	flag.Parse()
 
-	klog.Info("Kubernetes Elasticsearch logging discovery")
+	glog.Info("Kubernetes Elasticsearch logging discovery")
 
 	cc, err := buildConfigFromEnvs(os.Getenv("APISERVER_HOST"), os.Getenv("KUBE_CONFIG_FILE"))
 	if err != nil {
-		klog.Fatalf("Failed to make client: %v", err)
+		glog.Fatalf("Failed to make client: %v", err)
 	}
 	client, err := clientset.NewForConfig(cc)
 
 	if err != nil {
-		klog.Fatalf("Failed to make client: %v", err)
+		glog.Fatalf("Failed to make client: %v", err)
 	}
 	namespace := metav1.NamespaceSystem
 	envNamespace := os.Getenv("NAMESPACE")
 	if envNamespace != "" {
 		if _, err := client.Core().Namespaces().Get(envNamespace, metav1.GetOptions{}); err != nil {
-			klog.Fatalf("%s namespace doesn't exist: %v", envNamespace, err)
+			glog.Fatalf("%s namespace doesn't exist: %v", envNamespace, err)
 		}
 		namespace = envNamespace
 	}
@@ -98,7 +98,7 @@ func main() {
 	// If we did not find an elasticsearch logging service then log a warning
 	// and return without adding any unicast hosts.
 	if elasticsearch == nil {
-		klog.Warningf("Failed to find the elasticsearch-logging service: %v", err)
+		glog.Warningf("Failed to find the elasticsearch-logging service: %v", err)
 		return
 	}
 
@@ -112,17 +112,17 @@ func main() {
 			continue
 		}
 		addrs = flattenSubsets(endpoints.Subsets)
-		klog.Infof("Found %s", addrs)
-		if len(addrs) > 0 && len(addrs) >= count {
+		glog.Infof("Found %s", addrs)
+		if len(addrs) > 0 && len(addrs) == count {
 			break
 		}
 	}
 	// If there was an error finding endpoints then log a warning and quit.
 	if err != nil {
-		klog.Warningf("Error finding endpoints: %v", err)
+		glog.Warningf("Error finding endpoints: %v", err)
 		return
 	}
 
-	klog.Infof("Endpoints = %s", addrs)
+	glog.Infof("Endpoints = %s", addrs)
 	fmt.Printf("discovery.zen.ping.unicast.hosts: [%s]\n", strings.Join(addrs, ", "))
 }
