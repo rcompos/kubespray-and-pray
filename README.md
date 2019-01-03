@@ -131,7 +131,7 @@ node3
 [kube-ingress]
 node1
 
-[gluster]  # Custom group
+[gluster]  # Custom group or OpenEBS
 node1
 node2
 node3
