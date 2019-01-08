@@ -17,8 +17,6 @@ Deploy Kubernetes clusters with Kubespray.  For on-premise, non-cloud, bare meta
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-Optional storage class with GlusterFS hyper-converged storage, OpenEBS and NetApp Trident. 
-
 __Kubernetes Node Operating Systems Supported:__
 
 * Ubuntu 16.04 Xenial
@@ -82,11 +80,6 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
    Insecure permissions for development only!  
    
         $ ansible-playbook kubespray-08-dashboard-permissive.yml
-
-3. GlusterFS Distributed Storage  
-   Hyper-converged storage solution consisting of a Gluster distributed filesystem running in the Kubernetes cluster.  Heketi provides a REST API for Gluster.  
-   
-        $ ansible-playbook gluster.yml  
 
 
 ## Define Cluster ##

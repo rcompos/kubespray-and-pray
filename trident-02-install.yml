@@ -28,7 +28,7 @@
   - name: Install apt package nfs-commoon
     package: 
       name:   nfs-common
-    state:    present
+      state:    present
     register: out
 
   - debug: var=out.stdout_lines

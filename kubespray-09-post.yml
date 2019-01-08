@@ -21,7 +21,7 @@
   #    block_device: '/dev/sdb'
 
   - name: Export Kibana yaml
-   shell: kubectl get svc kibana-logging -n kube-system -o yaml > "{{ kibana_logging_nodeport }}"
+    shell: kubectl get svc kibana-logging -n kube-system -o yaml > "{{ kibana_logging_nodeport }}"
     ignore_errors: true
   
   - name: Modify Kibana yaml service type
