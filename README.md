@@ -32,7 +32,7 @@ Estimated time to complete: 1 hr
 
 General requirements:
 
-* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python 2 is a requirement.
+* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python 2 is a requirement. 
 * __Cluster Machines:__ Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
 * __Operating System:__ Ubuntu 16.04   (CentOS 7 is an open issue)
 * __Container Storage Volume:__  Additional physical or virtual disk volume.  i.e. /dev/sdc
@@ -66,6 +66,14 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
     Clone kubespray-and-pray repository in home directory.  Substitute actual repo url for _\<RepositoryURL\>_.
 
     `$ cd; git clone <RepositoryURL>`
+
+3. __SSH key__
+
+    A SSH key is required at _~/.ssh/id_rsa.pub_.
+
+    If you don't have a SSH key one can be generated as follows:
+
+    `$ ssh-keygen -t rsa`
 
 ## TLDR ##
 
