@@ -1,0 +1,56 @@
+---
+# Ansible Playbook for Trident SolidFire setup
+
+- hosts: '*'
+  vars:
+    namespace: trident
+    deploy:    trident
+  remote_user: solidfire
+  become: true
+
+  tasks:
+
+  - name: Check for Trident Deployments
+    shell: "kubectl get deployment {{ deploy }} -n {{ namespace }} --no-headers=1"
+    register: check_trident_ds
+    ignore_errors: true
+
+  - debug: var=check_trident_ds.stdout_lines
+
+  - name: Install apt packages.
+    package: 
+      name:   "{{ item }}"
+    with_items:
+      - open-iscsi
+      - lsscsi
+      - sg3-utils
+      - multipath-tools
+      - scsitools
+    when: ansible_os_family == 'Debian'
+
+  - name: Enable multipathing
+    copy:
+      src: multipath.conf
+      dest: /etc/multipath.conf
+      owner: root
+      group: root
+      mode: 0644
+    when: ansible_os_family == 'Debian'
+
+  - name: Start service multipath-tools.service
+    systemd:
+      name:     multipath-tools.service
+      enabled:  yes
+      state:    started
+    register: out
+
+  - debug: var=out
+
+  - name: Start service open-iscsi.service
+    systemd:
+      name:     open-iscsi.service
+      enabled:  yes
+      state:    started
+    register: out
+
+  - debug: var=out
