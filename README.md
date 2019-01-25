@@ -41,7 +41,7 @@ General requirements:
 
 ## Control Node ##
 
-Prepare __control node__ where management tools are installed.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
+Prepare __control node__ by installing requirements.  A laptop or desktop computer will be sufficient.  A jump host is fine too.
 
 
 1. __Install Packages__ 
@@ -50,14 +50,14 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
     _MacOS_: `$ brew install -vd python@2`  
     _RedHat 7_ or _CentOS 7_: `Python 2.7.5 installed by default`  
-    _Ubuntu_: `$ apt install python2.7 python-pip`  
+    _Ubuntu_: `$ sudo apt install python2.7 python-pip`  
 
     b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
 
     `$ sudo -H pip2 install --upgrade pip`  
     `$ sudo -H pip2 install ansible kubespray ansible-modules-hashivault`  
 
-    c. _Debian_ or _Ubuntu_ control node also need:  
+    c. _Debian_ or _Ubuntu_ control node also need in addition to previous steps:  
 
     `$ sudo apt-get install sshpass`
 
@@ -79,13 +79,15 @@ Prepare __control node__ where management tools are installed.  A laptop or desk
 
 A Kubernetes cluster can be rapidly deployed with the following steps.  See further sections for details of each step.  
 
-1. Deploy K8s  
-   Prepare directory (inventory/default or custom) with Kubespray config files.  Update _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ and _topology.json_.  Deploy cluster.  
+1. Deploy K8s cluster on virtual or physical machines  
+
+   Prepare directory (inventory/_cluster_name_) with _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ .  Deploy cluster.  Substitute actual cluster name for _cluster\_name_.
    
-        $ ./kubespray-and-pray.sh  
+        $ ./kubespray-and-pray.sh -i _cluster\_name_
 
 2. Kubernetes Access Controls  
-   Insecure permissions for development only!  
+
+   Insecure permissions for development only!  Use RBAC for production environments.
    
         $ ansible-playbook kubespray-08-dashboard-permissive.yml
 
