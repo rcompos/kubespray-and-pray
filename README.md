@@ -104,7 +104,7 @@ Custom ansible groups may be included, such as gluster, openebs or trident.
 
 The top lines with ansible\_ssh\_host and ip values are required since machines may have multiple network addresses.  Change the ansible\_ssh\_host and ip addresses in the file to actual ip addresses.  Lines or partial lines may be commented out with the pound sign (#).
 
-Save your configuration under the _inventory_ directory.  Pull the latest inventory files from the upstream kubespray repo under _inventory/samples_ directory.
+Save your configuration under the _inventory_ directory, in a dedicated directory named for the cluster.  
 
 The following is an example _inventory.cfg_ defining a Kubernetes cluster.  There are three members (all) including one master (kube-master), three etcd members (etcd) and three worker nodes (kube-node).  This file is from the upstream Kubespray repository _kubespray/inventory/sample/hosts.ini_.
 
