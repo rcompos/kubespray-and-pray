@@ -120,6 +120,16 @@
   #  shell: /sbin/sysctl --system
   #  when: ansible_os_family == 'RedHat'
 
+  - name: Set fs.inotify.max_user_watches and reload kernel
+    sysctl:
+      name: fs.inotify.max_user_watches
+      value: 1048576
+      reload: yes
+
+  - name: Reload sysctl setting without reboot
+    shell: sysctl --system
+ 
+
   - name: Copy MOTD
     copy:
       src: motd-solidfire.txt
@@ -127,4 +137,5 @@
       owner: root
       group: root
       mode: 0644
+
 

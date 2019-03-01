@@ -83,7 +83,7 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 
    Prepare directory (inventory/_cluster_name_) with _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ .  Deploy cluster.  Substitute actual cluster name for _cluster\_name_.
    
-        $ ./kubespray-and-pray.sh -i _cluster\_name_
+        $ ./kubespray-and-pray.sh -i cluster_name
 
 2. Kubernetes Access Controls  
 
