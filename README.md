@@ -148,13 +148,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. __Kubernetes Cluster Topology__  
     
-    Define your desired cluster topology ansible inventory and variables files.  These files are locate at _inventory/default_.  
-    
-    The file _ansible.cfg_ defines the ansible inventory file as _inventory/default/inventory.cfg_.
-    
-    __Multiple network adapters:__  If multiple network adapters are present on any node(s), Ansible will use the value provided as _ansible\_ssh\_host_ and/or _ip_ for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
-    
-    __Hyper-converged storage:__  Define Kubernetes cluster node members to be part of Heketi GlusterFS hyper-converged storage in inventory group _gluster_.
+    Define your desired cluster topology Ansible inventory and variables files.  Create new directory under _inventory_ by copying one of the example directories.  Update _inventory.cfg_ and other files.  Then specify this directory in the deployment step.
 
     __Kubespray cluster configuration:__  Edit Kubespray group variables in _all.yml_ and _k8s-cluster.yml_ to configure cluster to your needs.
 
@@ -165,8 +159,11 @@ Perform the following steps on the __control node__ where ansible command will b
     
     `$ cd ~/kubespray-and-pray`  
     `$ vi inventory/default/inventory.cfg`  
+
+    __Multiple network adapters:__  If multiple network adapters are present on any node(s), Ansible will use the value provided as _ansible\_ssh\_host_ and/or _ip_ for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
+
+    __Optional hyper-converged storage:__  For development clusters only.  Define Kubernetes cluster node members to be part of Heketi GlusterFS hyper-converged storage in inventory group _gluster_.
     
-    __Alternate Location:__  Create new directory under _inventory_ based on one of the example directories.  Update _inventory.cfg_ and other files.  Then specify this directory in the deployment step.
 
 ## Deploy Kubernetes ##
 
