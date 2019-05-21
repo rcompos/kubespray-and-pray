@@ -1,5 +1,4 @@
-# NetApp CIBU K8s #
-## Kubernetes On-Prem Ingress ##
+# Kubernetes On-Prem Ingress #
 
 Kubernetes on-premise ingress setup.
 

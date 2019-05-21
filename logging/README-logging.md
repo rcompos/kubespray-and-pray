@@ -1,5 +1,4 @@
-# NetApp CIBU K8s #
-## Kubernetes On-Prem Logging ##
+# Kubernetes On-Prem Logging #
 
 Kubernetes on-premise logging setup with Elasticsearch Fluentd Kibana (EFK).
 

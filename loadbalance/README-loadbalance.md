@@ -1,5 +1,4 @@
-# NetApp CIBU K8s #
-## Kubernetes On-Prem Load-Balancer ##
+# Kubernetes On-Prem Load-Balancer #
 
 Kubernetes on-premise load balancer setup.
 

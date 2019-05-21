@@ -1,5 +1,4 @@
-# NetApp CIBU K8s #
-## Kubernetes On-Prem Dashboard RBAC ##
+# Kubernetes On-Prem Dashboard RBAC #
 
 Kubernetes on-premise dashboard RBAC configuration.
 

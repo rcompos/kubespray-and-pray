@@ -1,5 +1,4 @@
-# NetApp CIBU K8s #
-## Kubernetes On-Prem Monitoring ##
+# Kubernetes On-Prem Monitoring #
 
 Kubernetes on-premise monitoring with Prometheus and Grafana.
 
