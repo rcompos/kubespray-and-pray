@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>k8s-onprem-overview</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="kubernetes-on-premise">Deploy Kubernetes On-Premise</h1>
+<p>Deploy Kubernetes clusters on-premise. Bare metal or virtual.</p>
+<pre><code>   ~~~~~~~~~~~~~~~~~~~~~~~
+ (      K8s On-Prem        )
+   ~~~~~~~~~~~~~~~~~~~~~~~
+          \   ^__^
+           \  (oo)\_______
+              (__)\       )\/\
+                  ||----w |
+                  ||     ||</code></pre>
+<table>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><h2>Description</h2></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Overview of deployment process for building Kubernetes clusters, including:</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">
+<ul>
+<li>Machine Provisioning (Virtual or Physical)
+<li>Kubernetes Cluster Deploy 
+<li>Dashboard UI Access 
+<li>Storage Configuration 
+<li>Logging 
+<li>Monitoring 
+<li>VM Backups
+</ul>
+</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible. Whether you’re in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production. All you need to bring to the table is a few machines to run the cluster.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">This project provides a simple deployment process for Kubernetes in on-premise or local dev environments. System setup, disk prep, easy RBAC and default storage all provided. Kubespray, which is built on Ansible, automates cluster deployments and provides for flexibility in configuration.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="provision-vms">Provision Machines</h2>
+<p>Virtual or physical servers may be used as nodes in the cluster.</p>
+
+<h3 id="vmware-resources">VMware Resources</h3>
+<p>If using VMware virtual machines, prior to creating VMs, the following resources will need to be identified.</p>
+<ul>
+<li>vSphere login credentials</li>
+<li>Cluster topology</li>
+<li>VM template</li>
+<li>Network</li>
+<li>Datastore</li>
+</ul>
+<h3 id="vmware-crud">Vmware-CRUD</h3>
+<p>VMware VMs can be provisioned using Ansible playbooks and the vmware-guest module. The following repository contains playbooks used to create VMs for the cluster.</p>
+<p><a href="https://bitbucket.org/solidfire/vmware-crud">VMware-CRUD</a></p>
+<p>However any VM creation method is acceptable including manual deployments with vSphere, VMware command line or API, etc.  Ubuntu 16 and CentOS 7 are supported operating systems.</p>
+
+<h3 id="veeam-backups">Veeam Backups</h3>
+<p>Optional: VM backup schedules should be implemented for all cluster nodes. See the following for how to enroll your nodes in a backup plan and how to restore in case of disaster.</p>
+<p>NOTE: Veeam backup/restore procedures not complete.</p>
+<p><a href="https://confluence.ngage.netapp.com/display/DevOps/Backup+Strategy">Veeam Backups</a></p>
+<table>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<h2 id="post-deploy-config">Deploy K8s Cluster</h2>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Deployment Repository</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">On-premise Kubernetes cluster deployment automation repo. The Kubespray project provides automated Kubernetes deployments using Ansible playbooks. The Kubespray-and-spray project leverages Kubespray, and adds automation for pre and post config tasks, including OS and service configuration.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://bitbucket.org/solidfire/kubespray-and-pray">Kubespray-and-Pray</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="post-deploy-config">Post-Deploy Config</h2>
+<h3 id="administrator-environment">Administrator Environment</h3>
+
+<p>Install K8s CLI</p>
+<p><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl">Kubernetes command-line client Kubectl</a></p>
+<p>Kubectl config files for authentication with cluster.</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/maint/README-admin-config.md">Kubectl config files</a></p>
+
+<h3 id="load-balancer">Load Balancer</h3>
+<p>Install MetalLB software load balancer for supplying IP address to services configured as LoadBalancer.</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/loadbalance/README-loadbalance.md">Load Balancer</a></p>
+
+<h3 id="ingress">Ingress</h3>
+<p>Install Nginx-Ingress to expose services with URL host paths which can have their own DNS entries.</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/ingress/README-ingress.md">Nginx-Ingress</a></p>
+
+<h3 id="storage-config">Storage Config</h3>
+<p>Install Trident controller.</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/trident/README-trident.md">NetApp Trident Requirements</a></p>
+<p><a href="https://netapp-trident.readthedocs.io/en/latest/kubernetes/deploying.html">NetApp Trident Install</a></p>
+
+<p>Prepare NetApp ONTAP storage backend.  Make a request to the storage admin that a storage virtual machine be created with adequate amount of capacity.</p>
+<p><a href="https://confluence.ngage.netapp.com/display/DevOps/ONTAP+Storage+Virtual+Machine+Setup">NetApp ONTAP SVM Creation</a></p>
+
+<p>Prepare NetApp SolidFire storage backend.  Make a request to the storage admin for adequate capacity and a SVIP.</p>
+<p><a href="https://confluence.ngage.netapp.com/display/DevOps/Solidfire+Storage+Setup">Coming soon: NetApp SolidFire Setup</a></p>
+
+<h3 id="logging">Logging</h3>
+<p>Deploy an Elasticsearch Fluentd Kibana (EFK) logging stack.</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/logging/README-logging.md">Logging with EFK</a></p>
+
+<h3 id="monitoring">Monitoring</h3>
+<p>Deploy a monitoring solution with Prometheus and Grafana including out-of-box cluster monitoring dashboards.</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/monitoring/README-monitoring.md">Monitoring with Prometheus and Grafana</a></p>
+
+
+<h2 id="post-deploy-config">Administration</h2>
+<p>Restart Kubernetes services on node</p>
+<p><a href="https://bitbucket.org/solidfire/kubespray-and-pray/src/master/maint/README-node-restart.md">Restart node services</a></p>
+<p>Rolling Updates</p>
+<p>Insecure Registries</p>
+
+<h2 id="references">References</h2>
+
+<p><a href="https://github.com/kubernetes-sigs/kubespray">Kubespray</a></p>
+<p><a href="https://netapp-trident.readthedocs.io/en/latest/kubernetes/operations/tasks/backends/ontap.html">NetApp Trident ONTAP Backend Config</a></p>
+<p><a href="https://netapp-trident.readthedocs.io/en/latest/kubernetes/operations/tasks/backends/element.html">Netapp Trident SolidFire Backend Config</a></p>
+
+</body>
+</html>
