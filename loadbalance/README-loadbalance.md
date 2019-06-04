@@ -10,7 +10,7 @@ Setup software load balancer for on-prem Kubernetes clusters.
 
 1. Existing Kubernetes cluster 
 
-## Install Nginx-Ingress ##
+## Install MetalLB ##
 
 Install the software load balancer MetalLB in the cluster.  This provides external IP address when a service is defined as a LoadBalanced Kubernetes service.
 
