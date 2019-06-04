@@ -24,7 +24,7 @@ Install the software load balancer MetalLB in the cluster.  This provides extern
 
    Specify target cluster. Substitute actual cluster name for _\<cluster\>_. 
 
-   `$ ./kubespray-and-pray -i <cluster> -l`  
+   `$ ./kubespray-and-pray.sh -i <cluster> -l`  
 
 3. __Verify Target Cluster__
 
