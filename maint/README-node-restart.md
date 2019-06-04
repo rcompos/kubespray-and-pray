@@ -1,18 +1,6 @@
-# NetApp CIBU K8s #
 ## Kubernetes On-Prem Node Restart ##
 
 Kubernetes on-premise cluster node services restart.
-
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     NetApp CIBU K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
 
 ## Description ##
 

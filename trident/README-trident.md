@@ -2,17 +2,6 @@
 
 Kubernetes on-premise persistent storage with NetApp Trident storage orchestrator.
 
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     NetApp CIBU K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
-
 ## Description ##
 
 Deploy Trident on-prem Kubernetes cluster persistent storage orchestrator.

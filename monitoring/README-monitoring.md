@@ -1,17 +1,6 @@
-# Kubernetes On-Prem Monitoring #
+## Kubernetes On-Prem Monitoring ##
 
 Kubernetes on-premise monitoring with Prometheus and Grafana.
-
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     NetApp CIBU K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
 
 ## Description ##
 
@@ -21,7 +10,7 @@ Setup cluster monitoring with Prometheus and Grafana for on-prem Kubernetes clus
 
 1. Existing Kubernetes cluster 
 
-## Install Nginx-Ingress ##
+## Install Prometheus and Grafana ##
 
 Deploy cluster monitoring solution with Prometheus and Grafana.  
 
@@ -35,7 +24,7 @@ Deploy cluster monitoring solution with Prometheus and Grafana.
 
    Specify target cluster. Substitute actual cluster name for _\<cluster\>_. 
 
-   `$ ./kubespray-and-pray -i <cluster> -l`  
+   `$ ./kubespray-and-pray.sh -i <cluster> -l`  
 
 3. __Verify Target Cluster__
 
@@ -45,9 +34,10 @@ Deploy cluster monitoring solution with Prometheus and Grafana.
 
 5. __Deploy Monitoring Solution__
 
-    Run Ansible playbook to deploy monitoring services.
+    Run Ansible playbooks to deploy monitoring services.
 
-   `$ ansible-playbook monitoring/metrics-server-01-setup.yml`
+   `$ ansible-playbook monitoring/metrics-server-01-setup.yml`  
+
    `$ ansible-playbook monitoring/prometheus-01-setup.yml`  
 
 6. __Verify Load Balancer__

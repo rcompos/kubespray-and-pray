@@ -1,17 +1,6 @@
-# Kubernetes On-Prem Ingress #
+## Kubernetes On-Prem Ingress ##
 
 Kubernetes on-premise ingress setup.
-
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     NetApp CIBU K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
 
 ## Description ##
 
@@ -30,7 +19,7 @@ Install the Nginx ingress controller to allow service exposure via ingress.
 
     Change to the ingress dir within the cloned repository directory.  
 
-   `$ cd ~/kubespray-and-pray/ingress`  
+   `$ cd ~/kubespray-and-pray`  
 
 2. __Specify Target Cluster__
 
@@ -42,19 +31,19 @@ Install the Nginx ingress controller to allow service exposure via ingress.
 
    Verify target cluster. Substitute actual cluster name for _\<cluster\>_. 
 
-   `$ ansible all -m ping` 
+   `$ ansible all -m ping`
 
 4. __Deploy Ingress__
 
     Run Ansible playbook to deploy Nginx ingress.
 
-   `$ ansible-playbook nginx-ingress-01-setup.yml`  
+   `$ ansible-playbook ingress/nginx-ingress-01-setup.yml`  
 
 5. __Verify Ingress__
 
     Run Ansible playbook to validate Nginx ingress.
 
-   `$ kubectl get all -n load-balance`  
+   `$ kubectl get all -n ingress`  
 
 Expected results:
 ```

@@ -1,17 +1,6 @@
-# Kubernetes On-Prem Logging #
+## Kubernetes On-Prem Logging ##
 
 Kubernetes on-premise logging setup with Elasticsearch Fluentd Kibana (EFK).
-
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     NetApp CIBU K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
 
 ## Description ##
 
@@ -21,7 +10,7 @@ Setup logging for on-prem Kubernetes clusters.
 
 1. Existing Kubernetes cluster 
 
-## Install Nginx-Ingress ##
+## Install EFK ##
 
 Install the logging with EFK for the cluster.  The ELK stack provides an out-of-box cluster logging option. 
 
@@ -35,7 +24,7 @@ Install the logging with EFK for the cluster.  The ELK stack provides an out-of-
 
    Specify target cluster. Substitute actual cluster name for _\<cluster\>_. 
 
-   `$ ./kubespray-and-pray -i <cluster> -l`  
+   `$ ./kubespray-and-pray.sh -i <cluster> -l`  
 
 3. __Verify Target Cluster__
 
@@ -70,6 +59,6 @@ kibana-logging  NodePort  10.233.8.35  <none>  5601:30159/TCP  1d
 ```
 6. __Access Kibana__
 
-   Access Kibana service at a master nodes on the previously discovered port.
+   Access Kibana service on a master nodes at the previously discovered port.
 
    `http://<master_node>:<port>`

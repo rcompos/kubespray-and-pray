@@ -2,17 +2,6 @@
 
 Make persistent storage available to your Kubernetes clusters with OpenEBS.
 
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     Bare Metal K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
-
 ## Description ##
 
 Once you have a running K8s cluster, you might realize you have a need for persistent data storage.

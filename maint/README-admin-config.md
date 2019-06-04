@@ -1,18 +1,6 @@
-# NetApp CIBU K8s #
 ## Kubernetes On-Prem Kubernetes Config ##
 
 Kubernetes on-premise admin command-line config.
-
-```
-   ~~~~~~~~~~~~~~~~~~~~~~~
- (     NetApp CIBU K8s     )
-   ~~~~~~~~~~~~~~~~~~~~~~~
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-```
 
 ## Description ##
 
@@ -26,17 +14,24 @@ Setup command-line authentication for on-prem Kubernetes clusters.
 
 Copy the kubernetes admin config file to your local machine.  
 
-1. __Change to Kubectl Directory__
+1. __Move Kubeconfig__ 
 
-    Change to the kubectl dir.  
+   Move Kubernetes admin config file on any master node in the cluster.  Substitute actual master node name for _\<master\>_.
 
-   `$ cd ~/.kube`  
+   `$ ssh -t <user>@<master> "sudo cp /etc/kubernetes/admin.conf /home/<user>/config; sudo chown <user> config"`
 
 2. __Copy Kubeconfig__ 
 
-   Copy Kubernetes admin config file from any master node in the cluster.  Substitute actual master node name for _\<master\>_.
+   Copy Kubernetes config file from the master node used in previous step.  Substitute actual master node name for _\<master\>_.
 
-   `$ scp <user>@<master>:/etc/kubernetes/admin.conf config`
+   `$ scp <user>@<master>:config ~/.kube`
+
+1. __Delete Kubeconfig__ 
+
+   Delete duplicate config file on same master node from prior step.  Substitute actual master node name for _\<master\>_.
+
+   `$ ssh -t <user>@<master> "sudo rm config"`
+
 
 3. __Verify Target Cluster__
 
