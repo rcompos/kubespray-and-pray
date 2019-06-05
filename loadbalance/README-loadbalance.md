@@ -38,7 +38,7 @@ Install the software load balancer MetalLB in the cluster.  This provides extern
 
    `$ nano inventory/<cluster>/loadbalance/metallb-config.yaml`  
 
-    Edit the last line of file with the IP address block reserved for this cluster.  The following is an example of IP address block specification.
+    Edit the last line of file with the IP address block reserved for this cluster.  The MetalLB IP range must be in same network as K8s cluster nodes.  The following is an example of IP address block specification.
 
    `   addresses:`  
    `   - 10.117.67.230-10.117.67.234`  
