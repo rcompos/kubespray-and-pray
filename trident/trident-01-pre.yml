@@ -1,6 +1,5 @@
 ---
-# Ansible for OpenEBS
-# Requires disk to already be formatted and mounted
+# Install requirements for NetApp Trident Storage Orchestrator
 
 - hosts: 'kube-master,kube-node'
   vars:

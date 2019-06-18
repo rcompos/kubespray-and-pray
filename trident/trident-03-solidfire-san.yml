@@ -1,5 +1,5 @@
 ---
-# Ansible Playbook for Trident SolidFire setup
+# NetApp Trident driver for SolidFire 
 
 - hosts: '*'
   vars:

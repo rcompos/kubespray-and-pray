@@ -1,6 +1,5 @@
 ---
-# Ansible for OpenEBS
-# Requires disk to already be formatted and mounted
+# NetApp Trident driver for ONTAP
 
 - hosts: 'kube-master'
   vars:

@@ -1,0 +1,36 @@
+---
+
+- hosts: '*'
+  vars:
+    user: solidfire
+    domain: one.den.solidfire.net
+  #remote_user: root
+  gather_facts: true
+  become: true
+
+  tasks:
+
+#  - debug: var=inventory_hostname
+#
+#  - debug: var=inventory_hostname_short
+#
+#  - debug: 
+#      msg: ANSIBLE HOSTNAME  {{ ansible_hostname }}
+#
+#  - debug: 
+#      msg: DOMAIN {{ domain }}
+#
+#  - debug: 
+#      msg: ANSIBLE DEFAULT IPV4 {{ ansible_default_ipv4.address }}
+
+  - name: Add etc hosts entry
+    # Example hosts entry: 10.10.1.1 node-1.ten.pw.solidfire.net node-1
+    lineinfile:
+      dest: /etc/hosts
+      state: present
+      insertafter: '^127.0.0.1 localhost localhost.localdomain'
+      #insertbefore: '^# Ansible inventory hosts BEGIN'
+      #firstmatch: yes
+      regexp: '^\d+\.\d+\.\d+\.\d+    \S+    \S+'
+      line: "{{ ansible_default_ipv4.address }}    {{ ansible_hostname }}.{{ domain }}    {{ ansible_hostname }}"
+
