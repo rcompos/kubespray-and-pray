@@ -32,7 +32,7 @@ Deploy cluster monitoring solution with Prometheus and Grafana.
 
    `$ ansible all -m ping`  
 
-5. __Deploy Monitoring Solution__
+4. __Deploy Monitoring Solution__
 
     Run Ansible playbooks to deploy monitoring services.
 
@@ -40,7 +40,7 @@ Deploy cluster monitoring solution with Prometheus and Grafana.
 
    `$ ansible-playbook monitoring/prometheus-01-setup.yml`  
 
-6. __Verify Load Balancer__
+5. __Verify Load Balancer__
 
     Verify deployment of monitoring services.
 

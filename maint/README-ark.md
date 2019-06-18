@@ -68,7 +68,7 @@ Run on master or with appropriate _~/.kube/config_.
 
     `# ark get backups`
 
-5. __Ark Restore__
+3. __Ark Restore__
 
     From **master** or with appropriate _~/.kube/config_ (i.e. you can run kubectl), run ark client command to restore a backup.  Substitute actual backup name for <backup_name>.
 

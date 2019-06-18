@@ -26,14 +26,14 @@ Copy the kubernetes admin config file to your local machine.
 
    `$ scp <user>@<master>:config ~/.kube`
 
-1. __Delete Kubeconfig__ 
+3. __Delete Kubeconfig__ 
 
    Delete duplicate config file on same master node from prior step.  Substitute actual master node name for _\<master\>_.
 
    `$ ssh -t <user>@<master> "sudo rm config"`
 
 
-3. __Verify Target Cluster__
+4. __Verify Target Cluster__
 
    Verify kubectl works as expected with the remote cluster.
 
