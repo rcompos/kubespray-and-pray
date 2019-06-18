@@ -1,10 +1,10 @@
 # Kubespray-and-Pray # 
 
-Deploy Kubernetes clusters with Kubespray.  For on-premise, non-cloud, bare metal or virtual.
+Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare metal or virtual.
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~
- (       On-Prem K8s       )
+ (       K8s v1.14.3       )
    ~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
@@ -16,6 +16,9 @@ Deploy Kubernetes clusters with Kubespray.  For on-premise, non-cloud, bare meta
 ## Description ##
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
+
+Kubernetes v1.14.3  
+Kubespray v2.10.0  
 
 __Kubernetes Node Operating Systems Supported:__
 
