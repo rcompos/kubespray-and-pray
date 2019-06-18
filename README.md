@@ -55,11 +55,11 @@ Prepare __control node__ by installing requirements.  A laptop or desktop comput
     _RedHat 7_ or _CentOS 7_: `Python 2.7.5 installed by default`  
     _Ubuntu_: `$ sudo apt install python python-pip`  
 
-    b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.4 (or newer) and python-netaddr.  
+    b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.7.8 (or newer).  
 
     `$ sudo -H pip install --upgrade pip`  
-    `$ sudo -H pip install ansible kubespray ansible-modules-hashivault`  
     `$ sudo -H pip install -r requirements.txt`
+    `$ sudo -H pip install kubespray`  
 
 
     c. _Debian_ or _Ubuntu_ control node also need in addition to previous steps:  
