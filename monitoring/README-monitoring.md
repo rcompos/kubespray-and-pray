@@ -84,4 +84,8 @@ replicaset.apps/prometheus-operator-98c54768b                    1         1    
 NAME                                            DESIRED   CURRENT   AGE
 statefulset.apps/alertmanager-kube-prometheus   1         1         1d
 statefulset.apps/prometheus-kube-prometheus     1         1         1d
+<<<<<<< HEAD
 ```
+=======
+```
+>>>>>>> 687e4a666a93435cce95921ffc3dd60576f0be7c

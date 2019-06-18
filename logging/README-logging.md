@@ -61,4 +61,8 @@ kibana-logging  NodePort  10.233.8.35  <none>  5601:30159/TCP  1d
 
    Access Kibana service on a master nodes at the previously discovered port.
 
+<<<<<<< HEAD
    `http://<master_node>:<port>`
+=======
+   `http://<master_node>:<port>`
+>>>>>>> 687e4a666a93435cce95921ffc3dd60576f0be7c

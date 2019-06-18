@@ -62,4 +62,8 @@ deployment.apps/nginx-ingress-default-backend   1         1         1           
 NAME                                                      DESIRED   CURRENT   READY   AGE
 replicaset.apps/nginx-ingress-controller-7c94ff655c       1         1         1       1d
 replicaset.apps/nginx-ingress-default-backend-d676cbb5f   1         1         1       1d
+<<<<<<< HEAD
 ```
+=======
+```
+>>>>>>> 687e4a666a93435cce95921ffc3dd60576f0be7c
