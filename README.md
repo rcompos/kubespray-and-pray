@@ -35,7 +35,7 @@ Estimated time to complete: 1 hr
 
 General requirements:
 
-* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python 2 is a requirement. 
+* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python is a requirement. 
 * __Cluster Machines:__ Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
 * __Operating System:__ Ubuntu 16.04   (CentOS 7 is an open issue)
 * __Container Storage Volume:__  Mandatory additional physical or virtual disk volume.  i.e. /dev/sdc.  This is the Docker volume.
