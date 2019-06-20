@@ -86,9 +86,9 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 
 1. Deploy K8s cluster on virtual or physical machines  
 
-   Prepare directory (inventory/_cluster_name_) with _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ .  Deploy cluster.  Substitute actual cluster name for _cluster\_name_.
+   Prepare directory (inventory/_cluster-name_) with _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ .  Deploy cluster.  Substitute actual cluster name for _cluster\-name_.
    
-        $ ./kap.sh -i cluster_name
+        $ ./kap.sh -i cluster-name
 
 2. Kubernetes Access Controls  
 
