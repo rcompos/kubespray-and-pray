@@ -180,11 +180,10 @@ Perform the following steps on the __control node__ where ansible command will b
      
     __Optional Container Volume__  To create a dedicated Docker container logical volume on an available raw disk volume, specify optional argument -b for _block_device_, such as _/dev/sdd_.  Otherwise default device is _/dev/sdc_.  If default block device not found, the _/var/lib/docker_ directory will by default, reside under the local root filesystem.  
     
-    __Inventory Directory__  The Ansible inventory host configuration files are located by default in the directory _inventory/default_.  However this location can be specified with option -i. 
-    
+    __Inventory Directory__  The location of the cluster inventory is specified with option -i.  The following example looks in kubespray-and-pray/inventory/my-cluster for the inventory.ini file.
 
-    Example:  ./kap.sh -u myuser -b /dev/sdb -i dev20node
-    
+    Example:  ./kap.sh -u myuser -b /dev/sdb -i my-cluster
+
     Optional arguments for _kap.sh_ are as follows.  If no option is specified the default values will be used.
     
     | Flag   | Description                            | Default     |
@@ -195,13 +194,13 @@ Perform the following steps on the __control node__ where ansible command will b
     | -s     | Silence prompt Ansible SSH password    |             | 
 
 
-    Run script to deploy Kubernetes cluster to all nodes with default values.  Specify inventory directory which is located in the directory inventory (i.e. kubespray-and-pray/inventory/my-cluster).
+    Run script to deploy Kubernetes cluster to all nodes with default values.  Specify actual inventory directory in place of my-cluster.  This directory is located in the inventory directory (i.e. kubespray-and-pray/inventory/my-cluster).
 
-    `$ ./kap.sh -i inventory_dir`
+    `$ ./kap.sh -i my-cluster`
 
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
 
-Note:  If the cluster deploy fails with error:
+__*** Note:  If the cluster deploy fails with error: ***__
 
 	`fatal: [my-cluster-1]: FAILED! => {"msg": "'dict object' has no attribute u'v1.14.3'"}`
 
