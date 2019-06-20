@@ -6,10 +6,10 @@
   gather_facts: false
   become: true
 
-- import_playbook: kubespray-01-pre-local.yml
-- import_playbook: kubespray-02-bootstrap-ansible.yml
-- import_playbook: kubespray-03-user-sudo.yml
-- import_playbook: kubespray-04-docker-volume.yml block_device="{{ block_device }}"
-- import_playbook: kubespray-05-pre.yml
-- import_playbook: kubespray-06-alias.yml
+- import_playbook: kap-01-pre-local.yml
+- import_playbook: kap-02-bootstrap-ansible.yml
+- import_playbook: kap-03-user-sudo.yml
+- import_playbook: kap-04-docker-volume.yml block_device="{{ block_device }}"
+- import_playbook: kap-05-pre.yml
+- import_playbook: kap-06-alias.yml
 

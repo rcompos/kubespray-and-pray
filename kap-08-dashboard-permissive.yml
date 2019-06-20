@@ -4,6 +4,7 @@
   vars:
     kdb_file: kubernetes-dashboard-nodeport.yaml
   run_once: true
+  become: true
 
   tasks:
 
