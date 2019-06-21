@@ -163,7 +163,7 @@ Perform the following steps on the __control node__ where ansible command will b
     Modify inventory file with editor such as vi or nano.  
     
     `$ cd ~/kubespray-and-pray`  
-    `$ vi inventory/mycluster/inventory.cfg`  
+    `$ vi inventory/my-cluster/inventory.cfg`  
 
     __Multiple network adapters:__  If multiple network adapters are present on any node(s), Ansible will use the value provided as _ansible\_ssh\_host_ and/or _ip_ for each node.  For example: _k8s0 ansible\_ssh\_host=10.117.31.20 ip=10.117.31.20_.
 
@@ -174,7 +174,7 @@ Perform the following steps on the __control node__ where ansible command will b
 
 1. __Deploy Kubernetes Cluster__
 
-    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_ by default and optionally an entire directory such as _inventory/mycluster_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
+    Run script to deploy Kubernetes cluster to machines specified in _inventory/default/inventory.cfg_ by default and optionally an entire directory such as _inventory/my-cluster_.  If necessary, specify a user name to connect to via SSH to all cluster machines, a raw block device for container storage and the cluster inventory file.  
     
     __Deployment User__ _solidfire_ is used in this example.  A user account must already exist on the cluster nodes, and must have sudo privileges and must be accessible with password or key.  Supply the user's SSH password when prompted, then at second prompt press enter to use SSH password as sudo password.  Note: If you specify a different remote user, then you must manually update the _ansible.cfg_ file.
      
