@@ -12,21 +12,21 @@
 
   tasks:
 
-  - name: Create directory for OpenEBS
-    file:
-      path: "{{ mount_point }}"
-      state: directory
-      mode: 0755
-  
-  - name: Create ext4 Filesystem
-    filesystem:
-      fstype: "{{ fs_type }}"
-      dev: "{{ block_device_openebs }}"
-  
-  - name: Mount filesystem
-    mount:
-      path: "{{ mount_point }}"
-      src: "{{ block_device_openebs }}"
-      fstype: "{{ fs_type }}"
-      state: mounted
+#  - name: Create directory for OpenEBS
+#    file:
+#      path: "{{ mount_point }}"
+#      state: directory
+#      mode: 0755
+#  
+#  - name: Create ext4 Filesystem
+#    filesystem:
+#      fstype: "{{ fs_type }}"
+#      dev: "{{ block_device_openebs }}"
+#  
+#  - name: Mount filesystem
+#    mount:
+#      path: "{{ mount_point }}"
+#      src: "{{ block_device_openebs }}"
+#      fstype: "{{ fs_type }}"
+#      state: mounted
   
