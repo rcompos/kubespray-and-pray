@@ -1,4 +1,0 @@
-026700dfff3c78be1295417e96d882136e5e1f095eb843e6575e57ef9930b5d3 https://storage.googleapis.com/kubernetes-release/release/v1.14.3/bin/linux/amd64/kubeadm
-8edcc07c65f81eea3fc47cd237dd6560c6907c5e0ca52d71eab53ca1164e7d01 https://storage.googleapis.com/kubernetes-release/release/v1.14.3/bin/linux/arm64/kubeadm
-6c6cb5c118b2129ba4e56697f42567be3587eb636a477cd342b69f87b3b049d1 https://storage.googleapis.com/kubernetes-release/release/v1.14.3/bin/linux/amd64/hyperkube
-f29211d668cbcf1aa415dfa64aad95ffc53b5410482a23cddb680caec4e907a3 https://storage.googleapis.com/kubernetes-release/release/v1.14.3/bin/linux/arm64/hyperkube

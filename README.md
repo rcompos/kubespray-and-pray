@@ -4,7 +4,7 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~
- (       K8s v1.14.3       )
+ (       K8s v1.15.3       )
    ~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
@@ -17,7 +17,7 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-Kubernetes v1.14.3  
+Kubernetes v1.15.3  
 Kubespray v2.10.0  
 
 __Kubernetes Node Operating Systems Supported:__
@@ -58,7 +58,7 @@ Prepare __control node__ by installing requirements.  A laptop or desktop comput
     b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.7.8 (or newer).  
 
     `$ sudo -H pip install --upgrade pip`  
-    `$ sudo -H pip install -r requirements.txt`
+    `$ sudo -H pip install -r requirements.txt`  
     `$ sudo -H pip install kubespray`  
 
 
@@ -199,12 +199,6 @@ Perform the following steps on the __control node__ where ansible command will b
     `$ ./kap.sh -i my-cluster`
 
 Congratulations!  Your cluster should be running.  Log onto a master node and run `kubectl get nodes` to validate.
-
-__*** Note:  If the cluster deploy fails with error: ***__
-
-	`fatal: [my-cluster-1]: FAILED! => {"msg": "'dict object' has no attribute u'v1.14.3'"}`
-
-Add the hash values from file download-sha256sums.txt to the proper section in _~/.kubespray/roles/download/defaults/main.yml_.
 
 
 ## K8s Access Controls ##
