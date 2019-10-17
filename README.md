@@ -1,4 +1,4 @@
-# Kubespray-and-Pray K:8ball:s #
+# Kubespray-and-Pray :8ball: #
 
 Deploy K:8ball:s on-premise.
 
