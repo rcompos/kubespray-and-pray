@@ -2,9 +2,10 @@
 # Ansible for OpenEBS
 # Requires disk to already be formatted and mounted
 
-- hosts: 'kube-master'
+#- hosts: 'kube-master'
+- hosts: '127.0.0.1'
   vars:
-    namespace:            'storage'
+    namespace:            'openebs'
     deploy:               'openebs-apiserver'
     chart:                'stable/openebs'
     helm_name:            'openebs'
@@ -13,9 +14,10 @@
     operator_yaml:        'openebs-operator.yaml'
     storageclass_yaml:    'openebs-storage-class.yaml'
     storage_pool:         'openebs-storage-pool'
-  remote_user: solidfire
-  run_once: true
-  become: true
+  connection: local
+  #remote_user: solidfire
+  #run_once: true
+  #become: true
 
   tasks:
 
