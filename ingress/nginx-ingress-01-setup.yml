@@ -1,7 +1,8 @@
 ---
 # Ansible for deploying Nginx-ingress
 
-- hosts: 'kube-master'
+#- hosts: 'kube-master'
+- hosts: '127.0.0.1'
   vars:
       dir_target: '{{ ansible_env.HOME }}'
       namespace: 'ingress'
@@ -9,7 +10,7 @@
       chart: 'stable/nginx-ingress'
       deploy: 'nginx-ingress-controller'
   remote_user: solidfire
-  become: true
+  #become: true
   run_once: true
   environment:
 

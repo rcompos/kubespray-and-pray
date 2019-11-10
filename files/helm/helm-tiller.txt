@@ -1,0 +1,12 @@
+# Tiller-less Helm
+# Helm Local Client and Server
+#
+# Helm Tiller Server
+export TILLER_NAMESPACE=tiller
+tiller -listen=localhost:44134 -storage=secret -logtostderr
+
+# Helm Client
+export HELM_HOST=:44134
+helm init --client-only
+helm repo update
+

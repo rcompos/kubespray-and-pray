@@ -1,0 +1,20 @@
+##  After Vault helm chart deployed,
+##  if not autoseal, then manual seal
+
+kctl exec -ti -n vault vault-0 -- vault status
+
+# Initialize the vault instance
+# Save keys and root token
+kctl exec -ti -n vault vault-0 -- vault operator init -key-shares=3 -key-threshold=2
+
+# Unseal instance 0 - twice for 2 keys
+kctl exec -ti -n vault vault-0 -- vault unseal
+kctl exec -ti -n vault vault-0 -- vault unseal
+
+# Unseal instance 1 - twice for 2 keys
+kctl exec -ti -n vault vault-1 -- vault unseal
+kctl exec -ti -n vault vault-1 -- vault unseal
+
+# Unseal instance 2 - twice for 2 keys
+kctl exec -ti -n vault vault-2 -- vault unseal
+kctl exec -ti -n vault vault-2 -- vault unseal

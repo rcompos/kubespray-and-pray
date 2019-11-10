@@ -15,6 +15,6 @@
       block: |
         # Alias for kubectl and command line completion
         # Requires: bash-completion
-        alias k=kubectl
-        source <(kubectl completion bash  | sed s/kubectl/k/g)
+        alias kctl=kubectl
+        source <(kubectl completion bash  | sed s/kubectl/kctl/g)
 

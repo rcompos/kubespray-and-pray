@@ -1,0 +1,1 @@
+export VAULT_ADDR=http://192.168.1.92:8200

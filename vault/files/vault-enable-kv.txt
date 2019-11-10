@@ -1,0 +1,5 @@
+# Enable vault secrets engine for KV key value
+vault secrets enable -path=kv kv
+
+# Example
+kctl exec -ti -n vault vault-0 -- vault secrets enable -path=kv kv

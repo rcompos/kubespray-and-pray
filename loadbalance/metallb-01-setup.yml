@@ -1,5 +1,5 @@
 ---
-# Ansible for installing GlusterFS requirements on K8s cluster machines.
+# Ansible for installing MetalLB on K8s cluster
 
 - hosts: 'kube-master'
   vars:
