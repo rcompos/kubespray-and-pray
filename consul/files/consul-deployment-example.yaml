@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consul-example-deployment
+  namespace: test-consul
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consul-example
+  template:
+    metadata:
+      labels:
+        app: consul-example
+    spec:
+      containers:
+        - name: example
+          image: "consul:latest"
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          command:
+            - "/bin/sh"
+            - "-ec"
+            - |
+                export CONSUL_HTTP_ADDR="${HOST_IP}:8500"
+                consul kv put hello world

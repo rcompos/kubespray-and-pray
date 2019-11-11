@@ -25,6 +25,7 @@ Kubespray v2.10.0
 __Kubernetes Node Operating Systems Supported:__
 
 * Ubuntu 16.04 Xenial
+* Ubuntu 18.04 Bionic
 * CentOS 7
 
 This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.  Kubespray, which is built on Ansible, automates cluster deployments and provides for flexibility in configuration. 
