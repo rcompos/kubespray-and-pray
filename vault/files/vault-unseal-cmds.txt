@@ -1,5 +1,5 @@
 ##  After Vault helm chart deployed,
-##  if not autoseal, then manual seal
+##  if not autoseal, then manual unseal
 
 kctl exec -ti -n vault vault-0 -- vault status
 

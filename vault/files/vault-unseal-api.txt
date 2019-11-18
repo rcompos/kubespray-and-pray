@@ -1,0 +1,5 @@
+
+export VURL=http://192.168.1.93:8200
+#curl http://127.0.0.1:8200/v1/sys/init
+curl $VURL/v1/sys/init
+
