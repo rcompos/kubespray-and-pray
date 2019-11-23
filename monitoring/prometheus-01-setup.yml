@@ -53,7 +53,7 @@
 
   - name: Install Prometheus Operator
     # helm install coreos/prometheus-operator -n prometheus-operator --namespace monitoring
-    command: "helm install {{ chart_operator }} -n {{ helm_name_operator }} --namespace {{ namespace }} -f {{ prometheus_operator_values }}"
+    command: "helm install --namespace {{ namespace }} {{ helm_name_operator }} {{chart_operator}} -f {{ prometheus_operator_values }}"
     args:
       chdir: "{{ dir_target }}"
     when: check_prometheus.rc != 0

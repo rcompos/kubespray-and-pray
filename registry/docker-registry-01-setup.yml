@@ -27,7 +27,7 @@
     ignore_errors: true
 
   - name: Install docker-registry helm chart
-    command: "helm install {{ chart }} -n {{ helm_name }} --namespace {{ namespace }} --set persistence.enabled=true --set persistence.size={{ size }} --set service.type={{ service_type }}"
+    command: "helm install --namespace {{ namespace }} {{ helm_name }} {{ chart }} --set persistence.enabled=true --set persistence.size={{ size }} --set service.type={{ service_type }}"
     when: check_docker_registry.rc != 0
     register: install_chart
 

@@ -44,6 +44,8 @@ General requirements:
 * __Container Storage Volume:__  Mandatory additional physical or virtual disk volume.  i.e. /dev/sdc.  This is the Docker volume.
 * __Persistent Storage Volume:__  Optional additional physical or virtual disk volume.  i.e. /dev/sdd.  This additional storage may be used for distributed filesystems running in-cluster.
 * __Hostname resolution:__  Ensure that cluster machine hostnames are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
+* __Helm 3:__ Helm v3.0.0 Tiller install in cluster.  Tillerless Helm not supported.  See file helm/install-helm3-tiller.sh.
+
 
 ## Control Node ##
 
@@ -90,6 +92,8 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 1. Deploy K8s cluster on virtual or physical machines  
 
    Prepare directory (inventory/_cluster-name_) with _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ .  Deploy cluster.  Substitute actual cluster name for _cluster\-name_.
+
+	Ensure Helm Tiller addon is enabled in _inventory/<cluster_name>/group_vars/k8s-cluster/addons.yml_ or install Helm Tiller after K8s install.
    
         $ ./kap.sh -i cluster-name
 

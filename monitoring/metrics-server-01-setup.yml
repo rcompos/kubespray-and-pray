@@ -25,7 +25,7 @@
     ignore_errors: true
 
   - name: Install Helm chart
-    command: "helm install {{ chart }} -n {{ helm_name }} --namespace {{ namespace }}"
+    command: "helm install --namespace {{ namespace }} {{ helm_name }} {{ chart }}"
     when: check_metrics_server.rc != 0
     register: out
 

@@ -2,7 +2,6 @@
 # Ansible for OpenEBS
 # Requires disk to already be formatted and mounted
 
-#- hosts: 'kube-master'
 - hosts: '127.0.0.1'
   vars:
     namespace:            'openebs'
@@ -10,34 +9,21 @@
     chart:                'stable/openebs'
     helm_name:            'openebs'
     block_device_openebs: '/dev/sdd'
-    mount_point:          '/mnt/openebs_disk'
-    operator_yaml:        'openebs-operator.yaml'
-    storageclass_yaml:    'openebs-storage-class.yaml'
-    storage_pool:         'openebs-storage-pool'
   connection: local
-  #remote_user: solidfire
-  #run_once: true
-  #become: true
 
   tasks:
-
-  #- name: Role Facts
-  #  set_fact:
-  #    block_device: '/dev/sdb'
 
   - name: Check for OpenEBS DaemonSets
     shell: "kubectl get deployment {{ deploy }} -n {{ namespace }} --no-headers=1"
     register: check_openebs
     ignore_errors: true
 
-#  - name: Create namespace
-#    command: "kubectl create ns {{ namespace }}"
-#    register: out
-#
-#  - debug: var=out.stdout_lines
+  - name: Add Helm default repo
+    shell: "helm repo add stable https://kubernetes-charts.storage.googleapis.com/"
+    when: check_openebs.rc != 0
 
   - name: Install OpenEBS with Helm package manager
-    shell: "helm install {{ chart }} -n {{ helm_name }} --namespace {{ namespace }}"
+    shell: "helm install --namespace {{ namespace }} {{ helm_name }} {{ chart }}"
     when: check_openebs.rc != 0
 
   - name: Check for OpenEBS DaemonSets
@@ -47,36 +33,6 @@
     delay: 1
     until: check_openebs_apiserver.rc == 0
 
-#  - name: Check for mounted filesystem
-#    command: "mountpoint -q {{ mount_point }}"
-#    register: mount_point_check
-#    failed_when: False
-#    #changed_when: False
-
-#  - name: Copy OpenEBS operator yaml
-#    copy:
-#      src: "{{ operator_yaml }}"
-#      dest: "{{ ansible_env.HOME }}"
-#      mode: 0644
-
-#  - name: Copy OpenEBS storageclass yaml
-#    copy:
-#      src: "{{ storageclass_yaml }}"
-#      dest: "{{ ansible_env.HOME }}"
-#      mode: 0644
-
-#  - name: Create OpenEBS storage pool
-#    command: "kubectl apply -f {{ operator_yaml }}"
-#    args:
-#      chdir: "{{ ansible_env.HOME }}"
-#    register: out
-
-#  - debug: var=out.stdout_lines
-
-#  - name: Create OpenEBS storageclass
-#    command: "kubectl apply -f {{ storageclass_yaml }}"
-#    args:
-#      chdir: "{{ ansible_env.HOME }}"
-#    register: out
-
-#  - debug: var=out.stdout_lines
+  - name: Set default storage class
+    shell: "kubectl patch storageclass openebs-jiva-default -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}'"
+    when: check_openebs_apiserver.rc == 0
