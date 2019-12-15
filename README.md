@@ -1,12 +1,12 @@
 # Kubespray-and-Pray :8ball: #
 
-Deploy K:8ball:s on-premise.
+Deploy Kubernetes on-premise.  K:8ball:s!
 
-Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare metal or virtual.
+Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare metal or virtual machines.
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~
- (       K8s v1.15.3       )
+ (       K8s v1.16.3       )
    ~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
@@ -19,14 +19,15 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-Kubernetes v1.15.3  
-Kubespray v2.10.0  
+Kubernetes v1.16.3  
+Kubespray v2.12.0  
 
 __Kubernetes Node Operating Systems Supported:__
 
 * Ubuntu 16.04 Xenial
 * Ubuntu 18.04 Bionic
 * CentOS 7
+* CentOS 8
 
 This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.  Kubespray, which is built on Ansible, automates cluster deployments and provides for flexibility in configuration. 
 
@@ -38,11 +39,11 @@ Estimated time to complete: 1 hr
 
 General requirements:
 
-* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat 7, CentOS 7 or Ubuntu Xenial all tested. Python is a requirement. 
+* __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat/CentOS 7 or 8 and Ubuntu Xenial all tested. Python is a requirement. 
 * __Cluster Machines:__ Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
-* __Operating System:__ Ubuntu 16.04   (CentOS 7 is an open issue)
+* __Clueter Operating Systems:__ Ubuntu 16.04, 18.04 and RedHat/CentOS 7, 8
 * __Container Storage Volume:__  Mandatory additional physical or virtual disk volume.  i.e. /dev/sdc.  This is the Docker volume.
-* __Persistent Storage Volume:__  Optional additional physical or virtual disk volume.  i.e. /dev/sdd.  This additional storage may be used for distributed filesystems running in-cluster.
+* __Persistent Storage Volume:__  Optional additional physical or virtual disk volume.  i.e. /dev/sdd.  This additional storage may be used for distributed filesystems running in-cluster, such as OpenEBS or Gluster.
 * __Hostname resolution:__  Ensure that cluster machine hostnames are resolvable in DNS or are listed in local hosts file.  The control node and all cluster vm's must have DNS resolution or /etc/hosts entries.  IP addresses may be used.
 * __Helm 3:__ Helm v3.0.0 Tiller install in cluster.  Tillerless Helm not supported.  See file helm/install-helm3-tiller.sh.
 
@@ -60,7 +61,7 @@ Prepare __control node__ by installing requirements.  A laptop or desktop comput
     _RedHat 7_ or _CentOS 7_: `Python 2.7.5 installed by default`  
     _Ubuntu_: `$ sudo apt install python python-pip`  
 
-    b. Use Python package manager pip2 to install required packages on __control node__ including Ansible v2.7.8 (or newer).  
+    b. Use Python package manager pip2 to install required packages on __control node__ including Ansible.
 
     `$ sudo -H pip install --upgrade pip`  
     `$ sudo -H pip install -r requirements.txt`  
