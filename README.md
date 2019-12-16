@@ -31,8 +31,6 @@ __Kubernetes Node Operating Systems Supported:__
 
 This project provides a very simple deployment process for Kubernetes in the datacenter, on-premise, local vm's, etc.  System setup, disk prep, easy rbac and default storage all provided.  Kubespray, which is built on Ansible, automates cluster deployments and provides for flexibility in configuration. 
 
-
-
 Estimated time to complete: 1 hr  
 
 ## Requirements ##
