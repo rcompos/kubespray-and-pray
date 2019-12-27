@@ -38,7 +38,7 @@ Estimated time to complete: 1 hr
 General requirements:
 
 * __Control Node:__ Where the Kubespray commands are run (i.e. laptop or jump host).  MacOS High Sierra, RedHat/CentOS 7 or 8 and Ubuntu Xenial all tested. Python is a requirement. 
-* __Cluster Machines:__ Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment clone _https://github.com/rcompos/vagrant-zero_ and run `vagrant up k8s0 k8s1 k8s2`.
+* __Cluster VM Provisioning:__ Minimum of one, but at least three are recommended.  Physical or virtual.  Recommended minimum of 2gb ram per node for evaluation clusters. For a ready to use Vagrant environment, clone _https://github.com/rcompos/zero_ and run `vagrant up yolo-1 yolo-2 yolo-3`.
 * __Clueter Operating Systems:__ Ubuntu 16.04, 18.04 and RedHat/CentOS 7, 8
 * __Container Storage Volume:__  Mandatory additional physical or virtual disk volume.  i.e. /dev/sdc.  This is the Docker volume.
 * __Persistent Storage Volume:__  Optional additional physical or virtual disk volume.  i.e. /dev/sdd.  This additional storage may be used for distributed filesystems running in-cluster, such as OpenEBS or Gluster.
