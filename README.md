@@ -19,8 +19,8 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-Kubernetes v1.19.5
-Kubespray v2.14.2 
+Kubernetes v1.19.5  
+Kubespray v2.14.2   
 
 __Kubernetes Node Operating Systems Supported:__
 
@@ -53,13 +53,13 @@ Prepare __control node__ by installing requirements.  A laptop or desktop comput
 
 1. __Install Packages__ 
 
-    a. Install Python as requirement of Ansible.  
+    a. Install Python (v3) as requirement of Ansible.  
 
     _MacOS_: `$ brew install python`  
     _RedHat 7_ or _CentOS 7_: `Python 2.7.5 installed by default`  
     _Ubuntu_: `$ sudo apt install python python-pip`  
 
-    b. Use Python package manager pip2 to install required packages on __control node__ including Ansible.
+    b. Use Python package manager pip to install required packages on __control node__ including Ansible.
 
     `$ sudo -H pip install --upgrade pip`  
     `$ sudo -H pip install -r requirements.txt`  

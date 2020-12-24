@@ -19,12 +19,8 @@
     register: check_metallb
     ignore_errors: true
 
-  - name: Check for MetalLB deployment
-    shell: "kubectl create ns {{ namespace }}"
-    when: check_metallb.rc != 0
-
   - name: Install MetalLB Helm chart
-    shell: "helm install --namespace {{ namespace }} {{ helm_name }} {{ chart }}"
+    shell: "helm install --namespace {{ namespace }} {{ helm_name }} {{ chart }} --create-namespace"
     when: check_metallb.rc != 0
     register: out
 

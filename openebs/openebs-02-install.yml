@@ -6,7 +6,7 @@
   vars:
     namespace:            'openebs'
     deploy:               'openebs-apiserver'
-    chart:                'stable/openebs'
+    chart:                'openebs/openebs'
     helm_name:            'openebs'
     block_device_openebs: '/dev/sdd'
   connection: local
@@ -19,11 +19,11 @@
     ignore_errors: true
 
   - name: Add Helm default repo
-    shell: "helm repo add stable https://kubernetes-charts.storage.googleapis.com/"
+    shell: "helm repo add openebs https://openebs.github.io/charts"
     when: check_openebs.rc != 0
 
   - name: Install OpenEBS with Helm package manager
-    shell: "helm install --namespace {{ namespace }} {{ helm_name }} {{ chart }}"
+    shell: "helm install {{ helm_name }} {{ chart }} --namespace {{ namespace }} --create-namespace"
     when: check_openebs.rc != 0
 
   - name: Check for OpenEBS DaemonSets

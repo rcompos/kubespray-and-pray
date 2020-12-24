@@ -6,5 +6,5 @@
   gather_facts: false
   become: true
 
-- import_playbook: openebs-01-pre.yml
+- import_playbook: openebs-01-pre.yml block_device_openebs="{{ block_device_openebs }}"
 - import_playbook: openebs-02-install.yml block_device_openebs="{{ block_device_openebs }}"
