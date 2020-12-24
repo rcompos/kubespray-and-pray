@@ -10,6 +10,10 @@ docker_container_storage_setup: false
 ## Otherwise docker-storage-setup will be executed incorrectly.
 # docker_container_storage_setup_devs: /dev/vdb
 
+## Uncomment this if you want to change the Docker Cgroup driver (native.cgroupdriver)
+## Valid options are systemd or cgroupfs, default is systemd
+# docker_cgroup_driver: systemd
+
 ## Uncomment this if you have more than 3 nameservers, then we'll only use the first 3.
 docker_dns_servers_strict: false
 
@@ -51,4 +55,4 @@ docker_rpm_keepcache: 0
 
 ## A string of extra options to pass to the docker daemon.
 ## This string should be exactly as you wish it to appear.
-docker_options: >-
+# docker_options: ""
