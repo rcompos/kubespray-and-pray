@@ -6,7 +6,7 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~
- (       K8s v1.16.3       )
+ (       K8s v1.19.5      )
    ~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
@@ -19,8 +19,8 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-Kubernetes v1.16.3  
-Kubespray v2.12.0  
+Kubernetes v1.19.5
+Kubespray v2.14.2 
 
 __Kubernetes Node Operating Systems Supported:__
 
@@ -90,11 +90,9 @@ A Kubernetes cluster can be rapidly deployed with the following steps.  See furt
 
 1. Deploy K8s cluster on virtual or physical machines  
 
-   Prepare directory (inventory/_cluster-name_) with _inventory.cfg_, _all.yml_, _k8s-cluster.yml_ .  Deploy cluster.  Substitute actual cluster name for _cluster\-name_.
-
-	Ensure Helm Tiller addon is enabled in _inventory/<cluster_name>/group_vars/k8s-cluster/addons.yml_ or install Helm Tiller after K8s install.
+   Prepare directory (inventory/_cluster-name_) with _inventory.cfg_.  Deploy cluster.  Substitute actual cluster name for _cluster\-name_.  When prompted for SSH password, entire the ssh pasword for the operating system user.
    
-        $ ./kap.sh -i cluster-name
+        $ ./kap.sh -i cluster-name -o username
 
 2. Kubernetes Access Controls  
 
@@ -188,13 +186,13 @@ Perform the following steps on the __control node__ where ansible command will b
     
     __Inventory Directory__  The location of the cluster inventory is specified with option -i.  The following example looks in kubespray-and-pray/inventory/my-cluster for the inventory.ini file.
 
-    Example:  ./kap.sh -u myuser -b /dev/sdb -i my-cluster
+    Example:  ./kap.sh -o myuser -b /dev/sdb -i my-cluster
 
     Optional arguments for _kap.sh_ are as follows.  If no option is specified the default values will be used.
     
     | Flag   | Description                            | Default     |
     |--------|----------------------------------------|-------------|
-    | -u     | SSH username                           | solidfire   |
+    | -o     | SSH username                           | solidfire   |
     | -b     | Block device for containers            | /dev/sdc    |
     | -i     | Inventory directory under _inventory_  | default     | 
     | -s     | Silence prompt Ansible SSH password    |             | 

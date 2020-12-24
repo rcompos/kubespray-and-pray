@@ -1,10 +1,10 @@
-## Kubernetes On-Prem Ingress ##
+## Kubernetes Ingress Nginx ##
 
-Kubernetes on-premise ingress setup.
+Kubernetes ingress-nginx setup.
 
 ## Description ##
 
-Setup ingress for on-prem Kubernetes clusters.
+Setup ingress-nginx for Kubernetes clusters.
 
 ## Requirements ##
 
@@ -13,57 +13,43 @@ Setup ingress for on-prem Kubernetes clusters.
 
 ## Install Nginx-Ingress ##
 
-Install the Nginx ingress controller to allow service exposure via ingress.  
+Install the ingress-ngxin controller to allow service exposure via ingress.  
 
 1. __Change to Repo Directory__
 
     Change to the ingress dir within the cloned repository directory.  
 
-   `$ cd ~/kubespray-and-pray`  
+   `cd ~/kubespray-and-pray`  
 
 2. __Specify Target Cluster__
 
    Specify target cluster. Substitute actual cluster name for _\<cluster\>_. 
 
-   `$ ./kap.sh -i <cluster> -l`  
+   `./kap.sh -i <cluster> -l`  
 
 3. __Verify Target Cluster__
 
    Verify target cluster. Substitute actual cluster name for _\<cluster\>_. 
 
-   `$ ansible all -m ping`
+   `ansible all -m ping`
 
 4. __Deploy Ingress__
 
-    Run Ansible playbook to deploy Nginx ingress.
+    Run Ansible playbook to deploy ingress-nginx.
 
-   `$ ansible-playbook ingress/nginx-ingress-01-setup.yml`  
+   `ansible-playbook ingress/ingress-nginx-01-setup.yml`  
 
 5. __Verify Ingress__
 
     Run Ansible playbook to validate Nginx ingress.
 
-   `$ kubectl get all -n ingress`  
+   `kubectl get all -n ingress`  
 
-Expected results:
-```
-NAME                                                READY   STATUS    RESTARTS   AGE
-pod/nginx-ingress-controller-7c94ff655c-8rctq       1/1     Running   1          1d
-pod/nginx-ingress-default-backend-d676cbb5f-hzctm   1/1     Running   0          1d
+6. __Detect installed version__
 
-NAME                                    TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-service/nginx-ingress-controller        LoadBalancer   10.233.27.36   10.117.67.230   80:32193/TCP,443:31160/TCP   1d
-service/nginx-ingress-default-backend   ClusterIP      10.233.57.72   <none>          80/TCP                       1d
+    Run command to get installed ingress-nginx version.  Substitute your actual namespace.
 
-NAME                                            DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx-ingress-controller        1         1         1            1           1d
-deployment.apps/nginx-ingress-default-backend   1         1         1            1           1d
-
-NAME                                                      DESIRED   CURRENT   READY   AGE
-replicaset.apps/nginx-ingress-controller-7c94ff655c       1         1         1       1d
-replicaset.apps/nginx-ingress-default-backend-d676cbb5f   1         1         1       1d
-<<<<<<< HEAD
-```
-=======
-```
->>>>>>> 687e4a666a93435cce95921ffc3dd60576f0be7c
+    ```
+    POD_NAME=$(kubectl -n ingress-nginx get pods -l app.kubernetes.io/name=ingress-nginx -o jsonpath='{.items[0].metadata.name}')
+	kubectl -n ingress-nginx exec -it $POD_NAME -- /nginx-ingress-controller --version
+    ```
