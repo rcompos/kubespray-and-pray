@@ -5,3 +5,4 @@ inventory/ai-*
 inventory/ci-*
 inventory/do-*
 inventory/hci-*
+inventory/*/credentials
