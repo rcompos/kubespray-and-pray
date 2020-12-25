@@ -1,10 +1,12 @@
-## Kubernetes On-Prem Logging ##
+## Kubernetes Logging with EFK ##
 
-Kubernetes on-premise logging setup with Elasticsearch Fluentd Kibana (EFK).
+Kubernetes logging setup with Elasticsearch Fluentd Kibana (EFK).
+
+[Digital Ocean: How-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes)
 
 ## Description ##
 
-Setup logging for on-prem Kubernetes clusters.
+Setup EFK for Kubernetes clusters.
 
 ## Requirements ##
 
@@ -16,53 +18,53 @@ Install the logging with EFK for the cluster.  The ELK stack provides an out-of-
 
 1. __Change to Repo Directory__
 
-    Change to the cloned repository directory.  All subsequent Ansible commands must be run from this directory. 
+    Change to the logging directory.
 
-   `$ cd ~/kubespray-and-pray`  
+   `cd ~/kubespray-and-pray/logging`  
 
-2. __Specify Target Cluster__
+2. __Create namespace__
 
-   Specify target cluster. Substitute actual cluster name for _\<cluster\>_. 
+   Create namespace logging.
 
-   `$ ./kap.sh -i <cluster> -l`  
+   `cd ~/kubespray-and-pray/logging`  
+   `kubectl apply -f logging-namespace.yaml`
 
-3. __Verify Target Cluster__
+3. __Create headless elasticsearch service__
 
-   Verify target cluster nodes all ping successfully via Ansible. Substitute actual cluster name for _\<cluster\>_. 
+   Run command to create headless service.
+   `kubectl apply -f elasticsearch_svc.yaml`
 
-   `$ ansible all -m ping`  
+4. __Create elasticsearch statefulset__
 
-4. __Clone logging repo__
+   Run command to create statefulset.
+   `kubectl apply -f elasticsearch_statefulset.yaml`
 
-   Clone the EFK code from:  
+5. __Deploy Kibana__ 
 
-   `# cd ~/kubespray-and-pray`  
-   `# git clone https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch`  
+    Deploy Kibana.
 
+   `kubectl apply -f kibana.yaml`
 
-5. __Deploy Application__ 
+6. __Deploy Fluentd__
 
-    Run Ansible playbook to deploy EFK.
+    Deploy Fluentd.
 
-   `$ kubectl apply -f ~/kubespray-and-pray/fluentd-elasticsearch`  
+   `kubectl apply -f fluentd.yaml`
 
-6. __Get Port__
+7. __Change persistent volume retain policy__
 
-    Get node port of Kibana service.
+    Set persistent volumes to retain.
 
-   `$ kubectl get svc -n kube-system | grep kibana`  
+    `./patch-pv-retain.sh`
 
-Expected results.  The node port is the value _30159_.
-```
-NAME            TYPE      CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-kibana-logging  NodePort  10.233.8.35  <none>  5601:30159/TCP  1d
-```
-6. __Access Kibana__
+8. __Forward port__
+
+    Identify the pod hosting the Kibana service and forward port.
+
+    `kubectl port-forward pod/kibana-84cf7f59c-p97db 5601:5601 -n logging`
+
+9. __Access Kibana__
 
    Access Kibana service on a master nodes at the previously discovered port.
 
-<<<<<<< HEAD
-   `http://<master_node>:<port>`
-=======
-   `http://<master_node>:<port>`
->>>>>>> 687e4a666a93435cce95921ffc3dd60576f0be7c
+   `http://localhost:5601`
