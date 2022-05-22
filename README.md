@@ -6,7 +6,7 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 ```
    ~~~~~~~~~~~~~~~~~~~~~~~
- (       K8s v1.19.5      )
+ (       K8s v1.21.6      )
    ~~~~~~~~~~~~~~~~~~~~~~~
           \   ^__^
            \  (oo)\_______
