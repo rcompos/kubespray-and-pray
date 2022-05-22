@@ -19,7 +19,7 @@ Deploy on-premise Kubernetes clusters with Kubespray.  For on-premise, bare meta
 
 Deploy on-premises Kubernetes clusters on virtual machines or baremetal (i.e. physical servers) using Kubespray and Ansible.  Whether you're in your datacenter or on your laptop, you can build Kubernetes clusters for evaluation, development or production.  All you need to bring to the table is a few machines to run the cluster.
 
-Kubernetes v1.19.5  
+Kubernetes v1.21.6  
 Kubespray v2.14.2   
 
 __Kubernetes Node Operating Systems Supported:__
